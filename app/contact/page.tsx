@@ -9,7 +9,10 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import { Mail, MapPin } from "lucide-react"
+import { Mail, MapPin, Send } from "lucide-react"
+import type React from "react"
+import { useLanguage } from "@/lib/language-context"
+import { translations } from "@/lib/translations"
 
 const WhatsAppIcon = () => (
   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -17,8 +20,16 @@ const WhatsAppIcon = () => (
   </svg>
 )
 
+const TelegramIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-5 w-5" {...props}>
+    <path d="M21.7 3.3a1.2 1.2 0 0 0-1.2-.2L2.7 10.7a1.1 1.1 0 0 0-.7 1.1 1.1 1.1 0 0 0 .8.9l4.3 1.3 1.6 5.2a1.2 1.2 0 0 0 1 .8h.1a1.2 1.2 0 0 0 1-.6l2.2-3.3 4.1 3a1.2 1.2 0 0 0 1.2.1 1.2 1.2 0 0 0 .7-.9l2.3-14.8a1.2 1.2 0 0 0-.4-1.1Zm-3 1.9-9.2 8.4-2.7-.8Zm-8.2 10.9 9.3-8.4-6.9 10.1-2.4 3.6Z" />
+  </svg>
+)
+
 export default function ContactPage() {
   const { toast } = useToast()
+  const { language } = useLanguage()
+  const t = translations[language]
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     fullName: "",
@@ -46,8 +57,8 @@ export default function ContactPage() {
 
       if (response.ok) {
         toast({
-          title: "Message Sent!",
-          description: "We'll get back to you as soon as possible.",
+          title: t.contactPage.toast.successTitle,
+          description: t.contactPage.toast.successDescription,
         })
         setFormData({
           fullName: "",
@@ -59,15 +70,15 @@ export default function ContactPage() {
       } else {
         const data = await response.json()
         toast({
-          title: "Error",
-          description: data.error || "Failed to send message. Please try again.",
+          title: t.contactPage.toast.errorTitle,
+          description: data.error || t.contactPage.toast.errorDescription,
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: t.contactPage.toast.errorTitle,
+        description: t.contactPage.toast.errorDescription,
         variant: "destructive",
       })
     } finally {
@@ -79,18 +90,16 @@ export default function ContactPage() {
     <div className="min-h-screen py-24">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-balance text-4xl font-bold lg:text-5xl">Get in Touch</h1>
-          <p className="mx-auto max-w-2xl text-pretty text-lg text-muted-foreground">
-            Have questions? We're here to help with your deployment needs.
-          </p>
+          <h1 className="mb-4 text-balance text-4xl font-bold lg:text-5xl">{t.contactPage.title}</h1>
+          <p className="mx-auto max-w-2xl text-pretty text-lg text-muted-foreground">{t.contactPage.description}</p>
         </div>
 
         <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Send us a message</CardTitle>
-                <CardDescription>Fill out the form and we'll get back to you within 24 hours</CardDescription>
+                <CardTitle>{t.contactPage.form.title}</CardTitle>
+                <CardDescription>{t.contactPage.form.description}</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -105,52 +114,52 @@ export default function ContactPage() {
                   />
 
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Label htmlFor="fullName">{t.contactPage.form.labels.fullName}</Label>
                     <Input
                       id="fullName"
                       required
                       value={formData.fullName}
                       onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
-                      placeholder="John Doe"
+                      placeholder={t.contactPage.form.placeholders.fullName}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email *</Label>
+                    <Label htmlFor="email">{t.contactPage.form.labels.email}</Label>
                     <Input
                       id="email"
                       type="email"
                       required
                       value={formData.email}
                       onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                      placeholder="john@example.com"
+                      placeholder={t.contactPage.form.placeholders.email}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="company">Company</Label>
+                    <Label htmlFor="company">{t.contactPage.form.labels.company}</Label>
                     <Input
                       id="company"
                       value={formData.company}
                       onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
-                      placeholder="Your Company"
+                      placeholder={t.contactPage.form.placeholders.company}
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
+                    <Label htmlFor="message">{t.contactPage.form.labels.message}</Label>
                     <Textarea
                       id="message"
                       required
                       value={formData.message}
                       onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
-                      placeholder="Tell us about your project..."
+                      placeholder={t.contactPage.form.placeholders.message}
                       rows={6}
                     />
                   </div>
 
                   <Button type="submit" disabled={loading} className="w-full">
-                    {loading ? "Sending..." : "Send Message"}
+                    {loading ? t.contactPage.form.submitting : t.contactPage.form.submit}
                   </Button>
                 </form>
               </CardContent>
@@ -163,22 +172,37 @@ export default function ContactPage() {
                 <div className="mb-4 flex items-start gap-3">
                   <Mail className="mt-1 h-5 w-5 text-muted-foreground" />
                   <div>
-                    <div className="font-medium">Email</div>
-                    <div className="text-sm text-muted-foreground">info@mdeploy.dev</div>
+                    <div className="font-medium">{t.contactPage.contactDetails.email.label}</div>
+                    <div className="text-sm text-muted-foreground">{t.contactPage.contactDetails.email.value}</div>
                   </div>
                 </div>
 
                 <div className="mb-4 flex items-start gap-3">
                   <WhatsAppIcon />
                   <div>
-                    <div className="font-medium">WhatsApp</div>
+                    <div className="font-medium">{t.contactPage.contactDetails.whatsapp.label}</div>
                     <a
                       href="https://wa.me/message/CWPGKLHKNYODN1"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      Start a chat
+                      {t.contactPage.contactDetails.whatsapp.cta}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="mb-4 flex items-start gap-3">
+                  <TelegramIcon />
+                  <div>
+                    <div className="font-medium">{t.contactPage.contactDetails.telegram.label}</div>
+                    <a
+                      href="https://t.me/jalalnasserr"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {t.contactPage.contactDetails.telegram.cta}
                     </a>
                   </div>
                 </div>
@@ -186,8 +210,8 @@ export default function ContactPage() {
                 <div className="flex items-start gap-3">
                   <MapPin className="mt-1 h-5 w-5 text-muted-foreground" />
                   <div>
-                    <div className="font-medium">Location</div>
-                    <div className="text-sm text-muted-foreground">Saudi Arabia</div>
+                    <div className="font-medium">{t.contactPage.contactDetails.location.label}</div>
+                    <div className="text-sm text-muted-foreground">{t.contactPage.contactDetails.location.value}</div>
                   </div>
                 </div>
               </CardContent>
@@ -195,10 +219,10 @@ export default function ContactPage() {
 
             <Card>
               <CardContent className="pt-6">
-                <h3 className="mb-2 font-semibold">Business Hours</h3>
+                <h3 className="mb-2 font-semibold">{t.contactPage.contactDetails.hoursTitle}</h3>
                 <div className="space-y-1 text-sm text-muted-foreground">
-                  <div>Sunday - Thursday: 9:00 AM - 6:00 PM</div>
-                  <div>Friday - Saturday: Closed</div>
+                  <div>{t.contactPage.contactDetails.hoursWeekday}</div>
+                  <div>{t.contactPage.contactDetails.hoursWeekend}</div>
                 </div>
               </CardContent>
             </Card>

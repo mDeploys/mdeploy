@@ -29,6 +29,7 @@ export async function POST(request: Request) {
     const breakdown = calculatePrice({
       websitePages: validatedData.websitePages,
       webAppPages: validatedData.webAppPages,
+      ecommercePages: validatedData.ecommercePages,
       mobileScreens: validatedData.mobileScreens,
       desktopFunctions: validatedData.desktopFunctions,
     })
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       {
         websitePages: validatedData.websitePages,
         webAppPages: validatedData.webAppPages,
+        ecommercePages: validatedData.ecommercePages,
         mobileScreens: validatedData.mobileScreens,
         desktopFunctions: validatedData.desktopFunctions,
       },
@@ -63,7 +65,7 @@ export async function POST(request: Request) {
     await resend.emails.send({
       from: process.env.FROM_EMAIL || "no-reply@mdeploy.dev",
       to: validatedData.email,
-      subject: "Your MDeploy Quote Request",
+      subject: "Your mDeploy Quote Request",
       html: emailHTML,
     })
 

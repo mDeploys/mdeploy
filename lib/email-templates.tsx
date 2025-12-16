@@ -31,7 +31,7 @@ export function generateQuoteEmailHTML(
 <body>
   <div class="container">
     <div class="header">
-      <h1>MDeploy Quote Request</h1>
+      <h1>mDeploy Quote Request</h1>
     </div>
     <div class="content">
       <div class="section">
@@ -73,6 +73,17 @@ export function generateQuoteEmailHTML(
               <td>${inputs.webAppPages}</td>
               <td>300</td>
               <td>${breakdown.webAppCost.toFixed(2)}</td>
+            </tr>`
+                : ""
+            }
+            ${
+              inputs.ecommercePages > 0
+                ? `
+            <tr>
+              <td>E-commerce Pages</td>
+              <td>${inputs.ecommercePages}</td>
+              <td>450</td>
+              <td>${breakdown.ecommerceCost.toFixed(2)}</td>
             </tr>`
                 : ""
             }
@@ -152,7 +163,7 @@ export function generateContactEmailHTML(data: {
 <body>
   <div class="container">
     <div class="header">
-      <h1>MDeploy Contact Form</h1>
+      <h1>mDeploy Contact Form</h1>
     </div>
     <div class="content">
       <div class="section">

@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import type { QuoteInputs } from "@/lib/pricing"
+import { useLanguage } from "@/lib/language-context"
+import { translations } from "@/lib/translations"
 
 interface QuoteFormProps {
   inputs: QuoteInputs
@@ -17,6 +19,8 @@ interface QuoteFormProps {
 
 export function QuoteForm({ inputs }: QuoteFormProps) {
   const { toast } = useToast()
+  const { language } = useLanguage()
+  const t = translations[language]
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     fullName: "",
@@ -51,8 +55,8 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
 
       if (response.ok) {
         toast({
-          title: "Quote Request Sent!",
-          description: "We've sent you a confirmation email and will be in touch soon.",
+          title: t.quoteForm.toast.successTitle,
+          description: t.quoteForm.toast.successDescription,
         })
         setFormData({
           fullName: "",
@@ -64,15 +68,15 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
         })
       } else {
         toast({
-          title: "Error",
-          description: data.error || "Failed to submit quote request. Please try again.",
+          title: t.quoteForm.toast.errorTitle,
+          description: data.error || t.quoteForm.toast.errorDescription,
           variant: "destructive",
         })
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to submit quote request. Please try again.",
+        title: t.quoteForm.toast.errorTitle,
+        description: t.quoteForm.toast.errorDescription,
         variant: "destructive",
       })
     } finally {
@@ -83,8 +87,8 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Your Information</CardTitle>
-        <CardDescription>Fill in your details to receive your quote</CardDescription>
+        <CardTitle>{t.quoteForm.title}</CardTitle>
+        <CardDescription>{t.quoteForm.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,64 +104,64 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           />
 
           <div className="space-y-2">
-            <Label htmlFor="fullName">Full Name *</Label>
+            <Label htmlFor="fullName">{t.quoteForm.labels.fullName}</Label>
             <Input
               id="fullName"
               required
               value={formData.fullName}
               onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
-              placeholder="John Doe"
+              placeholder={t.quoteForm.placeholders.fullName}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email *</Label>
+            <Label htmlFor="email">{t.quoteForm.labels.email}</Label>
             <Input
               id="email"
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-              placeholder="john@example.com"
+              placeholder={t.quoteForm.placeholders.email}
             />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="company">Company</Label>
+              <Label htmlFor="company">{t.quoteForm.labels.company}</Label>
               <Input
                 id="company"
                 value={formData.company}
                 onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
-                placeholder="Your Company"
+                placeholder={t.quoteForm.placeholders.company}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">{t.quoteForm.labels.phone}</Label>
               <Input
                 id="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-                placeholder="+1 (555) 123-4567"
+                placeholder={t.quoteForm.placeholders.phone}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="notes">Project Notes / Requirements</Label>
+            <Label htmlFor="notes">{t.quoteForm.labels.notes}</Label>
             <Textarea
               id="notes"
               value={formData.notes}
               onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
-              placeholder="Tell us more about your project..."
+              placeholder={t.quoteForm.placeholders.notes}
               rows={4}
             />
           </div>
 
           <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Sending..." : "Submit Quote Request"}
+            {loading ? t.quoteForm.submitting : t.quoteForm.submit}
           </Button>
         </form>
       </CardContent>

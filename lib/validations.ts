@@ -3,6 +3,7 @@ import { z } from "zod"
 export const quoteInputSchema = z.object({
   websitePages: z.number().int().min(0).max(1000),
   webAppPages: z.number().int().min(0).max(1000),
+  ecommercePages: z.number().int().min(0).max(1000),
   mobileScreens: z.number().int().min(0).max(1000),
   desktopFunctions: z.number().int().min(0).max(1000),
 })
@@ -16,6 +17,7 @@ export const quoteSubmissionSchema = z.object({
   honeypot: z.string().max(0).optional(), // spam protection
   websitePages: z.number().int().min(0),
   webAppPages: z.number().int().min(0),
+  ecommercePages: z.number().int().min(0),
   mobileScreens: z.number().int().min(0),
   desktopFunctions: z.number().int().min(0),
 })

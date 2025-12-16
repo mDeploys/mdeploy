@@ -1,6 +1,6 @@
-# MDeploy - Professional Deployment Services
+# mDeploy - Professional Deployment Services
 
-A modern, production-ready business website for MDeploy offering deployment services for websites, web apps, mobile apps, and desktop applications.
+A modern, production-ready business website for mDeploy offering deployment services for websites, web apps, mobile apps, and desktop applications.
 
 ## Features
 
@@ -196,4 +196,4 @@ For questions or issues, contact: hello@mdeploy.dev
 
 ## License
 
-All rights reserved © MDeploy
+All rights reserved © mDeploy

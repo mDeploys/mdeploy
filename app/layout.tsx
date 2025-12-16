@@ -5,13 +5,15 @@ import { Analytics } from "@vercel/analytics/next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
+import { ConditionalLayout } from "@/components/conditional-layout"
+import { LanguageProvider } from "@/lib/language-context"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "MDeploy - Professional Deployment Services",
+  title: "mDeploy - Professional Deployment Services",
   description:
     "Professional deployment services for websites, web applications, mobile apps, and desktop applications. Transparent pricing, reliable delivery.",
   keywords: [
@@ -21,38 +23,55 @@ export const metadata: Metadata = {
     "web app deployment",
     "mobile app deployment",
     "desktop app development",
+    "خدمات النشر",
+    "نشر التطبيقات",
   ],
-  authors: [{ name: "MDeploy" }],
+  authors: [{ name: "mDeploy" }],
+  creator: "mDeploy",
+  publisher: "mDeploy",
+  formatDetection: {
+    email: false,
+    telephone: false,
+    address: false,
+  },
+  alternates: {
+    canonical: "https://mdeploy.dev",
+    languages: {
+      "en-US": "https://mdeploy.dev/en",
+      "ar-SA": "https://mdeploy.dev/ar",
+    },
+  },
   openGraph: {
-    title: "MDeploy - Professional Deployment Services",
+    title: "mDeploy - Professional Deployment Services",
     description:
       "Professional deployment services for websites, web applications, mobile apps, and desktop applications.",
     url: "https://mdeploy.dev",
-    siteName: "MDeploy",
+    siteName: "mDeploy",
     type: "website",
+    locale: "en_US",
+    alternateLocale: ["ar_SA"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "MDeploy - Professional Deployment Services",
+    title: "mDeploy - Professional Deployment Services",
     description: "Professional deployment services with transparent pricing",
+    creator: "@mdeploy",
   },
   generator: "Next.js",
+  referrer: "strict-origin-when-cross-origin",
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
+        url: "/logo.png",
+        type: "image/png",
       },
       {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
+        url: "/favicon.ico",
+        sizes: "any",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/logo.png",
+    shortcut: "/favicon.ico",
   },
 }
 
@@ -72,12 +91,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-background">
+    <html lang="en" dir="ltr" className="bg-background" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <Toaster />
+        <LanguageProvider>
+          <ConditionalLayout header={<Header />} footer={<Footer />}>
+            {children}
+          </ConditionalLayout>
+          <Toaster />
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>

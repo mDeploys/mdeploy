@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { calculatePrice, type QuoteInputs } from "@/lib/pricing"
 import { convertToUSD, formatCurrency, type Currency } from "@/lib/currency"
 import { Switch } from "@/components/ui/switch"
+import { useLanguage } from "@/lib/language-context"
+import { translations } from "@/lib/translations"
 
 interface ServiceCalculatorProps {
   showSubmitForm?: boolean
@@ -19,9 +21,12 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
   const [inputs, setInputs] = useState<QuoteInputs>({
     websitePages: 0,
     webAppPages: 0,
+    ecommercePages: 0,
     mobileScreens: 0,
     desktopFunctions: 0,
   })
+  const { language } = useLanguage()
+  const t = translations[language]
 
   const breakdown = calculatePrice(inputs)
   const hasAnyInput = Object.values(inputs).some((v) => v > 0)
@@ -35,6 +40,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
     setInputs({
       websitePages: 0,
       webAppPages: 0,
+      ecommercePages: 0,
       mobileScreens: 0,
       desktopFunctions: 0,
     })
@@ -45,17 +51,20 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
     return formatCurrency(amount, currency)
   }
 
+  const formatBreakdownLabel = (template: string, count: number) =>
+    template.replace("{count}", count.toString())
+
   return (
     <Card className="w-full">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
-            <CardTitle>Service Cost Calculator</CardTitle>
-            <CardDescription>Calculate your project cost based on our transparent pricing</CardDescription>
+            <CardTitle>{t.serviceCalculator.title}</CardTitle>
+            <CardDescription>{t.serviceCalculator.description}</CardDescription>
           </div>
           <div className="flex items-center gap-2">
             <Label htmlFor="currency-toggle" className="text-sm">
-              {currency}
+              {t.serviceCalculator.currencyLabel}: {currency}
             </Label>
             <Switch
               id="currency-toggle"
@@ -68,7 +77,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
       <CardContent className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="websitePages">Website Pages (250 SAR each)</Label>
+            <Label htmlFor="websitePages">{t.serviceCalculator.fields.websitePages}</Label>
             <Input
               id="websitePages"
               type="number"
@@ -80,7 +89,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="webAppPages">Web App Pages (300 SAR each)</Label>
+            <Label htmlFor="webAppPages">{t.serviceCalculator.fields.webAppPages}</Label>
             <Input
               id="webAppPages"
               type="number"
@@ -92,7 +101,19 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mobileScreens">Mobile App Screens (400 SAR each)</Label>
+            <Label htmlFor="ecommercePages">{t.serviceCalculator.fields.ecommercePages}</Label>
+            <Input
+              id="ecommercePages"
+              type="number"
+              min="0"
+              value={inputs.ecommercePages || ""}
+              onChange={(e) => handleInputChange("ecommercePages", e.target.value)}
+              placeholder="0"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="mobileScreens">{t.serviceCalculator.fields.mobileScreens}</Label>
             <Input
               id="mobileScreens"
               type="number"
@@ -104,7 +125,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="desktopFunctions">Desktop Functions (180 SAR each)</Label>
+            <Label htmlFor="desktopFunctions">{t.serviceCalculator.fields.desktopFunctions}</Label>
             <Input
               id="desktopFunctions"
               type="number"
@@ -118,42 +139,58 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
 
         {hasAnyInput && (
           <div className="space-y-3 rounded-lg border border-border bg-muted/50 p-4">
-            <h3 className="font-semibold">Cost Breakdown</h3>
+            <h3 className="font-semibold">{t.serviceCalculator.breakdownTitle}</h3>
             <div className="space-y-2 text-sm">
               {inputs.websitePages > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Website Pages ({inputs.websitePages} × 250 SAR)</span>
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.website, inputs.websitePages)}
+                  </span>
                   <span className="font-medium">{displayAmount(breakdown.websiteCost)}</span>
                 </div>
               )}
               {inputs.webAppPages > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Web App Pages ({inputs.webAppPages} × 300 SAR)</span>
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.webApp, inputs.webAppPages)}
+                  </span>
                   <span className="font-medium">{displayAmount(breakdown.webAppCost)}</span>
+                </div>
+              )}
+              {inputs.ecommercePages > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.ecommerce, inputs.ecommercePages)}
+                  </span>
+                  <span className="font-medium">{displayAmount(breakdown.ecommerceCost)}</span>
                 </div>
               )}
               {inputs.mobileScreens > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Mobile Screens ({inputs.mobileScreens} × 400 SAR)</span>
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.mobile, inputs.mobileScreens)}
+                  </span>
                   <span className="font-medium">{displayAmount(breakdown.mobileCost)}</span>
                 </div>
               )}
               {inputs.desktopFunctions > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Desktop Functions ({inputs.desktopFunctions} × 180 SAR)</span>
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.desktop, inputs.desktopFunctions)}
+                  </span>
                   <span className="font-medium">{displayAmount(breakdown.desktopCost)}</span>
                 </div>
               )}
               <div className="flex justify-between border-t border-border pt-2">
-                <span className="text-muted-foreground">Subtotal</span>
+                <span className="text-muted-foreground">{t.serviceCalculator.subtotal}</span>
                 <span className="font-medium">{displayAmount(breakdown.subtotal)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Setup & Handling Fee</span>
+                <span className="text-muted-foreground">{t.serviceCalculator.setupFee}</span>
                 <span className="font-medium">{displayAmount(breakdown.setupFee)}</span>
               </div>
               <div className="flex justify-between border-t border-border pt-2 text-base">
-                <span className="font-bold">Total</span>
+                <span className="font-bold">{t.serviceCalculator.total}</span>
                 <span className="font-bold">{displayAmount(breakdown.total)}</span>
               </div>
             </div>
@@ -162,11 +199,11 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
 
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleReset} className="flex-1 bg-transparent">
-            Reset
+            {t.serviceCalculator.actions.reset}
           </Button>
           {showSubmitForm && hasAnyInput && onSubmit && (
             <Button onClick={() => onSubmit(inputs)} className="flex-1">
-              Continue to Submit
+              {t.serviceCalculator.actions.continue}
             </Button>
           )}
         </div>
