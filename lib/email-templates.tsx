@@ -1,10 +1,22 @@
 import type { PriceBreakdown, QuoteInputs } from "./pricing"
+import fs from "node:fs"
+import path from "node:path"
 
 function getBaseUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
   return "http://localhost:3000"
 }
+
+const logoDataUri = (() => {
+  try {
+    const logoPath = path.join(process.cwd(), "public", "logo.png")
+    const file = fs.readFileSync(logoPath)
+    return `data:image/png;base64,${file.toString("base64")}`
+  } catch {
+    return ""
+  }
+})()
 
 export function generateQuoteEmailHTML(
   data: {
@@ -17,7 +29,7 @@ export function generateQuoteEmailHTML(
   inputs: QuoteInputs,
   breakdown: PriceBreakdown,
 ): string {
-  const logoUrl = `${getBaseUrl()}/logo.png`
+  const logoUrl = logoDataUri || `${getBaseUrl()}/logo.png`
 
   return `
 <!DOCTYPE html>
@@ -26,7 +38,7 @@ export function generateQuoteEmailHTML(
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #1f1b2e; background: #f4f2fb; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #2b0a3d; background: linear-gradient(135deg, #2b0a3d 0%, #4c1d95 45%, #7c3aed 100%); color: #fff; padding: 26px 20px; text-align: center; border-radius: 14px 14px 0 0; }
+    .header { background: #020617; background: linear-gradient(90deg, #020617 0%, #2e1065 50%, #020617 100%); color: #fff; padding: 26px 20px; text-align: center; border-radius: 14px 14px 0 0; }
     .logo { display: block; margin: 0 auto 12px; width: 150px; height: auto; }
     .header-title { font-size: 22px; font-weight: 700; margin: 0; }
     .content { padding: 22px; background: #ffffff; border: 1px solid #e6e1f2; border-top: none; border-radius: 0 0 14px 14px; }
@@ -158,7 +170,7 @@ export function generateContactEmailHTML(data: {
   company?: string
   message: string
 }): string {
-  const logoUrl = `${getBaseUrl()}/logo.png`
+  const logoUrl = logoDataUri || `${getBaseUrl()}/logo.png`
 
   return `
 <!DOCTYPE html>
@@ -167,7 +179,7 @@ export function generateContactEmailHTML(data: {
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #1f1b2e; background: #f4f2fb; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #2b0a3d; background: linear-gradient(135deg, #2b0a3d 0%, #4c1d95 45%, #7c3aed 100%); color: #fff; padding: 26px 20px; text-align: center; border-radius: 14px 14px 0 0; }
+    .header { background: #020617; background: linear-gradient(90deg, #020617 0%, #2e1065 50%, #020617 100%); color: #fff; padding: 26px 20px; text-align: center; border-radius: 14px 14px 0 0; }
     .logo { display: block; margin: 0 auto 12px; width: 150px; height: auto; }
     .header-title { font-size: 22px; font-weight: 700; margin: 0; }
     .content { padding: 22px; background: #ffffff; border: 1px solid #e6e1f2; border-top: none; border-radius: 0 0 14px 14px; }
