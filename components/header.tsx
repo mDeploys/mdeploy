@@ -38,16 +38,18 @@ export function Header() {
   const navLinkClass = (active: boolean) =>
     [
       "relative rounded-full px-3 py-1 text-sm font-medium transition-all",
-      "hover:text-purple-700 hover:bg-purple-100/70",
+      "hover:text-purple-700 hover:bg-purple-100/70 dark:hover:text-purple-200 dark:hover:bg-purple-900/40",
       active
-        ? "text-purple-700 bg-purple-100/80 font-semibold shadow-sm after:absolute after:left-1/2 after:-bottom-2 after:h-1.5 after:w-6 after:-translate-x-1/2 after:rounded-full after:bg-gradient-to-r after:from-purple-500 after:to-fuchsia-500 after:shadow-[0_0_12px_rgba(168,85,247,0.55)]"
-        : "text-slate-600",
+        ? "text-purple-700 bg-purple-100/80 font-semibold shadow-sm after:absolute after:left-1/2 after:-bottom-2 after:h-1.5 after:w-6 after:-translate-x-1/2 after:rounded-full after:bg-gradient-to-r after:from-purple-500 after:to-fuchsia-500 after:shadow-[0_0_12px_rgba(168,85,247,0.55)] dark:text-fuchsia-100 dark:bg-purple-900/60 dark:shadow-[0_0_20px_rgba(88,28,135,0.6)] dark:after:from-fuchsia-400 dark:after:to-purple-300"
+        : "text-slate-600 dark:text-slate-200",
     ].join(" ")
 
   const mobileLinkClass = (active: boolean) =>
     [
       "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-      active ? "bg-primary/15 text-primary font-semibold" : "text-muted-foreground hover:text-primary hover:bg-primary/10",
+      active
+        ? "bg-primary/15 text-primary font-semibold dark:bg-purple-900/40 dark:text-purple-200"
+        : "text-muted-foreground hover:text-primary hover:bg-primary/10 dark:text-slate-200 dark:hover:bg-purple-900/30",
     ].join(" ")
 
   const navLinks = [
@@ -58,10 +60,10 @@ export function Header() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 overflow-hidden border-b border-purple-200/70 bg-white">
+    <header className="fixed top-0 left-0 right-0 z-50 overflow-hidden border-b border-purple-200/70 bg-gradient-to-b from-white via-white/95 to-[#f7e9ff] dark:from-[#050112] dark:via-[#12062a] dark:to-[#1d0a3d]">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent via-[#a855f7]/15 to-[#7c3aed]/25"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent via-[#a855f7]/15 to-[#7c3aed]/25 dark:via-[#6d28d9]/25 dark:to-[#4c1d95]/55"
       >
         <svg
           viewBox="0 0 1440 160"
@@ -71,12 +73,12 @@ export function Header() {
         >
           <path
             d="M0 120C200 90 360 140 580 120C800 100 980 60 1200 80C1340 90 1420 110 1440 120V160H0Z"
-            fill="#7c3aed"
+            className="fill-[#7c3aed] dark:fill-[#a855f7]"
             opacity="0.85"
           />
           <path
             d="M0 140C260 120 420 150 640 130C860 110 1080 95 1270 115C1380 125 1420 135 1440 140V160H0Z"
-            fill="#5b21b6"
+            className="fill-[#5b21b6] dark:fill-[#7c3aed]"
             opacity="0.75"
           />
         </svg>
@@ -92,12 +94,12 @@ export function Header() {
             className="h-12 w-auto drop-shadow-[0_12px_25px_rgba(109,40,217,0.35)] transition group-hover:scale-[1.02]"
           />
           <div className="hidden leading-tight text-start md:block">
-            <span className="text-lg font-bold tracking-tight text-purple-900">mDeploy</span>
-            <span className="block text-xs text-slate-500">{t.hero.badge}</span>
+            <span className="text-lg font-bold tracking-tight text-purple-900 dark:text-purple-100">mDeploy</span>
+            <span className="block text-xs text-slate-500 dark:text-slate-300">{t.hero.badge}</span>
           </div>
         </Link>
 
-        <div className="hidden items-center justify-center gap-4 rounded-full border border-purple-100/80 bg-white/70 px-4 py-2 shadow-[0_10px_35px_-25px_rgba(79,70,229,0.9)] backdrop-blur-md md:flex">
+        <div className="hidden items-center justify-center gap-4 rounded-full border border-purple-100/60 bg-white/80 dark:border-purple-800/60 dark:bg-[#160733]/85 px-4 py-2 shadow-[0_10px_35px_-25px_rgba(79,70,229,0.9)] backdrop-blur-md md:flex">
           {navLinks.map((link) => (
             <Link key={link.label} href={link.href} className={navLinkClass(link.active)}>
               {link.label}
