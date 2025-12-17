@@ -116,8 +116,9 @@ export function Footer() {
             </ul>
           </div>
         </div>
-
-        <div className="mt-8 border-t border-border pt-8 text-center text-sm text-muted-foreground">
+      </div>
+      <div className="mt-10 w-full border-t border-primary/15 bg-gradient-to-r from-purple-600/10 via-fuchsia-500/10 to-rose-500/10 py-5 text-center text-sm text-foreground/80 shadow-sm">
+        <div className="container mx-auto px-4 lg:px-8">
           <p>
             &copy; {new Date().getFullYear()} mDeploy. {t.footer.rights} · {t.footer.developedBy}{" "}
             <a
