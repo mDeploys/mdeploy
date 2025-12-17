@@ -347,6 +347,9 @@ export const translations = {
       toast: {
         signUpSuccess: "Sign up successful! Check your email to confirm.",
         signInSuccess: "Signed in successfully!",
+        invalidCredentials: "Invalid email or password.",
+        networkError: "Unable to reach the authentication server. Please try again.",
+        configMissing: "Supabase keys are missing. Update NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
       },
     },
     adminDashboard: {
@@ -405,6 +408,8 @@ export const translations = {
         deleteConfirm: "Are you sure you want to delete this project?",
         deleteSuccess: "Project deleted successfully",
         deleteError: "Failed to delete project",
+        authRequired: "Please sign in to access the admin dashboard",
+        configMissing: "Supabase keys are missing. Update NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.",
       },
     },
     logout: {
@@ -759,6 +764,9 @@ export const translations = {
       toast: {
         signUpSuccess: "تم إنشاء الحساب! يرجى التحقق من بريدك للتأكيد.",
         signInSuccess: "تم تسجيل الدخول بنجاح!",
+        invalidCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        networkError: "تعذر الوصول إلى خادم المصادقة، حاول مرة أخرى لاحقًا.",
+        configMissing: "بيانات Supabase غير مضبوطة. حدّث المتغيرات NEXT_PUBLIC_SUPABASE_URL و NEXT_PUBLIC_SUPABASE_ANON_KEY.",
       },
     },
     adminDashboard: {
@@ -817,6 +825,8 @@ export const translations = {
         deleteConfirm: "هل أنت متأكد أنك تريد حذف هذا المشروع؟",
         deleteSuccess: "تم حذف المشروع بنجاح",
         deleteError: "فشل في حذف المشروع",
+        authRequired: "يرجى تسجيل الدخول للوصول إلى لوحة التحكم",
+        configMissing: "بيانات Supabase غير مضبوطة. حدّث المتغيرات NEXT_PUBLIC_SUPABASE_URL و NEXT_PUBLIC_SUPABASE_ANON_KEY.",
       },
     },
     logout: {

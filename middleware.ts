@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
+import { ADMIN_AUTH_COOKIE } from "@/lib/admin-auth-cookie"
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
@@ -11,10 +12,9 @@ export function middleware(req: NextRequest) {
 
   // Gate any /admin path - check for Supabase session
   if (pathname.startsWith("/admin")) {
-    // Check for Supabase auth token in cookies
-    const authToken = req.cookies.get("sb-auth-token")?.value
-    
-    if (!authToken) {
+    const hasAdminCookie = req.cookies.get(ADMIN_AUTH_COOKIE)
+
+    if (!hasAdminCookie) {
       const url = req.nextUrl.clone()
       url.pathname = "/admin/login"
       return NextResponse.redirect(url)

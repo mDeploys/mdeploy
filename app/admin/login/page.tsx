@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import { signInWithEmail, signUpWithEmail } from "@/lib/supabase"
+import { signInWithEmail, signUpWithEmail, isSupabaseConfigured } from "@/lib/supabase"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
+import { setAdminAuthCookie } from "@/lib/admin-auth-cookie"
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -24,6 +25,10 @@ export default function AdminLoginPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!isSupabaseConfigured) {
+      toast.error(t.adminLogin.toast.configMissing)
+      return
+    }
     setLoading(true)
     try {
       if (isSignUp) {
@@ -38,14 +43,23 @@ export default function AdminLoginPage() {
         setPassword("")
         setFullName("")
       } else {
-        const { error } = await signInWithEmail(email, password)
+        const { data, error } = await signInWithEmail(email, password)
         if (error) {
-          toast.error(error.message)
+          const message = error.message.toLowerCase().includes("invalid login")
+            ? t.adminLogin.toast.invalidCredentials
+            : error.message
+          toast.error(message)
           return
+        }
+        if (data?.session?.access_token) {
+          setAdminAuthCookie(data.session.access_token)
         }
         toast.success(t.adminLogin.toast.signInSuccess)
         router.replace("/admin")
       }
+    } catch (err) {
+      console.error("Admin login error:", err)
+      toast.error(t.adminLogin.toast.networkError)
     } finally {
       setLoading(false)
     }
@@ -104,7 +118,7 @@ export default function AdminLoginPage() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@mdeploy.dev"
+                placeholder="user@mdeploy.dev"
                 required
                 className="bg-white/10 border-purple-500/30 text-white placeholder:text-white/40 focus:border-purple-400 focus:ring-purple-400/20"
               />

@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { supabase, type Project } from "@/lib/supabase"
+import { useRouter } from "next/navigation"
+import { supabase, type Project, getSession, isSupabaseConfigured } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -60,12 +61,42 @@ export default function AdminPage() {
   })
   const { language } = useLanguage()
   const t = translations[language]
+  const router = useRouter()
+  const authRequiredMessage = t.adminDashboard.toasts.authRequired
+  const loadErrorMessage = t.adminDashboard.toasts.loadError
+  const configMissingMessage = t.adminDashboard.toasts.configMissing
 
   useEffect(() => {
-    fetchProjects()
-  }, [])
+    const verifySessionAndLoad = async () => {
+      try {
+        if (!isSupabaseConfigured) {
+          toast.error(configMissingMessage)
+          setLoading(false)
+          return
+        }
+        const { data } = await getSession()
+        if (!data.session) {
+          toast.error(authRequiredMessage)
+          router.replace("/admin/login")
+          return
+        }
+        fetchProjects()
+      } catch (error) {
+        console.error("Error verifying session:", error)
+        toast.error(loadErrorMessage)
+        setLoading(false)
+      }
+    }
+
+    verifySessionAndLoad()
+  }, [router, authRequiredMessage, loadErrorMessage])
 
   async function fetchProjects() {
+    if (!isSupabaseConfigured) {
+      toast.error(configMissingMessage)
+      return
+    }
+    setLoading(true)
     try {
       const { data, error } = await supabase
         .from("projects")
@@ -76,7 +107,7 @@ export default function AdminPage() {
       setProjects(data || [])
     } catch (error) {
       console.error("Error fetching projects:", error)
-      toast.error(t.adminDashboard.toasts.loadError)
+      toast.error(loadErrorMessage)
     } finally {
       setLoading(false)
     }

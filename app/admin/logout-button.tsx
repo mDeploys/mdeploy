@@ -8,6 +8,7 @@ import { LogOut } from "lucide-react"
 import { toast } from "sonner"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
+import { clearAdminAuthCookie } from "@/lib/admin-auth-cookie"
 
 export function LogoutButton() {
   const [loading, setLoading] = useState(false)
@@ -19,6 +20,7 @@ export function LogoutButton() {
     setLoading(true)
     try {
       await signOut()
+      clearAdminAuthCookie()
       toast.success(t.logout.success)
       router.replace("/admin/login")
     } catch (error) {
