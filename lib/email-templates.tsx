@@ -1,5 +1,11 @@
 import type { PriceBreakdown, QuoteInputs } from "./pricing"
 
+function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+  return "http://localhost:3000"
+}
+
 export function generateQuoteEmailHTML(
   data: {
     fullName: string
@@ -11,19 +17,23 @@ export function generateQuoteEmailHTML(
   inputs: QuoteInputs,
   breakdown: PriceBreakdown,
 ): string {
+  const logoUrl = `${getBaseUrl()}/logo.png`
+
   return `
 <!DOCTYPE html>
 <html>
 <head>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #1f1b2e; background: #f4f2fb; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #000; color: #fff; padding: 20px; text-align: center; }
-    .content { padding: 20px; background: #f9f9f9; }
+    .header { background: #2b0a3d; background: linear-gradient(135deg, #2b0a3d 0%, #4c1d95 45%, #7c3aed 100%); color: #fff; padding: 26px 20px; text-align: center; border-radius: 14px 14px 0 0; }
+    .logo { display: block; margin: 0 auto 12px; width: 150px; height: auto; }
+    .header-title { font-size: 22px; font-weight: 700; margin: 0; }
+    .content { padding: 22px; background: #ffffff; border: 1px solid #e6e1f2; border-top: none; border-radius: 0 0 14px 14px; }
     .table { width: 100%; border-collapse: collapse; margin: 20px 0; }
     .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-    .table th { background: #f0f0f0; font-weight: 600; }
-    .total { font-size: 1.2em; font-weight: bold; color: #000; }
+    .table th { background: #efe8ff; font-weight: 600; color: #2b0a3d; }
+    .total { font-size: 1.2em; font-weight: bold; color: #2b0a3d; }
     .section { margin: 20px 0; }
     .section-title { font-weight: 600; margin-bottom: 10px; }
   </style>
@@ -31,7 +41,8 @@ export function generateQuoteEmailHTML(
 <body>
   <div class="container">
     <div class="header">
-      <h1>mDeploy Quote Request</h1>
+      <img src="${logoUrl}" alt="mDeploy logo" class="logo" width="150" height="60" />
+      <h1 class="header-title">mDeploy Quote Request</h1>
     </div>
     <div class="content">
       <div class="section">
@@ -147,15 +158,19 @@ export function generateContactEmailHTML(data: {
   company?: string
   message: string
 }): string {
+  const logoUrl = `${getBaseUrl()}/logo.png`
+
   return `
 <!DOCTYPE html>
 <html>
 <head>
   <style>
-    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #1f1b2e; background: #f4f2fb; margin: 0; padding: 0; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #000; color: #fff; padding: 20px; text-align: center; }
-    .content { padding: 20px; background: #f9f9f9; }
+    .header { background: #2b0a3d; background: linear-gradient(135deg, #2b0a3d 0%, #4c1d95 45%, #7c3aed 100%); color: #fff; padding: 26px 20px; text-align: center; border-radius: 14px 14px 0 0; }
+    .logo { display: block; margin: 0 auto 12px; width: 150px; height: auto; }
+    .header-title { font-size: 22px; font-weight: 700; margin: 0; }
+    .content { padding: 22px; background: #ffffff; border: 1px solid #e6e1f2; border-top: none; border-radius: 0 0 14px 14px; }
     .section { margin: 20px 0; }
     .section-title { font-weight: 600; margin-bottom: 10px; }
   </style>
@@ -163,7 +178,8 @@ export function generateContactEmailHTML(data: {
 <body>
   <div class="container">
     <div class="header">
-      <h1>mDeploy Contact Form</h1>
+      <img src="${logoUrl}" alt="mDeploy logo" class="logo" width="150" height="60" />
+      <h1 class="header-title">mDeploy Contact Form</h1>
     </div>
     <div class="content">
       <div class="section">
