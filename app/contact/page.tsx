@@ -31,6 +31,8 @@ export default function ContactPage() {
   const { language } = useLanguage()
   const t = translations[language]
   const [loading, setLoading] = useState(false)
+  const inputClass =
+    "bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40"
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -96,12 +98,17 @@ export default function ContactPage() {
 
         <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
+            <Card className="relative overflow-hidden border border-purple-200/60 bg-white/85 shadow-[0_0_40px_-30px_rgba(147,51,234,0.5)] dark:border-purple-400/30 dark:bg-gradient-to-br dark:from-purple-500/20 dark:via-[#12062a]/90 dark:to-[#090414] dark:shadow-[0_0_80px_-40px_rgba(168,85,247,0.9)]">
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+                <div className="absolute -top-24 left-8 h-48 w-48 rounded-full bg-purple-500/25 blur-3xl dark:bg-purple-400/40" />
+                <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/30" />
+                <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/70 to-transparent" />
+              </div>
+              <CardHeader className="relative">
                 <CardTitle>{t.contactPage.form.title}</CardTitle>
                 <CardDescription>{t.contactPage.form.description}</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <input
                     type="text"
@@ -121,6 +128,7 @@ export default function ContactPage() {
                       value={formData.fullName}
                       onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
                       placeholder={t.contactPage.form.placeholders.fullName}
+                      className={inputClass}
                     />
                   </div>
 
@@ -133,6 +141,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       placeholder={t.contactPage.form.placeholders.email}
+                      className={inputClass}
                     />
                   </div>
 
@@ -143,6 +152,7 @@ export default function ContactPage() {
                       value={formData.company}
                       onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
                       placeholder={t.contactPage.form.placeholders.company}
+                      className={inputClass}
                     />
                   </div>
 
@@ -155,10 +165,15 @@ export default function ContactPage() {
                       onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                       placeholder={t.contactPage.form.placeholders.message}
                       rows={6}
+                      className={inputClass}
                     />
                   </div>
 
-                  <Button type="submit" disabled={loading} className="w-full">
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-600 text-white shadow-[0_15px_30px_-18px_rgba(168,85,247,0.9)] hover:from-purple-400 hover:via-fuchsia-500 hover:to-purple-500"
+                  >
                     {loading ? t.contactPage.form.submitting : t.contactPage.form.submit}
                   </Button>
                 </form>
