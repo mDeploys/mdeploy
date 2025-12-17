@@ -126,6 +126,11 @@
   }
 }
 
+.dark body {
+  background: linear-gradient(180deg, #050112 0%, #12062a 45%, #1d0a3d 100%);
+  background-attachment: fixed;
+}
+
 /* Added animated gradient background for hero */
 @keyframes gradient-shift {
   0%,

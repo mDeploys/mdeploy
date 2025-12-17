@@ -91,7 +91,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" dir="ltr" className="bg-background" suppressHydrationWarning>
+    <html lang="en" dir="ltr" className="bg-background dark" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
         <LanguageProvider>
           <ConditionalLayout header={<Header />} footer={<Footer />}>
