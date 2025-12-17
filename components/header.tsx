@@ -2,159 +2,186 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
+import { usePathname } from "next/navigation"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [currentHash, setCurrentHash] = useState("")
+  const pathname = usePathname()
   const { language } = useLanguage()
   const t = translations[language]
 
+  useEffect(() => {
+    const handleHashChange = () => setCurrentHash(window.location.hash)
+    handleHashChange()
+    window.addEventListener("hashchange", handleHashChange)
+    return () => window.removeEventListener("hashchange", handleHashChange)
+  }, [])
+
+  useEffect(() => {
+    setCurrentHash(window.location.hash)
+  }, [pathname])
+
+  const isHome = pathname === "/"
+  const isServices = isHome && currentHash === "#services"
+  const isHomeLink = isHome && currentHash !== "#services"
+  const isCalculator = pathname === "/calculator"
+  const isContact = pathname === "/contact"
+
+  const navLinkClass = (active: boolean) =>
+    [
+      "relative rounded-full px-3 py-1 text-sm font-medium transition-all",
+      "hover:text-purple-700 hover:bg-purple-100/70",
+      active
+        ? "text-purple-700 bg-purple-100/80 font-semibold shadow-sm after:absolute after:left-1/2 after:-bottom-2 after:h-1.5 after:w-6 after:-translate-x-1/2 after:rounded-full after:bg-gradient-to-r after:from-purple-500 after:to-fuchsia-500 after:shadow-[0_0_12px_rgba(168,85,247,0.55)]"
+        : "text-slate-600",
+    ].join(" ")
+
+  const mobileLinkClass = (active: boolean) =>
+    [
+      "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+      active ? "bg-primary/15 text-primary font-semibold" : "text-muted-foreground hover:text-primary hover:bg-primary/10",
+    ].join(" ")
+
+  const navLinks = [
+    { href: "/", label: t.home, active: isHomeLink },
+    { href: "/#services", label: t.services, active: isServices },
+    { href: "/calculator", label: t.calculator, active: isCalculator },
+    { href: "/contact", label: t.contact, active: isContact },
+  ]
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-primary/15 bg-background/90 backdrop-blur-xl shadow-sm supports-[backdrop-filter]:bg-background/80">
-      <style>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-8px);
-          }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-      `}</style>
-      <nav className="container mx-auto h-20 px-4 lg:px-8">
-        <div className="flex h-full items-center gap-4">
-          <Link
-            href="/"
-            className="group flex items-center gap-3 rounded-xl border border-primary/10 bg-card/80 px-3 py-2 shadow-sm backdrop-blur-sm transition hover:border-primary/40 hover:shadow-lg"
+    <header className="fixed top-0 left-0 right-0 z-50 overflow-hidden border-b border-purple-200/70 bg-white">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-b from-transparent via-[#a855f7]/15 to-[#7c3aed]/25"
+      >
+        <svg
+          viewBox="0 0 1440 160"
+          preserveAspectRatio="none"
+          className="h-full w-full"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 120C200 90 360 140 580 120C800 100 980 60 1200 80C1340 90 1420 110 1440 120V160H0Z"
+            fill="#7c3aed"
+            opacity="0.85"
+          />
+          <path
+            d="M0 140C260 120 420 150 640 130C860 110 1080 95 1270 115C1380 125 1420 135 1440 140V160H0Z"
+            fill="#5b21b6"
+            opacity="0.75"
+          />
+        </svg>
+      </div>
+
+      <nav className="container relative mx-auto flex h-24 items-center justify-between px-4 lg:px-8">
+        <Link href="/" className="group flex items-center gap-3">
+          <Image
+            src="/logo.png"
+            alt="mDeploy logo"
+            width={180}
+            height={80}
+            className="h-12 w-auto drop-shadow-[0_12px_25px_rgba(109,40,217,0.35)] transition group-hover:scale-[1.02]"
+          />
+          <div className="hidden leading-tight text-start md:block">
+            <span className="text-lg font-bold tracking-tight text-purple-900">mDeploy</span>
+            <span className="block text-xs text-slate-500">{t.hero.badge}</span>
+          </div>
+        </Link>
+
+        <div className="hidden items-center justify-center gap-4 rounded-full border border-purple-100/80 bg-white/70 px-4 py-2 shadow-[0_10px_35px_-25px_rgba(79,70,229,0.9)] backdrop-blur-md md:flex">
+          {navLinks.map((link) => (
+            <Link key={link.label} href={link.href} className={navLinkClass(link.active)}>
+              {link.label}
+            </Link>
+          ))}
+          <a
+            href="https://jalalnasser.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={navLinkClass(false)}
           >
-            <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-white shadow-inner ring-1 ring-primary/20">
-              <Image
-                src="/logo.png"
-                alt="mDeploy logo"
-                width={120}
-                height={120}
-                className="h-full w-full object-contain animate-float"
-              />
-            </div>
-            <div className="leading-tight text-start">
-              <span className="text-lg font-bold tracking-tight text-purple-900 dark:text-purple-200">mDeploy</span>
-              <span className="block text-xs text-purple-800/80 dark:text-purple-200/80">{t.hero.badge}</span>
-            </div>
-          </Link>
+            {t.blog}
+          </a>
+        </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden flex-1 items-center justify-center gap-6 md:flex">
-            <Link
-              href="/"
-              className="text-base font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              {t.home}
-            </Link>
-            <Link
-              href="/#services"
-              className="text-base font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              {t.services}
-            </Link>
-            <Link
-              href="/calculator"
-              className="text-base font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              {t.calculator}
-            </Link>
-            <Link
-              href="/contact"
-              className="text-base font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              {t.contact}
-            </Link>
-            <a
-              href="https://jalalnasser.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-base font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              {t.blog}
-            </a>
-          </div>
+        <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher />
+          <ThemeToggle />
+          <Button
+            asChild
+            className="bg-gradient-to-r from-purple-600 to-fuchsia-600 shadow-lg shadow-primary/25 hover:from-purple-700 hover:to-fuchsia-700 text-white"
+          >
+            <Link href="/calculator">{t.getQuote}</Link>
+          </Button>
+        </div>
 
-          <div className="hidden flex-1 items-center justify-end gap-3 md:flex">
-            <LanguageSwitcher />
-            <ThemeToggle />
-            <Button
-              asChild
-              className="bg-gradient-to-r from-purple-600 to-fuchsia-600 shadow-lg shadow-primary/25 hover:from-purple-700 hover:to-fuchsia-700 text-white"
-            >
-              <Link href="/calculator">{t.getQuote}</Link>
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="flex items-center gap-2 md:hidden ml-auto">
-            <LanguageSwitcher />
-            <ThemeToggle />
-            <button className="p-2 rounded-lg border border-primary/20 hover:border-primary/50" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
-          </div>
+        <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitcher />
+          <ThemeToggle />
+          <button
+            className="rounded-full border border-purple-200 p-2"
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="border-t border-primary/10 bg-background md:hidden">
-          <div className="container mx-auto flex flex-col gap-4 p-4">
-            <Link
-              href="/"
-              className="text-sm font-medium hover:text-primary"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {t.home}
-            </Link>
-            <Link
-              href="/#services"
-              className="text-sm font-medium hover:text-primary"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {t.services}
-            </Link>
-            <Link
-              href="/calculator"
-              className="text-sm font-medium hover:text-primary"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {t.calculator}
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm font-medium hover:text-primary"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {t.contact}
-            </Link>
-            <a
-              href="https://jalalnasser.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-medium hover:text-primary"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {t.blog}
-            </a>
-            <Button asChild className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
-              <Link href="/calculator" onClick={() => setMobileMenuOpen(false)}>
-                {t.getQuote}
-              </Link>
-            </Button>
+        <div className="fixed inset-0 z-40 md:hidden">
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="absolute top-0 right-0 h-full w-72 max-w-[80vw] border-l border-primary/10 bg-background shadow-2xl animate-in slide-in-from-right duration-200">
+            <div className="flex items-center justify-between border-b border-border px-4 py-4">
+              <span className="text-sm font-semibold text-muted-foreground">{t.language}</span>
+              <button
+                className="rounded-lg border border-primary/20 p-2"
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="flex flex-col gap-4 p-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={mobileLinkClass(link.active)}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <a
+                href="https://jalalnasser.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={mobileLinkClass(false)}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {t.blog}
+              </a>
+              <Button asChild className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
+                <Link href="/calculator" onClick={() => setMobileMenuOpen(false)}>
+                  {t.getQuote}
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       )}
