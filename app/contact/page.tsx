@@ -33,6 +33,15 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false)
   const inputClass =
     "bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40"
+  const glowCardClass =
+    "relative overflow-hidden border border-purple-200/60 bg-white/85 shadow-[0_0_40px_-30px_rgba(147,51,234,0.5)] dark:border-purple-400/30 dark:bg-gradient-to-br dark:from-purple-500/20 dark:via-[#12062a]/90 dark:to-[#090414] dark:shadow-[0_0_80px_-40px_rgba(168,85,247,0.9)]"
+  const glowBackdrop = (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <div className="absolute -top-20 left-6 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl dark:bg-purple-400/35" />
+      <div className="absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/30" />
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/60 to-transparent" />
+    </div>
+  )
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -89,7 +98,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen py-24">
+    <div className="min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-balance text-4xl font-bold lg:text-5xl">{t.contactPage.title}</h1>
@@ -98,7 +107,7 @@ export default function ContactPage() {
 
         <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <Card className="relative overflow-hidden border border-purple-200/60 bg-white/85 shadow-[0_0_40px_-30px_rgba(147,51,234,0.5)] dark:border-purple-400/30 dark:bg-gradient-to-br dark:from-purple-500/20 dark:via-[#12062a]/90 dark:to-[#090414] dark:shadow-[0_0_80px_-40px_rgba(168,85,247,0.9)]">
+            <Card className={glowCardClass}>
               <div aria-hidden="true" className="pointer-events-none absolute inset-0">
                 <div className="absolute -top-24 left-8 h-48 w-48 rounded-full bg-purple-500/25 blur-3xl dark:bg-purple-400/40" />
                 <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/30" />
@@ -182,8 +191,9 @@ export default function ContactPage() {
           </div>
 
           <div className="space-y-6">
-            <Card>
-              <CardContent className="pt-6">
+            <Card className={glowCardClass}>
+              {glowBackdrop}
+              <CardContent className="relative pt-6">
                 <div className="mb-4 flex items-start gap-3">
                   <Mail className="mt-1 h-5 w-5 text-muted-foreground" />
                   <div>
@@ -232,8 +242,9 @@ export default function ContactPage() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="pt-6">
+            <Card className={glowCardClass}>
+              {glowBackdrop}
+              <CardContent className="relative pt-6">
                 <h3 className="mb-2 font-semibold">{t.contactPage.contactDetails.hoursTitle}</h3>
                 <div className="space-y-1 text-sm text-muted-foreground">
                   <div>{t.contactPage.contactDetails.hoursWeekday}</div>

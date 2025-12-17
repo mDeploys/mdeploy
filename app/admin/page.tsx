@@ -190,14 +190,14 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-20 min-h-screen flex items-center justify-center">
+      <div className="container mx-auto px-4 pt-32 pb-24 min-h-screen flex items-center justify-center">
         <p className="text-lg">{t.adminDashboard.loading}</p>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto px-4 py-20 min-h-screen">
+    <div className="container mx-auto px-4 pt-32 pb-24 min-h-screen">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">{t.adminDashboard.title}</h1>
         <div className="flex items-center gap-3">

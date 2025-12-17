@@ -27,6 +27,17 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
   })
   const { language } = useLanguage()
   const t = translations[language]
+  const inputClass =
+    "bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40"
+  const glowCardClass =
+    "relative overflow-hidden border border-purple-200/60 bg-white/85 shadow-[0_0_40px_-30px_rgba(147,51,234,0.5)] dark:border-purple-400/30 dark:bg-gradient-to-br dark:from-purple-500/20 dark:via-[#12062a]/90 dark:to-[#090414] dark:shadow-[0_0_80px_-40px_rgba(168,85,247,0.9)]"
+  const glowBackdrop = (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <div className="absolute -top-20 left-6 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl dark:bg-purple-400/35" />
+      <div className="absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/30" />
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/60 to-transparent" />
+    </div>
+  )
 
   const breakdown = calculatePrice(inputs)
   const hasAnyInput = Object.values(inputs).some((v) => v > 0)
@@ -55,8 +66,9 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
     template.replace("{count}", count.toString())
 
   return (
-    <Card className="w-full">
-      <CardHeader>
+    <Card className={glowCardClass}>
+      {glowBackdrop}
+      <CardHeader className="relative">
         <div className="flex items-start justify-between">
           <div>
             <CardTitle>{t.serviceCalculator.title}</CardTitle>
@@ -74,7 +86,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="relative space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="websitePages">{t.serviceCalculator.fields.websitePages}</Label>
@@ -85,6 +97,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               value={inputs.websitePages || ""}
               onChange={(e) => handleInputChange("websitePages", e.target.value)}
               placeholder="0"
+              className={inputClass}
             />
           </div>
 
@@ -97,6 +110,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               value={inputs.webAppPages || ""}
               onChange={(e) => handleInputChange("webAppPages", e.target.value)}
               placeholder="0"
+              className={inputClass}
             />
           </div>
 
@@ -109,6 +123,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               value={inputs.ecommercePages || ""}
               onChange={(e) => handleInputChange("ecommercePages", e.target.value)}
               placeholder="0"
+              className={inputClass}
             />
           </div>
 
@@ -121,6 +136,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               value={inputs.mobileScreens || ""}
               onChange={(e) => handleInputChange("mobileScreens", e.target.value)}
               placeholder="0"
+              className={inputClass}
             />
           </div>
 
@@ -133,12 +149,13 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               value={inputs.desktopFunctions || ""}
               onChange={(e) => handleInputChange("desktopFunctions", e.target.value)}
               placeholder="0"
+              className={inputClass}
             />
           </div>
         </div>
 
         {hasAnyInput && (
-          <div className="space-y-3 rounded-lg border border-border bg-muted/50 p-4">
+          <div className="space-y-3 rounded-lg border border-purple-200/60 bg-white/70 p-4 text-slate-800 dark:border-purple-400/30 dark:bg-white/5 dark:text-slate-100">
             <h3 className="font-semibold">{t.serviceCalculator.breakdownTitle}</h3>
             <div className="space-y-2 text-sm">
               {inputs.websitePages > 0 && (
@@ -181,7 +198,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                   <span className="font-medium">{displayAmount(breakdown.desktopCost)}</span>
                 </div>
               )}
-              <div className="flex justify-between border-t border-border pt-2">
+              <div className="flex justify-between border-t border-purple-200/60 pt-2 dark:border-purple-400/30">
                 <span className="text-muted-foreground">{t.serviceCalculator.subtotal}</span>
                 <span className="font-medium">{displayAmount(breakdown.subtotal)}</span>
               </div>
@@ -189,7 +206,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 <span className="text-muted-foreground">{t.serviceCalculator.setupFee}</span>
                 <span className="font-medium">{displayAmount(breakdown.setupFee)}</span>
               </div>
-              <div className="flex justify-between border-t border-border pt-2 text-base">
+              <div className="flex justify-between border-t border-purple-200/60 pt-2 text-base dark:border-purple-400/30">
                 <span className="font-bold">{t.serviceCalculator.total}</span>
                 <span className="font-bold">{displayAmount(breakdown.total)}</span>
               </div>
@@ -198,11 +215,18 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
         )}
 
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleReset} className="flex-1 bg-transparent">
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            className="flex-1 border-purple-200/70 bg-white/70 text-slate-700 hover:bg-purple-50/80 dark:border-purple-400/30 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-purple-500/10"
+          >
             {t.serviceCalculator.actions.reset}
           </Button>
           {showSubmitForm && hasAnyInput && onSubmit && (
-            <Button onClick={() => onSubmit(inputs)} className="flex-1">
+            <Button
+              onClick={() => onSubmit(inputs)}
+              className="flex-1 bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-600 text-white shadow-[0_15px_30px_-18px_rgba(168,85,247,0.9)] hover:from-purple-400 hover:via-fuchsia-500 hover:to-purple-500"
+            >
               {t.serviceCalculator.actions.continue}
             </Button>
           )}

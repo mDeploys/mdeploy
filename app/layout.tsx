@@ -6,6 +6,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Toaster } from "@/components/ui/toaster"
 import { ConditionalLayout } from "@/components/conditional-layout"
+import { ScrollToTop } from "@/components/scroll-to-top"
 import { LanguageProvider } from "@/lib/language-context"
 import "./globals.css"
 
@@ -97,6 +98,7 @@ export default function RootLayout({
           <ConditionalLayout header={<Header />} footer={<Footer />}>
             {children}
           </ConditionalLayout>
+          <ScrollToTop />
           <Toaster />
         </LanguageProvider>
         <Analytics />

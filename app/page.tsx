@@ -21,6 +21,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Image from "next/image"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
+import { useEffect } from "react"
 
 const serviceCards = [
   {
@@ -67,9 +68,30 @@ export default function HomePage() {
   const { language } = useLanguage()
   const t = translations[language]
 
+  useEffect(() => {
+    const elements = Array.from(document.querySelectorAll("[data-reveal]"))
+    if (!elements.length) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible")
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.2 },
+    )
+
+    elements.forEach((element) => observer.observe(element))
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <div className="flex min-h-screen flex-col">
-      <section className="relative min-h-[90vh] overflow-hidden">
+      <section className="relative min-h-[90vh] overflow-hidden scroll-reveal is-visible" data-reveal>
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-800 to-fuchsia-900 animate-gradient" />
 
@@ -214,7 +236,7 @@ export default function HomePage() {
       </section>
 
       {/* Services Section - updated colors */}
-      <section id="services" className="border-b border-border py-16 lg:py-24">
+      <section id="services" className="border-b border-border py-16 lg:py-24 scroll-reveal" data-reveal>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
@@ -268,8 +290,8 @@ export default function HomePage() {
       </section>
 
       {/* Calculator Preview - updated with purple theme */}
-      <section className="relative overflow-hidden border-b border-border py-16 lg:py-24">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-background to-fuchsia-500/5" />
+      <section className="relative overflow-hidden border-b border-border py-16 lg:py-24 scroll-reveal" data-reveal>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-background to-fuchsia-500/10" />
         <div className="container relative mx-auto px-4 lg:px-8">
           <div className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
@@ -300,7 +322,7 @@ export default function HomePage() {
       </section>
 
       {/* Process Section - updated with purple gradients */}
-      <section className="border-b border-border py-16 lg:py-24">
+      <section className="border-b border-border py-16 lg:py-24 scroll-reveal" data-reveal>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
@@ -339,7 +361,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="border-b border-border bg-muted/40 py-16 lg:py-24">
+      <section className="border-b border-border bg-muted/40 py-16 lg:py-24 scroll-reveal" data-reveal>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
@@ -380,7 +402,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="border-b border-border py-16 lg:py-24">
+      <section className="border-b border-border py-16 lg:py-24 scroll-reveal" data-reveal>
         <div className="container mx-auto px-4 lg:px-8">
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-balance text-3xl font-bold lg:text-4xl">{t.faq.title}</h2>
@@ -400,7 +422,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section - updated with purple gradient */}
-      <section className="relative overflow-hidden py-16 lg:py-24">
+      <section className="relative overflow-hidden py-16 lg:py-24 scroll-reveal" data-reveal>
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-violet-600 to-fuchsia-600" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
 

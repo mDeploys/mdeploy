@@ -29,7 +29,7 @@ export default function CalculatorPage() {
   }
 
   return (
-    <div className="min-h-screen py-24">
+    <div className="min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-balance text-4xl font-bold lg:text-5xl">{t.calculatorPage.title}</h1>
