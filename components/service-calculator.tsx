@@ -24,6 +24,10 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
     ecommercePages: 0,
     mobileScreens: 0,
     desktopFunctions: 0,
+    landingPages: 0,
+    wordpressTemplates: 0,
+    logoDesigns: 0,
+    brandingDesigns: 0,
   })
   const { language } = useLanguage()
   const t = translations[language]
@@ -54,6 +58,10 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
       ecommercePages: 0,
       mobileScreens: 0,
       desktopFunctions: 0,
+      landingPages: 0,
+      wordpressTemplates: 0,
+      logoDesigns: 0,
+      brandingDesigns: 0,
     })
   }
 
@@ -153,6 +161,59 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
             />
           </div>
         </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="landingPages">{t.serviceCalculator.fields.landingPages}</Label>
+            <Input
+              id="landingPages"
+              type="number"
+              min="0"
+              value={inputs.landingPages || ""}
+              onChange={(e) => handleInputChange("landingPages", e.target.value)}
+              placeholder="0"
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="wordpressTemplates">{t.serviceCalculator.fields.wordpressTemplates}</Label>
+            <Input
+              id="wordpressTemplates"
+              type="number"
+              min="0"
+              value={inputs.wordpressTemplates || ""}
+              onChange={(e) => handleInputChange("wordpressTemplates", e.target.value)}
+              placeholder="0"
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="logoDesigns">{t.serviceCalculator.fields.logoDesigns}</Label>
+            <Input
+              id="logoDesigns"
+              type="number"
+              min="0"
+              value={inputs.logoDesigns || ""}
+              onChange={(e) => handleInputChange("logoDesigns", e.target.value)}
+              placeholder="0"
+              className={inputClass}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="brandingDesigns">{t.serviceCalculator.fields.brandingDesigns}</Label>
+            <Input
+              id="brandingDesigns"
+              type="number"
+              min="0"
+              value={inputs.brandingDesigns || ""}
+              onChange={(e) => handleInputChange("brandingDesigns", e.target.value)}
+              placeholder="0"
+              className={inputClass}
+            />
+          </div>
+        </div>
 
         {hasAnyInput && (
           <div className="space-y-3 rounded-lg border border-purple-200/60 bg-white/70 p-4 text-slate-800 dark:border-purple-400/30 dark:bg-white/5 dark:text-slate-100">
@@ -196,6 +257,41 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                     {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.desktop, inputs.desktopFunctions)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.desktopCost)}</span>
+                </div>
+              )}
+              {inputs.landingPages > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.landing, inputs.landingPages)}
+                  </span>
+                  <span className="font-medium">{displayAmount(breakdown.landingCost)}</span>
+                </div>
+              )}
+              {inputs.wordpressTemplates > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(
+                      t.serviceCalculator.breakdownTemplates.wordpress,
+                      inputs.wordpressTemplates,
+                    )}
+                  </span>
+                  <span className="font-medium">{displayAmount(breakdown.wordpressCost)}</span>
+                </div>
+              )}
+              {inputs.logoDesigns > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.logo, inputs.logoDesigns)}
+                  </span>
+                  <span className="font-medium">{displayAmount(breakdown.logoCost)}</span>
+                </div>
+              )}
+              {inputs.brandingDesigns > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.branding, inputs.brandingDesigns)}
+                  </span>
+                  <span className="font-medium">{displayAmount(breakdown.brandingCost)}</span>
                 </div>
               )}
               <div className="flex justify-between border-t border-purple-200/60 pt-2 dark:border-purple-400/30">
