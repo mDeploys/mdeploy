@@ -91,17 +91,18 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <section className="relative min-h-[90vh] overflow-hidden scroll-reveal is-visible" data-reveal>
+      <div className="bg-noise" />
+      <section className="relative min-h-[95vh] overflow-hidden scroll-reveal is-visible" data-reveal>
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-violet-800 to-fuchsia-900 animate-gradient" />
 
-        {/* Decorative orbs */}
-        <div className="absolute top-20 left-10 h-72 w-72 rounded-full bg-purple-500/30 blur-3xl animate-pulse-glow" />
+        {/* Decorative orbs - Enhanced */}
+        <div className="absolute top-20 left-10 h-96 w-96 rounded-full bg-purple-500/20 blur-[100px] animate-pulse-glow" />
         <div
-          className="absolute bottom-20 right-10 h-96 w-96 rounded-full bg-fuchsia-500/30 blur-3xl animate-pulse-glow"
+          className="absolute bottom-20 right-10 h-[500px] w-[500px] rounded-full bg-fuchsia-500/20 blur-[120px] animate-pulse-glow"
           style={{ animationDelay: "2s" }}
         />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[500px] w-[500px] rounded-full bg-violet-600/20 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[800px] w-[800px] rounded-full bg-violet-600/10 blur-[130px]" />
 
         {/* Grid pattern overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
@@ -255,10 +256,10 @@ export default function HomePage() {
               return (
                 <Card
                   key={service.key}
-                  className={`group overflow-hidden border-2 transition-all ${service.hover} hover:shadow-xl`}
+                  className={`group overflow-hidden border transition-all duration-300 ${service.hover} hover:shadow-2xl hover:-translate-y-1`}
                 >
                   <div
-                    className={`relative h-48 w-full overflow-hidden bg-gradient-to-br ${service.bg}`}
+                    className={`relative h-56 w-full overflow-hidden bg-gradient-to-br ${service.bg} opacity-90 transition-opacity group-hover:opacity-100`}
                   >
                     <Image
                       src={service.image}
@@ -270,17 +271,19 @@ export default function HomePage() {
                   </div>
                   <CardHeader>
                     <div
-                      className={`mb-2 h-12 w-12 rounded-xl bg-gradient-to-br ${service.iconBg} flex items-center justify-center`}
+                      className={`mb-4 h-14 w-14 rounded-2xl bg-gradient-to-br ${service.iconBg} flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
                     >
-                      <Icon className="h-6 w-6 text-white" />
+                      <Icon className="h-7 w-7 text-white" />
                     </div>
-                    <CardTitle>{copy.title}</CardTitle>
-                    <CardDescription className={`text-base font-semibold ${service.priceColor}`}>
+                    <CardTitle className="text-xl group-hover:text-purple-500 transition-colors duration-300">
+                      {copy.title}
+                    </CardTitle>
+                    <CardDescription className={`text-base font-bold ${service.priceColor}`}>
                       {copy.price}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground">{copy.description}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{copy.description}</p>
                   </CardContent>
                 </Card>
               )
@@ -375,13 +378,12 @@ export default function HomePage() {
             {t.testimonials.cards.map((card, index) => (
               <Card
                 key={card.name}
-                className={`border-2 border-transparent transition-colors ${
-                  index === 0
+                className={`border-2 border-transparent transition-colors ${index === 0
                     ? "hover:border-purple-500/50"
                     : index === 1
                       ? "hover:border-fuchsia-500/50"
                       : "hover:border-emerald-500/50"
-                }`}
+                  }`}
               >
                 <CardContent className="pt-6">
                   <div className="mb-4 flex gap-1">
