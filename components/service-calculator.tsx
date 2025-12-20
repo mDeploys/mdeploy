@@ -1,15 +1,14 @@
-"use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import { calculatePrice, type QuoteInputs } from "@/lib/pricing"
+import { calculatePrice, type QuoteInputs, PRICING_SAR, type PricingConfig } from "@/lib/pricing"
 import { convertToUSD, formatCurrency, type Currency } from "@/lib/currency"
 import { Switch } from "@/components/ui/switch"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
+import { supabase, isSupabaseConfigured } from "@/lib/supabase"
 
 interface ServiceCalculatorProps {
   showSubmitForm?: boolean
@@ -18,6 +17,7 @@ interface ServiceCalculatorProps {
 
 export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceCalculatorProps) {
   const [currency, setCurrency] = useState<Currency>("SAR")
+  const [config, setConfig] = useState<PricingConfig>(PRICING_SAR)
   const [inputs, setInputs] = useState<QuoteInputs>({
     websitePages: 0,
     webAppPages: 0,
@@ -28,9 +28,35 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
     wordpressTemplates: 0,
     logoDesigns: 0,
     brandingDesigns: 0,
+    // Addons
+    backendHosting: false,
+    webHosting5GB: false,
+    webHosting10GB: false,
+    cloudHosting20GB: false,
+    paymentGateway: false,
+    mailServer: false,
   })
   const { language } = useLanguage()
   const t = translations[language]
+
+  useEffect(() => {
+    async function loadPricing() {
+      if (!isSupabaseConfigured) return
+
+      const { data } = await supabase.from("pricing_config").select("*")
+      if (data && data.length > 0) {
+        const newConfig = { ...PRICING_SAR }
+        data.forEach((item: any) => {
+          if (item.key in newConfig) {
+            (newConfig as any)[item.key] = Number(item.value)
+          }
+        })
+        setConfig(newConfig)
+      }
+    }
+    loadPricing()
+  }, [])
+
   const inputClass =
     "bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40"
   const glowCardClass =
@@ -43,12 +69,66 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
     </div>
   )
 
-  const breakdown = calculatePrice(inputs)
-  const hasAnyInput = Object.values(inputs).some((v) => v > 0)
+  // Custom calculate price using dynamic config
+  const calculateDynamicPrice = (inputs: QuoteInputs, config: PricingConfig) => {
+    const websiteCost = inputs.websitePages * config.websitePagePrice
+    const webAppCost = inputs.webAppPages * config.webAppPagePrice
+    const ecommerceCost = inputs.ecommercePages * config.ecommercePagePrice
+    const mobileCost = inputs.mobileScreens * config.mobileScreenPrice
+    const desktopCost = inputs.desktopFunctions * config.desktopFunctionPrice
+    const landingCost = inputs.landingPages * config.landingPagePrice
+    const wordpressCost = inputs.wordpressTemplates * config.wordpressTemplatePrice
+    const logoCost = inputs.logoDesigns * config.logoDesignPrice
+    const brandingCost = inputs.brandingDesigns * config.brandingDesignPrice
+
+    let addonsCost = 0
+    if (inputs.backendHosting) addonsCost += config.backendHostingYearly
+    if (inputs.webHosting5GB) addonsCost += config.webHosting5GBYearly
+    if (inputs.webHosting10GB) addonsCost += config.webHosting10GBYearly
+    if (inputs.cloudHosting20GB) addonsCost += config.cloudHosting20GBYearly
+    if (inputs.paymentGateway) addonsCost += config.paymentGatewayOneTime
+    if (inputs.mailServer) addonsCost += config.mailServerOneTime
+
+    const subtotal =
+      websiteCost +
+      webAppCost +
+      ecommerceCost +
+      mobileCost +
+      desktopCost +
+      landingCost +
+      wordpressCost +
+      logoCost +
+      brandingCost +
+      addonsCost
+    const total = subtotal + config.setupFee
+
+    return {
+      websiteCost,
+      webAppCost,
+      ecommerceCost,
+      mobileCost,
+      desktopCost,
+      landingCost,
+      wordpressCost,
+      logoCost,
+      brandingCost,
+      setupFee: config.setupFee,
+      addonsCost,
+      subtotal,
+      total,
+    }
+  }
+
+  const breakdown = calculateDynamicPrice(inputs, config)
+  const hasAnyInput = Object.values(inputs).some((v) => (typeof v === 'boolean' ? v : v > 0))
 
   const handleInputChange = (field: keyof QuoteInputs, value: string) => {
     const numValue = Math.max(0, Number.parseInt(value) || 0)
     setInputs((prev) => ({ ...prev, [field]: numValue }))
+  }
+
+  const handleCheckboxChange = (field: keyof QuoteInputs, checked: boolean) => {
+    setInputs((prev) => ({ ...prev, [field]: checked }))
   }
 
   const handleReset = () => {
@@ -62,6 +142,12 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
       wordpressTemplates: 0,
       logoDesigns: 0,
       brandingDesigns: 0,
+      backendHosting: false,
+      webHosting5GB: false,
+      webHosting10GB: false,
+      cloudHosting20GB: false,
+      paymentGateway: false,
+      mailServer: false,
     })
   }
 
@@ -72,6 +158,9 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
 
   const formatBreakdownLabel = (template: string, count: number) =>
     template.replace("{count}", count.toString())
+
+  const checkboxClass = "h-4 w-4 rounded border-purple-300 text-purple-600 focus:ring-purple-500 accent-purple-600"
+  const checkboxContainerClass = "flex items-center space-x-3 rounded-lg border border-purple-200/60 bg-white/50 p-3 hover:bg-white/80 transition-colors dark:border-purple-400/30 dark:bg-white/5 dark:hover:bg-white/10"
 
   return (
     <Card className={glowCardClass}>
@@ -94,7 +183,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
         </div>
       </CardHeader>
-      <CardContent className="relative space-y-6">
+      <CardContent className="relative space-y-8">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="websitePages">{t.serviceCalculator.fields.websitePages}</Label>
@@ -215,6 +304,89 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
         </div>
 
+        <div className="space-y-4">
+          <Label className="text-lg font-semibold text-slate-800 dark:text-slate-100">{t.serviceCalculator.addonsTitle}</Label>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className={checkboxContainerClass}>
+              <input
+                type="checkbox"
+                id="backendHosting"
+                checked={inputs.backendHosting}
+                onChange={(e) => handleCheckboxChange("backendHosting", e.target.checked)}
+                className={checkboxClass}
+              />
+              <Label htmlFor="backendHosting" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
+                {t.serviceCalculator.fields.backendHosting}
+              </Label>
+            </div>
+
+            <div className={checkboxContainerClass}>
+              <input
+                type="checkbox"
+                id="webHosting5GB"
+                checked={inputs.webHosting5GB}
+                onChange={(e) => handleCheckboxChange("webHosting5GB", e.target.checked)}
+                className={checkboxClass}
+              />
+              <Label htmlFor="webHosting5GB" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
+                {t.serviceCalculator.fields.webHosting5GB}
+              </Label>
+            </div>
+
+            <div className={checkboxContainerClass}>
+              <input
+                type="checkbox"
+                id="webHosting10GB"
+                checked={inputs.webHosting10GB}
+                onChange={(e) => handleCheckboxChange("webHosting10GB", e.target.checked)}
+                className={checkboxClass}
+              />
+              <Label htmlFor="webHosting10GB" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
+                {t.serviceCalculator.fields.webHosting10GB}
+              </Label>
+            </div>
+
+            <div className={checkboxContainerClass}>
+              <input
+                type="checkbox"
+                id="cloudHosting20GB"
+                checked={inputs.cloudHosting20GB}
+                onChange={(e) => handleCheckboxChange("cloudHosting20GB", e.target.checked)}
+                className={checkboxClass}
+              />
+              <Label htmlFor="cloudHosting20GB" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
+                {t.serviceCalculator.fields.cloudHosting20GB}
+              </Label>
+            </div>
+
+            <div className={checkboxContainerClass}>
+              <input
+                type="checkbox"
+                id="paymentGateway"
+                checked={inputs.paymentGateway}
+                onChange={(e) => handleCheckboxChange("paymentGateway", e.target.checked)}
+                className={checkboxClass}
+              />
+              <Label htmlFor="paymentGateway" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
+                {t.serviceCalculator.fields.paymentGateway}
+              </Label>
+            </div>
+
+            <div className={checkboxContainerClass}>
+              <input
+                type="checkbox"
+                id="mailServer"
+                checked={inputs.mailServer}
+                onChange={(e) => handleCheckboxChange("mailServer", e.target.checked)}
+                className={checkboxClass}
+              />
+              <Label htmlFor="mailServer" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
+                {t.serviceCalculator.fields.mailServer}
+              </Label>
+            </div>
+          </div>
+        </div>
+
         {hasAnyInput && (
           <div className="space-y-3 rounded-lg border border-purple-200/60 bg-white/70 p-4 text-slate-800 dark:border-purple-400/30 dark:bg-white/5 dark:text-slate-100">
             <h3 className="font-semibold">{t.serviceCalculator.breakdownTitle}</h3>
@@ -294,6 +466,48 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                   <span className="font-medium">{displayAmount(breakdown.brandingCost)}</span>
                 </div>
               )}
+
+              {breakdown.addonsCost > 0 && (
+                <div className="border-t border-purple-200/60 pt-2 mt-2 dark:border-purple-400/30 space-y-2">
+                  {inputs.backendHosting && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.backendHosting}</span>
+                      <span className="font-medium">{displayAmount(config.backendHostingYearly)}</span>
+                    </div>
+                  )}
+                  {inputs.webHosting5GB && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.webHosting5GB}</span>
+                      <span className="font-medium">{displayAmount(config.webHosting5GBYearly)}</span>
+                    </div>
+                  )}
+                  {inputs.webHosting10GB && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.webHosting10GB}</span>
+                      <span className="font-medium">{displayAmount(config.webHosting10GBYearly)}</span>
+                    </div>
+                  )}
+                  {inputs.cloudHosting20GB && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.cloudHosting20GB}</span>
+                      <span className="font-medium">{displayAmount(config.cloudHosting20GBYearly)}</span>
+                    </div>
+                  )}
+                  {inputs.paymentGateway && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.paymentGateway}</span>
+                      <span className="font-medium">{displayAmount(config.paymentGatewayOneTime)}</span>
+                    </div>
+                  )}
+                  {inputs.mailServer && (
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.mailServer}</span>
+                      <span className="font-medium">{displayAmount(config.mailServerOneTime)}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="flex justify-between border-t border-purple-200/60 pt-2 dark:border-purple-400/30">
                 <span className="text-muted-foreground">{t.serviceCalculator.subtotal}</span>
                 <span className="font-medium">{displayAmount(breakdown.subtotal)}</span>
@@ -314,7 +528,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           <Button
             variant="outline"
             onClick={handleReset}
-            className="flex-1 border-purple-200/70 bg-white/70 text-slate-700 hover:bg-purple-50/80 dark:border-purple-400/30 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-purple-500/10"
+            className="flex-1 border-purple-200/70 bg-white/70 text-slate-700 hover:bg-purple-50/80 hover:text-purple-700 dark:border-purple-400/30 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-purple-500/10 dark:hover:text-purple-300 transition-colors"
           >
             {t.serviceCalculator.actions.reset}
           </Button>

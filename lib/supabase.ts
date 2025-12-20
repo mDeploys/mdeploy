@@ -32,6 +32,19 @@ export type Project = {
   updated_at: string
 }
 
+export type App = {
+  id: string
+  name: string
+  thumbnail_url: string
+  created_at: string
+}
+
+export type PricingItem = {
+  key: string
+  value: number
+  label: string
+}
+
 export type Profile = {
   id: string
   email: string

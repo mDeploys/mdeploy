@@ -9,6 +9,13 @@ export interface PricingConfig {
   logoDesignPrice: number
   brandingDesignPrice: number
   setupFee: number
+  // Addons
+  backendHostingYearly: number
+  webHosting5GBYearly: number
+  webHosting10GBYearly: number
+  cloudHosting20GBYearly: number
+  paymentGatewayOneTime: number
+  mailServerOneTime: number
 }
 
 export const PRICING_SAR: PricingConfig = {
@@ -21,7 +28,14 @@ export const PRICING_SAR: PricingConfig = {
   wordpressTemplatePrice: 1500,
   logoDesignPrice: 300,
   brandingDesignPrice: 1500,
-  setupFee: 200,
+  setupFee: 300,
+  // Addons
+  backendHostingYearly: 1500,
+  webHosting5GBYearly: 500,
+  webHosting10GBYearly: 800,
+  cloudHosting20GBYearly: 1000,
+  paymentGatewayOneTime: 800,
+  mailServerOneTime: 350,
 }
 
 export interface QuoteInputs {
@@ -34,6 +48,14 @@ export interface QuoteInputs {
   wordpressTemplates: number
   logoDesigns: number
   brandingDesigns: number
+  // Addons - usually booleans for one-time/yearly selection, or number if quantity based.
+  // The request says "Add the following addons as an option". Assuming checkboxes (boolean).
+  backendHosting: boolean
+  webHosting5GB: boolean
+  webHosting10GB: boolean
+  cloudHosting20GB: boolean
+  paymentGateway: boolean
+  mailServer: boolean
 }
 
 export interface PriceBreakdown {
@@ -47,6 +69,8 @@ export interface PriceBreakdown {
   logoCost: number
   brandingCost: number
   setupFee: number
+  // Addons cost
+  addonsCost: number
   subtotal: number
   total: number
 }
@@ -62,6 +86,14 @@ export function calculatePrice(inputs: QuoteInputs): PriceBreakdown {
   const logoCost = inputs.logoDesigns * PRICING_SAR.logoDesignPrice
   const brandingCost = inputs.brandingDesigns * PRICING_SAR.brandingDesignPrice
 
+  let addonsCost = 0
+  if (inputs.backendHosting) addonsCost += PRICING_SAR.backendHostingYearly
+  if (inputs.webHosting5GB) addonsCost += PRICING_SAR.webHosting5GBYearly
+  if (inputs.webHosting10GB) addonsCost += PRICING_SAR.webHosting10GBYearly
+  if (inputs.cloudHosting20GB) addonsCost += PRICING_SAR.cloudHosting20GBYearly
+  if (inputs.paymentGateway) addonsCost += PRICING_SAR.paymentGatewayOneTime
+  if (inputs.mailServer) addonsCost += PRICING_SAR.mailServerOneTime
+
   const subtotal =
     websiteCost +
     webAppCost +
@@ -71,7 +103,9 @@ export function calculatePrice(inputs: QuoteInputs): PriceBreakdown {
     landingCost +
     wordpressCost +
     logoCost +
-    brandingCost
+    brandingCost +
+    addonsCost
+
   const total = subtotal + PRICING_SAR.setupFee
 
   return {
@@ -85,6 +119,7 @@ export function calculatePrice(inputs: QuoteInputs): PriceBreakdown {
     logoCost,
     brandingCost,
     setupFee: PRICING_SAR.setupFee,
+    addonsCost,
     subtotal,
     total,
   }

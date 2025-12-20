@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { supabase, type Project, getSession, isSupabaseConfigured } from "@/lib/supabase"
+import { supabase, type Project, type App, type PricingItem, getSession, isSupabaseConfigured } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -31,26 +31,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Pencil, Trash2, Plus } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Pencil, Trash2, Plus, Loader2 } from "lucide-react"
 import { LogoutButton } from "./logout-button"
 import { toast } from "sonner"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
 
 export default function AdminPage() {
-  const [projects, setProjects] = useState<Project[]>([])
+  const router = useRouter()
   const [loading, setLoading] = useState(true)
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const { language } = useLanguage()
+  const t = translations[language]
+
+  // --- DATA STATES ---
+  const [projects, setProjects] = useState<Project[]>([])
+  const [apps, setApps] = useState<App[]>([])
+  const [pricing, setPricing] = useState<PricingItem[]>([])
+
+  // --- UI STATES ---
+  const [activeTab, setActiveTab] = useState("projects")
+
+  // Projects Dialog
+  const [projectDialogOpen, setProjectDialogOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
-  const [formData, setFormData] = useState<{
-    name: string
-    description: string
-    type: "website" | "web_app" | "mobile_app" | "desktop_app"
-    status: "pending" | "in_progress" | "completed" | "cancelled"
-    client_name: string
-    client_email: string
-    price: number
-  }>({
+  const [projectForm, setProjectForm] = useState({
     name: "",
     description: "",
     type: "website",
@@ -59,125 +64,129 @@ export default function AdminPage() {
     client_email: "",
     price: 0,
   })
-  const { language } = useLanguage()
-  const t = translations[language]
-  const router = useRouter()
-  const authRequiredMessage = t.adminDashboard.toasts.authRequired
-  const loadErrorMessage = t.adminDashboard.toasts.loadError
-  const configMissingMessage = t.adminDashboard.toasts.configMissing
+
+  // Apps Dialog
+  const [appDialogOpen, setAppDialogOpen] = useState(false)
+  const [editingApp, setEditingApp] = useState<App | null>(null)
+  const [appForm, setAppForm] = useState({
+    name: "",
+    thumbnail_url: "",
+  })
 
   useEffect(() => {
-    const verifySessionAndLoad = async () => {
-      try {
-        if (!isSupabaseConfigured) {
-          toast.error(configMissingMessage)
-          setLoading(false)
-          return
-        }
-        const { data } = await getSession()
-        if (!data.session) {
-          toast.error(authRequiredMessage)
-          router.replace("/admin/login")
-          return
-        }
-        fetchProjects()
-      } catch (error) {
-        console.error("Error verifying session:", error)
-        toast.error(loadErrorMessage)
+    const init = async () => {
+      if (!isSupabaseConfigured) {
+        toast.error("Supabase not configured")
         setLoading(false)
+        return
       }
-    }
-
-    verifySessionAndLoad()
-  }, [router, authRequiredMessage, loadErrorMessage])
-
-  async function fetchProjects() {
-    if (!isSupabaseConfigured) {
-      toast.error(configMissingMessage)
-      return
-    }
-    setLoading(true)
-    try {
-      const { data, error } = await supabase
-        .from("projects")
-        .select("*")
-        .order("created_at", { ascending: false })
-
-      if (error) throw error
-      setProjects(data || [])
-    } catch (error) {
-      console.error("Error fetching projects:", error)
-      toast.error(loadErrorMessage)
-    } finally {
+      const { data } = await getSession()
+      if (!data.session) {
+        router.replace("/admin/login")
+        return
+      }
+      await loadAllData()
       setLoading(false)
     }
+    init()
+  }, [router])
+
+  async function loadAllData() {
+    await Promise.all([fetchProjects(), fetchApps(), fetchPricing()])
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  // --- PROJECTS ---
+  async function fetchProjects() {
+    const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false })
+    if (data) setProjects(data)
+  }
 
+  async function handleProjectSubmit(e: React.FormEvent) {
+    e.preventDefault()
     try {
       if (editingProject) {
-        // Update existing project
         const { error } = await supabase
           .from("projects")
-          .update({
-            ...formData,
-            updated_at: new Date().toISOString(),
-          })
+          .update({ ...projectForm, updated_at: new Date().toISOString() })
           .eq("id", editingProject.id)
-
-      if (error) throw error
-        toast.success(t.adminDashboard.toasts.updateSuccess)
-      } else {
-        // Create new project
-        const { error } = await supabase.from("projects").insert([formData])
-
         if (error) throw error
-        toast.success(t.adminDashboard.toasts.createSuccess)
+        toast.success("Project updated")
+      } else {
+        const { error } = await supabase.from("projects").insert([projectForm])
+        if (error) throw error
+        toast.success("Project created")
       }
-
-      setDialogOpen(false)
-      resetForm()
+      setProjectDialogOpen(false)
       fetchProjects()
     } catch (error) {
-      console.error("Error saving project:", error)
-      toast.error(t.adminDashboard.toasts.saveError)
+      toast.error("Failed to save project")
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm(t.adminDashboard.toasts.deleteConfirm)) return
+  async function deleteProject(id: string) {
+    if (!confirm("Delete this project?")) return
+    const { error } = await supabase.from("projects").delete().eq("id", id)
+    if (!error) {
+      toast.success("Project deleted")
+      fetchProjects()
+    }
+  }
 
+  // --- APPS ---
+  async function fetchApps() {
+    const { data } = await supabase.from("apps").select("*").order("created_at", { ascending: false })
+    if (data) setApps(data)
+  }
+
+  async function handleAppSubmit(e: React.FormEvent) {
+    e.preventDefault()
     try {
-      const { error } = await supabase.from("projects").delete().eq("id", id)
-
-      if (error) throw error
-      toast.success(t.adminDashboard.toasts.deleteSuccess)
-      fetchProjects()
+      if (editingApp) {
+        const { error } = await supabase.from("apps").update(appForm).eq("id", editingApp.id)
+        if (error) throw error
+        toast.success("App updated")
+      } else {
+        const { error } = await supabase.from("apps").insert([appForm])
+        if (error) throw error
+        toast.success("App created")
+      }
+      setAppDialogOpen(false)
+      fetchApps()
     } catch (error) {
-      console.error("Error deleting project:", error)
-      toast.error(t.adminDashboard.toasts.deleteError)
+      toast.error("Failed to save app")
     }
   }
 
-  function openEditDialog(project: Project) {
-    setEditingProject(project)
-    setFormData({
-      name: project.name,
-      description: project.description,
-      type: project.type,
-      status: project.status,
-      client_name: project.client_name,
-      client_email: project.client_email,
-      price: project.price,
-    })
-    setDialogOpen(true)
+  async function deleteApp(id: string) {
+    if (!confirm("Delete this app?")) return
+    const { error } = await supabase.from("apps").delete().eq("id", id)
+    if (!error) {
+      toast.success("App deleted")
+      fetchApps()
+    }
   }
 
-  function resetForm() {
+  // --- PRICING ---
+  async function fetchPricing() {
+    const { data } = await supabase.from("pricing_config").select("*").order("key")
+    if (data) setPricing(data)
+  }
+
+  async function updatePrice(key: string, value: number) {
+    try {
+      const { error } = await supabase.from("pricing_config").update({ value }).eq("key", key)
+      if (error) throw error
+      toast.success("Price updated")
+      fetchPricing()
+    } catch (error) {
+      toast.error("Failed to update price")
+    }
+  }
+
+  // --- UI HELPERS ---
+  const resetProjectForm = () => {
     setEditingProject(null)
-    setFormData({
+    setProjectForm({
       name: "",
       description: "",
       type: "website",
@@ -188,231 +197,243 @@ export default function AdminPage() {
     })
   }
 
+  const resetAppForm = () => {
+    setEditingApp(null)
+    setAppForm({ name: "", thumbnail_url: "" })
+  }
+
+  const openAppEdit = (app: App) => {
+    setEditingApp(app)
+    setAppForm({ name: app.name, thumbnail_url: app.thumbnail_url })
+    setAppDialogOpen(true)
+  }
+
+  const openProjectEdit = (p: Project) => {
+    setEditingProject(p)
+    setProjectForm({
+      name: p.name,
+      description: p.description,
+      type: p.type as any,
+      status: p.status as any,
+      client_name: p.client_name,
+      client_email: p.client_email,
+      price: p.price,
+    })
+    setProjectDialogOpen(true)
+  }
+
   if (loading) {
-    return (
-      <div className="container mx-auto px-4 pt-32 pb-24 min-h-screen flex items-center justify-center">
-        <p className="text-lg">{t.adminDashboard.loading}</p>
-      </div>
-    )
+    return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin h-8 w-8" /></div>
   }
 
   return (
     <div className="container mx-auto px-4 pt-32 pb-24 min-h-screen">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-4xl font-bold">{t.adminDashboard.title}</h1>
-        <div className="flex items-center gap-3">
-          <LogoutButton />
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                onClick={resetForm}
-                className="bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                {t.adminDashboard.newProject}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingProject ? t.adminDashboard.dialogTitles.edit : t.adminDashboard.dialogTitles.create}
-                </DialogTitle>
-                <DialogDescription>
-                  {editingProject
-                    ? t.adminDashboard.dialogDescriptions.edit
-                    : t.adminDashboard.dialogDescriptions.create}
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmit}>
-                <div className="grid gap-4 py-4">
+        <LogoutButton />
+      </div>
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="projects">Projects</TabsTrigger>
+          <TabsTrigger value="apps">Apps Gallery</TabsTrigger>
+          <TabsTrigger value="pricing">Pricing Configuration</TabsTrigger>
+        </TabsList>
+
+        {/* PROJECTS TAB */}
+        <TabsContent value="projects">
+          <div className="flex justify-end mb-4">
+            <Dialog open={projectDialogOpen} onOpenChange={setProjectDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={resetProjectForm} className="bg-gradient-to-r from-purple-600 to-fuchsia-600">
+                  <Plus className="mr-2 h-4 w-4" /> New Project
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>{editingProject ? "Edit Project" : "New Project"}</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleProjectSubmit} className="grid gap-4 py-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="name">{t.adminDashboard.formLabels.name}</Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
-                      required
-                    />
+                    <Label htmlFor="p-name">Project Name</Label>
+                    <Input id="p-name" value={projectForm.name} onChange={e => setProjectForm({ ...projectForm, name: e.target.value })} required />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="description">{t.adminDashboard.formLabels.description}</Label>
-                    <Textarea
-                      id="description"
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData({ ...formData, description: e.target.value })
-                      }
-                      required
-                      rows={4}
-                    />
+                    <Label htmlFor="p-desc">Description</Label>
+                    <Textarea id="p-desc" value={projectForm.description} onChange={e => setProjectForm({ ...projectForm, description: e.target.value })} required />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                      <Label htmlFor="type">{t.adminDashboard.formLabels.type}</Label>
-                      <Select
-                        value={formData.type}
-                        onValueChange={(value: any) =>
-                          setFormData({ ...formData, type: value })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
+                      <Label>Type</Label>
+                      <Select value={projectForm.type} onValueChange={v => setProjectForm({ ...projectForm, type: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="website">{t.adminDashboard.typeOptions.website}</SelectItem>
-                          <SelectItem value="web_app">{t.adminDashboard.typeOptions.web_app}</SelectItem>
-                          <SelectItem value="mobile_app">{t.adminDashboard.typeOptions.mobile_app}</SelectItem>
-                          <SelectItem value="desktop_app">{t.adminDashboard.typeOptions.desktop_app}</SelectItem>
+                          <SelectItem value="website">Website</SelectItem>
+                          <SelectItem value="web_app">Web App</SelectItem>
+                          <SelectItem value="mobile_app">Mobile App</SelectItem>
+                          <SelectItem value="desktop_app">Desktop App</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="status">{t.adminDashboard.formLabels.status}</Label>
-                      <Select
-                        value={formData.status}
-                        onValueChange={(value: any) =>
-                          setFormData({ ...formData, status: value })
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
+                      <Label>Status</Label>
+                      <Select value={projectForm.status} onValueChange={v => setProjectForm({ ...projectForm, status: v })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="pending">{t.adminDashboard.statusOptions.pending}</SelectItem>
-                          <SelectItem value="in_progress">{t.adminDashboard.statusOptions.in_progress}</SelectItem>
-                          <SelectItem value="completed">{t.adminDashboard.statusOptions.completed}</SelectItem>
-                          <SelectItem value="cancelled">{t.adminDashboard.statusOptions.cancelled}</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="client_name">{t.adminDashboard.formLabels.clientName}</Label>
-                    <Input
-                      id="client_name"
-                      value={formData.client_name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, client_name: e.target.value })
-                      }
-                      required
-                    />
+                    <Label>Client Name</Label>
+                    <Input value={projectForm.client_name} onChange={e => setProjectForm({ ...projectForm, client_name: e.target.value })} required />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="client_email">{t.adminDashboard.formLabels.clientEmail}</Label>
-                    <Input
-                      id="client_email"
-                      type="email"
-                      value={formData.client_email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, client_email: e.target.value })
-                      }
-                      required
-                    />
+                    <Label>Client Email</Label>
+                    <Input type="email" value={projectForm.client_email} onChange={e => setProjectForm({ ...projectForm, client_email: e.target.value })} required />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="price">{t.adminDashboard.formLabels.price}</Label>
-                    <Input
-                      id="price"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={formData.price}
-                      onChange={(e) =>
-                        setFormData({ ...formData, price: parseFloat(e.target.value) })
-                      }
-                      required
-                    />
+                    <Label>Price</Label>
+                    <Input type="number" value={projectForm.price} onChange={e => setProjectForm({ ...projectForm, price: parseFloat(e.target.value) })} required />
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setProjectDialogOpen(false)}>Cancel</Button>
+                    <Button type="submit">Save</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Client</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {projects.map(p => (
+                  <TableRow key={p.id}>
+                    <TableCell>{p.name}</TableCell>
+                    <TableCell className="capitalize">{p.type.replace('_', ' ')}</TableCell>
+                    <TableCell>{p.client_name}</TableCell>
+                    <TableCell className="capitalize">{p.status.replace('_', ' ')}</TableCell>
+                    <TableCell>${p.price}</TableCell>
+                    <TableCell className="text-right">
+                      <Button variant="ghost" size="icon" onClick={() => openProjectEdit(p)}><Pencil className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => deleteProject(p.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {projects.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No projects found</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </TabsContent>
+
+        {/* APPS TAB */}
+        <TabsContent value="apps">
+          <div className="flex justify-end mb-4">
+            <Dialog open={appDialogOpen} onOpenChange={setAppDialogOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={resetAppForm} className="bg-gradient-to-r from-purple-600 to-fuchsia-600">
+                  <Plus className="mr-2 h-4 w-4" /> Add App
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{editingApp ? "Edit App" : "Add New App"}</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleAppSubmit} className="grid gap-4 py-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="app-name">App Name</Label>
+                    <Input id="app-name" value={appForm.name} onChange={e => setAppForm({ ...appForm, name: e.target.value })} required />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="app-thumb">Thumbnail URL</Label>
+                    <Input id="app-thumb" value={appForm.thumbnail_url} onChange={e => setAppForm({ ...appForm, thumbnail_url: e.target.value })} placeholder="https://..." required />
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setAppDialogOpen(false)}>Cancel</Button>
+                    <Button type="submit">Save</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {apps.map(app => (
+              <div key={app.id} className="border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
+                <div className="aspect-video bg-muted relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={app.thumbnail_url} alt={app.name} className="object-cover w-full h-full" />
+                </div>
+                <div className="p-4 flex items-center justify-between">
+                  <h3 className="font-semibold truncate">{app.name}</h3>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => openAppEdit(app)}><Pencil className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => deleteApp(app.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setDialogOpen(false)}
-                  >
-                    {t.adminDashboard.formActions.cancel}
-                  </Button>
-                  <Button type="submit">
-                    {editingProject ? t.adminDashboard.formActions.submitUpdate : t.adminDashboard.formActions.submitCreate}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
+              </div>
+            ))}
+            {apps.length === 0 && (
+              <div className="col-span-full text-center py-12 border border-dashed rounded-lg text-muted-foreground">
+                No apps in gallery
+              </div>
+            )}
+          </div>
+        </TabsContent>
 
-      {projects.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">
-            {t.adminDashboard.empty}
-          </p>
-        </div>
-      ) : (
-        <div className="border rounded-lg">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t.adminDashboard.table.name}</TableHead>
-                <TableHead>{t.adminDashboard.table.type}</TableHead>
-                <TableHead>{t.adminDashboard.table.client}</TableHead>
-                <TableHead>{t.adminDashboard.table.status}</TableHead>
-                <TableHead>{t.adminDashboard.table.price}</TableHead>
-                <TableHead>{t.adminDashboard.table.created}</TableHead>
-                <TableHead className="text-end">{t.adminDashboard.table.actions}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {projects.map((project) => (
-                <TableRow key={project.id}>
-                  <TableCell className="font-medium">{project.name}</TableCell>
-                  <TableCell className="capitalize">
-                    {t.adminDashboard.typeOptions[project.type]}
-                  </TableCell>
-                  <TableCell>{project.client_name}</TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        project.status === "completed"
-                          ? "bg-green-100 text-green-800"
-                          : project.status === "in_progress"
-                            ? "bg-blue-100 text-blue-800"
-                            : project.status === "pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {t.adminDashboard.statusOptions[project.status]}
-                    </span>
-                  </TableCell>
-                  <TableCell>${project.price.toLocaleString()}</TableCell>
-                  <TableCell>
-                    {new Date(project.created_at).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-end">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => openEditDialog(project)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDelete(project.id)}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
+        {/* PRICING TAB */}
+        <TabsContent value="pricing">
+          <div className="border rounded-lg p-6 bg-card">
+            <h2 className="text-xl font-semibold mb-6">Service Pricing Configuration</h2>
+            <div className="grid gap-6 md:grid-cols-2">
+              {pricing.map(item => (
+                <div key={item.key} className="grid gap-2">
+                  <Label htmlFor={`price-${item.key}`}>{item.label}</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id={`price-${item.key}`}
+                      type="number"
+                      defaultValue={item.value}
+                      onBlur={(e) => {
+                        const val = parseFloat(e.target.value)
+                        if (val !== item.value) updatePrice(item.key, val)
+                      }}
+                    />
+                    <div className="flex items-center text-sm text-muted-foreground bg-muted px-3 rounded-md border">
+                      SAR
+                    </div>
+                  </div>
+                </div>
               ))}
-            </TableBody>
-          </Table>
-        </div>
-      )}
+              {pricing.length === 0 && (
+                <div className="col-span-full text-muted-foreground">
+                  No pricing configuration found. Run the database seed script.
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+
+      </Tabs>
     </div>
   )
 }
