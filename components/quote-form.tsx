@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import type { QuoteInputs } from "@/lib/pricing"
+import { calculatePrice, type QuoteInputs } from "@/lib/pricing"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
 
@@ -30,6 +30,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
     notes: "",
     honeypot: "", // spam protection
   })
+  const [submissionId, setSubmissionId] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,6 +59,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           title: t.quoteForm.toast.successTitle,
           description: t.quoteForm.toast.successDescription,
         })
+        setSubmissionId(data.quoteId)
         setFormData({
           fullName: "",
           email: "",
@@ -103,6 +105,19 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
             autoComplete="off"
           />
 
+          {submissionId && (
+            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 rounded-lg p-3 mb-6 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Quote Reference ID:</span>
+              <span className="font-mono font-bold text-purple-600 dark:text-purple-400">{submissionId}</span>
+            </div>
+          )}
+
+          {!submissionId && (
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4 text-center">
+              Reference ID will be assigned upon submission
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="fullName">{t.quoteForm.labels.fullName}</Label>
             <Input
@@ -111,6 +126,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
               value={formData.fullName}
               onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
               placeholder={t.quoteForm.placeholders.fullName}
+              className="bg-background/50"
             />
           </div>
 

@@ -26,30 +26,12 @@ export async function POST(request: Request) {
     const validatedData = quoteSubmissionSchema.parse(body)
 
     // Calculate pricing
-    const breakdown = calculatePrice({
-      websitePages: validatedData.websitePages,
-      webAppPages: validatedData.webAppPages,
-      ecommercePages: validatedData.ecommercePages,
-      mobileScreens: validatedData.mobileScreens,
-      desktopFunctions: validatedData.desktopFunctions,
-    })
+    const breakdown = calculatePrice(validatedData)
 
     // Generate email HTML
     const emailHTML = generateQuoteEmailHTML(
-      {
-        fullName: validatedData.fullName,
-        email: validatedData.email,
-        company: validatedData.company,
-        phone: validatedData.phone,
-        notes: validatedData.notes,
-      },
-      {
-        websitePages: validatedData.websitePages,
-        webAppPages: validatedData.webAppPages,
-        ecommercePages: validatedData.ecommercePages,
-        mobileScreens: validatedData.mobileScreens,
-        desktopFunctions: validatedData.desktopFunctions,
-      },
+      validatedData, // Client info
+      validatedData, // Quote inputs
       breakdown,
     )
 
@@ -69,7 +51,56 @@ export async function POST(request: Request) {
       html: emailHTML,
     })
 
-    return NextResponse.json({ success: true })
+    // --- Record in Supabase Admin Panel ---
+    try {
+      const { supabase } = await import("@/lib/supabase")
+
+      // Determine dominant project type
+      let projectType: 'website' | 'web_app' | 'mobile_app' | 'desktop_app' = 'website'
+      if (validatedData.mobileScreens > 0) projectType = 'mobile_app'
+      else if (validatedData.desktopFunctions > 0) projectType = 'desktop_app'
+      else if (validatedData.webAppPages > 0 || validatedData.ecommercePages > 0) projectType = 'web_app'
+
+      // Create description summary
+      console.log("[Quotes API] Attempting to record quote in Supabase...")
+      const { data: quoteData, error: dbError } = await supabase
+        .from("quotes")
+        .insert([
+          {
+            full_name: validatedData.fullName,
+            email: validatedData.email,
+            company: validatedData.company,
+            phone: validatedData.phone,
+            notes: validatedData.notes,
+            total_price: breakdown.total,
+            details: {
+              inputs: validatedData,
+              breakdown: breakdown,
+            },
+            status: "pending",
+          },
+        ])
+        .select("quote_id")
+        .single()
+
+      if (dbError) {
+        console.error("[Quotes API] Database error:", dbError)
+        return NextResponse.json({
+          success: true,
+          emailSent: true,
+          error: "Recorded in email, but failed to save to dashboard."
+        })
+      }
+
+      console.log("[Quotes API] Success! Created quote:", quoteData?.quote_id)
+      return NextResponse.json({
+        success: true,
+        quoteId: quoteData?.quote_id
+      })
+    } catch (dbError) {
+      console.error("[Quotes API] Unexpected error:", dbError)
+      return NextResponse.json({ success: true, emailSent: true })
+    }
   } catch (error) {
     console.error("[v0] Quote submission error:", error)
     return NextResponse.json({ error: "Failed to process quote request" }, { status: 500 })

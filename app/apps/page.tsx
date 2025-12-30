@@ -13,16 +13,7 @@ export default function AppsPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const { language } = useLanguage()
-
-    // Translation placeholder (since we didn't add "apps" to translations.ts yet, using hardcoded simple text or existing keys where fit)
-    const title = language === "en" ? "Apps Gallery" : "معرض التطبيقات"
-    const description =
-        language === "en"
-            ? "Explore our collection of deployed applications."
-            : "تصفح مجموعتنا من التطبيقات المنشورة."
-    const emptyMessage = language === "en" ? "No apps found." : "لا توجد تطبيقات."
-    const errorMessage =
-        language === "en" ? "Failed to load apps." : "فشل تحميل التطبيقات."
+    const t = translations[language]
 
     useEffect(() => {
         async function fetchApps() {
@@ -38,8 +29,10 @@ export default function AppsPage() {
 
                 if (error) throw error
                 setApps(data || [])
-            } catch (err) {
-                console.error("Error fetching apps:", err)
+            } catch (err: any) {
+                console.error("Error fetching apps:", err.message || err)
+                if (err.details) console.error("Error details:", err.details)
+                if (err.hint) console.error("Error hint:", err.hint)
                 setError(true)
             } finally {
                 setLoading(false)
@@ -56,10 +49,10 @@ export default function AppsPage() {
                 <div className="container mx-auto px-4 lg:px-8">
                     <div className="mb-12 text-center">
                         <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground lg:text-5xl">
-                            {title}
+                            {t.appsGallery.title}
                         </h1>
                         <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-                            {description}
+                            {t.appsGallery.description}
                         </p>
                     </div>
 
@@ -69,18 +62,18 @@ export default function AppsPage() {
                         </div>
                     ) : error ? (
                         <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-8 text-center text-destructive">
-                            {errorMessage}
+                            {t.appsGallery.error}
                         </div>
                     ) : apps.length === 0 ? (
                         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
-                            {emptyMessage}
+                            {t.appsGallery.empty}
                         </div>
                     ) : (
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {apps.map((app) => (
                                 <Card
                                     key={app.id}
-                                    className="group overflow-hidden border transition-all hover:shadow-xl hover:-translate-y-1"
+                                    className="group overflow-hidden border transition-all hover:shadow-xl hover:-translate-y-1 flex flex-col"
                                 >
                                     <div className="relative aspect-video w-full overflow-hidden bg-muted">
                                         {app.thumbnail_url ? (
@@ -96,10 +89,37 @@ export default function AppsPage() {
                                             </div>
                                         )}
                                     </div>
-                                    <CardContent className="p-4">
-                                        <h3 className="font-semibold text-lg truncate" title={app.name}>
+                                    <CardContent className="p-4 flex flex-col flex-grow">
+                                        <h3 className="font-semibold text-lg truncate mb-2" title={app.name}>
                                             {app.name}
                                         </h3>
+                                        {app.description && (
+                                            <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                                                {app.description}
+                                            </p>
+                                        )}
+                                        <div className="mt-auto flex gap-3">
+                                            {app.url && (
+                                                <a
+                                                    href={app.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary/90 transition-colors"
+                                                >
+                                                    {t.appsGallery.viewProject}
+                                                </a>
+                                            )}
+                                            {app.download_url && (
+                                                <a
+                                                    href={app.download_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors"
+                                                >
+                                                    {t.appsGallery.download}
+                                                </a>
+                                            )}
+                                        </div>
                                     </CardContent>
                                 </Card>
                             ))}

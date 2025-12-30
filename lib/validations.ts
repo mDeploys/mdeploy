@@ -20,6 +20,16 @@ export const quoteSubmissionSchema = z.object({
   ecommercePages: z.number().int().min(0),
   mobileScreens: z.number().int().min(0),
   desktopFunctions: z.number().int().min(0),
+  landingPages: z.number().int().min(0).default(0),
+  wordpressTemplates: z.number().int().min(0).default(0),
+  logoDesigns: z.number().int().min(0).default(0),
+  brandingDesigns: z.number().int().min(0).default(0),
+  backendHosting: z.boolean().default(false),
+  webHosting5GB: z.boolean().default(false),
+  webHosting10GB: z.boolean().default(false),
+  cloudHosting20GB: z.boolean().default(false),
+  paymentGateway: z.boolean().default(false),
+  mailServer: z.boolean().default(false),
 })
 
 export const contactFormSchema = z.object({

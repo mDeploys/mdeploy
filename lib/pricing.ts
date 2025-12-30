@@ -75,16 +75,16 @@ export interface PriceBreakdown {
   total: number
 }
 
-export function calculatePrice(inputs: QuoteInputs): PriceBreakdown {
-  const websiteCost = inputs.websitePages * PRICING_SAR.websitePagePrice
-  const webAppCost = inputs.webAppPages * PRICING_SAR.webAppPagePrice
-  const ecommerceCost = inputs.ecommercePages * PRICING_SAR.ecommercePagePrice
-  const mobileCost = inputs.mobileScreens * PRICING_SAR.mobileScreenPrice
-  const desktopCost = inputs.desktopFunctions * PRICING_SAR.desktopFunctionPrice
-  const landingCost = inputs.landingPages * PRICING_SAR.landingPagePrice
-  const wordpressCost = inputs.wordpressTemplates * PRICING_SAR.wordpressTemplatePrice
-  const logoCost = inputs.logoDesigns * PRICING_SAR.logoDesignPrice
-  const brandingCost = inputs.brandingDesigns * PRICING_SAR.brandingDesignPrice
+export function calculatePrice(inputs: Partial<QuoteInputs>): PriceBreakdown {
+  const websiteCost = (inputs.websitePages || 0) * PRICING_SAR.websitePagePrice
+  const webAppCost = (inputs.webAppPages || 0) * PRICING_SAR.webAppPagePrice
+  const ecommerceCost = (inputs.ecommercePages || 0) * PRICING_SAR.ecommercePagePrice
+  const mobileCost = (inputs.mobileScreens || 0) * PRICING_SAR.mobileScreenPrice
+  const desktopCost = (inputs.desktopFunctions || 0) * PRICING_SAR.desktopFunctionPrice
+  const landingCost = (inputs.landingPages || 0) * PRICING_SAR.landingPagePrice
+  const wordpressCost = (inputs.wordpressTemplates || 0) * PRICING_SAR.wordpressTemplatePrice
+  const logoCost = (inputs.logoDesigns || 0) * PRICING_SAR.logoDesignPrice
+  const brandingCost = (inputs.brandingDesigns || 0) * PRICING_SAR.brandingDesignPrice
 
   let addonsCost = 0
   if (inputs.backendHosting) addonsCost += PRICING_SAR.backendHostingYearly

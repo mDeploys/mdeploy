@@ -439,6 +439,21 @@ export const translations = {
       success: "Logged out successfully",
       error: "Failed to logout",
     },
+    appsGallery: {
+      title: "My APPs",
+      description: "Explore our collection of deployed applications.",
+      empty: "No apps found.",
+      error: "Failed to load apps.",
+      viewProject: "View Project",
+      download: "Download",
+      form: {
+        title: "Product Title",
+        thumbnail: "Product Logo (Thumbnail URL)",
+        url: "Project URL",
+        description: "Project Description",
+        downloadUrl: "Download Link",
+      }
+    },
   },
   ar: {
     home: "الرئيسية",
@@ -876,6 +891,21 @@ export const translations = {
       loading: "جاري تسجيل الخروج...",
       success: "تم تسجيل الخروج بنجاح",
       error: "فشل تسجيل الخروج",
+    },
+    appsGallery: {
+      title: "تطبيقاتي",
+      description: "تصفح مجموعتنا من التطبيقات المنشورة.",
+      empty: "لا توجد تطبيقات.",
+      error: "فشل تحميل التطبيقات.",
+      viewProject: "عرض المشروع",
+      download: "تحميل",
+      form: {
+        title: "عنوان المنتج",
+        thumbnail: "شعار المنتج (رابط الصورة)",
+        url: "رابط المشروع",
+        description: "وصف المشروع",
+        downloadUrl: "رابط التحميل",
+      }
     },
   },
 }

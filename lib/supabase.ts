@@ -19,6 +19,22 @@ export function assertSupabaseConfigured() {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+export type Quote = {
+  id: string
+  quote_number: number
+  quote_id: string
+  full_name: string
+  email: string
+  company?: string
+  phone?: string
+  notes?: string
+  status: 'pending' | 'reviewed' | 'converted' | 'rejected'
+  total_price: number
+  details: any
+  created_at: string
+  updated_at: string
+}
+
 export type Project = {
   id: string
   name: string
@@ -28,6 +44,9 @@ export type Project = {
   client_name: string
   client_email: string
   price: number
+  client_phone?: string
+  client_company?: string
+  details?: any
   created_at: string
   updated_at: string
 }
@@ -36,6 +55,9 @@ export type App = {
   id: string
   name: string
   thumbnail_url: string
+  url?: string
+  description?: string
+  download_url?: string
   created_at: string
 }
 

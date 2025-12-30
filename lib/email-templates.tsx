@@ -17,7 +17,7 @@ export function generateQuoteEmailHTML(
   inputs: QuoteInputs,
   breakdown: PriceBreakdown,
 ): string {
-  const logoUrl = `${getBaseUrl()}/logo.png`
+  const logoUrl = "https://mdeploy.dev/logo.png"
 
   return `
 <!DOCTYPE html>
@@ -52,86 +52,120 @@ export function generateQuoteEmailHTML(
             </tr>
           </thead>
           <tbody>
-            ${
-              inputs.websitePages > 0
-                ? `
+            ${(inputs.websitePages || 0) > 0
+      ? `
             <tr>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">Website Pages</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.websitePages}</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">250</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${breakdown.websiteCost.toFixed(2)}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.websiteCost || 0).toFixed(2)}</td>
             </tr>`
-                : ""
-            }
-            ${
-              inputs.webAppPages > 0
-                ? `
+      : ""
+    }
+            ${(inputs.webAppPages || 0) > 0
+      ? `
             <tr>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">Web App Pages</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.webAppPages}</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">300</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${breakdown.webAppCost.toFixed(2)}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.webAppCost || 0).toFixed(2)}</td>
             </tr>`
-                : ""
-            }
-            ${
-              inputs.ecommercePages > 0
-                ? `
+      : ""
+    }
+            ${(inputs.ecommercePages || 0) > 0
+      ? `
             <tr>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">E-commerce Pages</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.ecommercePages}</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">450</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${breakdown.ecommerceCost.toFixed(2)}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.ecommerceCost || 0).toFixed(2)}</td>
             </tr>`
-                : ""
-            }
-            ${
-              inputs.mobileScreens > 0
-                ? `
+      : ""
+    }
+            ${(inputs.mobileScreens || 0) > 0
+      ? `
             <tr>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">Mobile App Screens</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.mobileScreens}</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">400</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${breakdown.mobileCost.toFixed(2)}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">300</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.mobileCost || 0).toFixed(2)}</td>
             </tr>`
-                : ""
-            }
-            ${
-              inputs.desktopFunctions > 0
-                ? `
+      : ""
+    }
+            ${(inputs.desktopFunctions || 0) > 0
+      ? `
             <tr>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">Desktop Functions</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.desktopFunctions}</td>
               <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">180</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${breakdown.desktopCost.toFixed(2)}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.desktopCost || 0).toFixed(2)}</td>
             </tr>`
-                : ""
-            }
+      : ""
+    }
+            ${(inputs.landingPages || 0) > 0
+      ? `
+            <tr>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">Landing Pages</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.landingPages}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">500</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.landingCost || 0).toFixed(2)}</td>
+            </tr>`
+      : ""
+    }
+            ${(inputs.wordpressTemplates || 0) > 0
+      ? `
+            <tr>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">WordPress Templates</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.wordpressTemplates}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">1500</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.wordpressCost || 0).toFixed(2)}</td>
+            </tr>`
+      : ""
+    }
+            ${(inputs.logoDesigns || 0) > 0
+      ? `
+            <tr>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">Logo Designs</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.logoDesigns}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">300</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.logoCost || 0).toFixed(2)}</td>
+            </tr>`
+      : ""
+    }
+            ${(inputs.brandingDesigns || 0) > 0
+      ? `
+            <tr>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">Branding Designs</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${inputs.brandingDesigns}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">1500</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd;">${(breakdown.brandingCost || 0).toFixed(2)}</td>
+            </tr>`
+      : ""
+    }
             <tr>
               <td colspan="3" style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:600;">Subtotal</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:600;">${breakdown.subtotal.toFixed(2)}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:600;">${(breakdown.subtotal || 0).toFixed(2)}</td>
             </tr>
             <tr>
               <td colspan="3" style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:600;">Setup & Handling Fee</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:600;">${breakdown.setupFee.toFixed(2)}</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:600;">${(breakdown.setupFee || 0).toFixed(2)}</td>
             </tr>
             <tr>
               <td colspan="3" style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:700; font-size:1.1em; color:#2b0a3d;">Total</td>
-              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:700; font-size:1.1em; color:#2b0a3d;">${breakdown.total.toFixed(2)} SAR</td>
+              <td style="padding:12px; text-align:left; border-bottom:1px solid #ddd; font-weight:700; font-size:1.1em; color:#2b0a3d;">${(breakdown.total || 0).toFixed(2)} SAR</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      ${
-        data.notes
-          ? `
+      ${data.notes
+      ? `
       <div style="margin:20px 0;">
         <h2 style="font-size:16px; font-weight:600; margin:0 0 10px;">Additional Notes</h2>
         <p style="margin:0;">${data.notes}</p>
       </div>`
-          : ""
-      }
+      : ""
+    }
     </div>
   </div>
 </body>
@@ -145,7 +179,7 @@ export function generateContactEmailHTML(data: {
   company?: string
   message: string
 }): string {
-  const logoUrl = `${getBaseUrl()}/logo.png`
+  const logoUrl = "https://mdeploy.dev/logo.png"
 
   return `
 <!DOCTYPE html>

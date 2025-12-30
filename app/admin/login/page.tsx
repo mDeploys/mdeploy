@@ -15,10 +15,8 @@ import { setAdminAuthCookie } from "@/lib/admin-auth-cookie"
 
 export default function AdminLoginPage() {
   const router = useRouter()
-  const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [fullName, setFullName] = useState("")
   const [loading, setLoading] = useState(false)
   const { language } = useLanguage()
   const t = translations[language]
@@ -31,32 +29,19 @@ export default function AdminLoginPage() {
     }
     setLoading(true)
     try {
-      if (isSignUp) {
-        const { data, error } = await signUpWithEmail(email, password, fullName)
-        if (error) {
-          toast.error(error.message)
-          return
-        }
-        toast.success(t.adminLogin.toast.signUpSuccess)
-        setIsSignUp(false)
-        setEmail("")
-        setPassword("")
-        setFullName("")
-      } else {
-        const { data, error } = await signInWithEmail(email, password)
-        if (error) {
-          const message = error.message.toLowerCase().includes("invalid login")
-            ? t.adminLogin.toast.invalidCredentials
-            : error.message
-          toast.error(message)
-          return
-        }
-        if (data?.session?.access_token) {
-          setAdminAuthCookie(data.session.access_token)
-        }
-        toast.success(t.adminLogin.toast.signInSuccess)
-        router.replace("/admin")
+      const { data, error } = await signInWithEmail(email, password)
+      if (error) {
+        const message = error.message.toLowerCase().includes("invalid login")
+          ? t.adminLogin.toast.invalidCredentials
+          : error.message
+        toast.error(message)
+        return
       }
+      if (data?.session?.access_token) {
+        setAdminAuthCookie(data.session.access_token)
+      }
+      toast.success(t.adminLogin.toast.signInSuccess)
+      router.replace("/admin")
     } catch (err) {
       console.error("Admin login error:", err)
       toast.error(t.adminLogin.toast.networkError)
@@ -86,28 +71,13 @@ export default function AdminLoginPage() {
               className="h-24 w-auto mb-4"
             />
             <p className="text-purple-200/60 text-sm">
-              {isSignUp ? t.adminLogin.subtitleSignUp : t.adminLogin.subtitleSignIn}
+              {t.adminLogin.subtitleSignIn}
             </p>
           </div>
 
           {/* Form */}
           <form onSubmit={onSubmit} className="space-y-5">
-            {isSignUp && (
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-purple-200">
-                  {t.adminLogin.fullName}
-                </Label>
-                <Input
-                  id="name"
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="John Doe"
-                  required={isSignUp}
-                  className="bg-white/10 border-purple-500/30 text-white placeholder:text-white/40 focus:border-purple-400 focus:ring-purple-400/20"
-                />
-              </div>
-            )}
+
 
             <div className="space-y-2">
               <Label htmlFor="email" className="text-purple-200">
@@ -147,29 +117,15 @@ export default function AdminLoginPage() {
               {loading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  {isSignUp ? t.adminLogin.creating : t.adminLogin.signingIn}
+                  {t.adminLogin.signingIn}
                 </div>
-              ) : isSignUp ? (
-                t.adminLogin.signUp
               ) : (
                 t.adminLogin.signIn
               )}
             </Button>
           </form>
 
-          {/* Toggle Sign Up / Sign In */}
-          <div className="mt-6 text-center">
-            <p className="text-purple-200/60 text-sm">
-              {isSignUp ? t.adminLogin.togglePromptHaveAccount : t.adminLogin.togglePromptNoAccount}{" "}
-              <button
-                type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
-                className="text-purple-400 hover:text-purple-300 font-semibold transition-colors"
-              >
-                {isSignUp ? t.adminLogin.toggleActionSignIn : t.adminLogin.toggleActionSignUp}
-              </button>
-            </p>
-          </div>
+
 
           {/* Home Link */}
           <div className="mt-6 pt-6 border-t border-purple-500/20 text-center">
