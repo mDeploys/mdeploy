@@ -36,9 +36,16 @@ export default function ContactPage() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
   const inputClass =
-    "bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl transition-all font-medium text-white"
+    "bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40 h-12 rounded-xl transition-all font-medium"
   const glassCardClass =
-    "glass-card border-white/10 shadow-2xl relative overflow-hidden rounded-3xl animate-in fade-in duration-700"
+    "relative overflow-hidden border border-purple-200/60 bg-white/85 shadow-[0_0_40px_-30px_rgba(147,51,234,0.5)] dark:border-purple-400/30 dark:bg-gradient-to-br dark:from-[#12062a]/90 dark:via-[#12062a]/90 dark:to-[#090414] dark:shadow-[0_0_80px_-40px_rgba(168,85,247,0.9)] rounded-3xl animate-in fade-in duration-700"
+
+  const glowBackdrop = (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+      <div className="absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/30" />
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/60 to-transparent" />
+    </div>
+  )
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -118,7 +125,7 @@ export default function ContactPage() {
           {/* Main Form */}
           <div className="lg:col-span-3">
             <Card className={glassCardClass}>
-              <div className="cosmic-gradient absolute inset-0 opacity-40 pointer-events-none" />
+              {glowBackdrop}
               <CardHeader className="relative z-10 pb-2">
                 <CardTitle className="text-3xl font-black text-white text-glow-purple tracking-tight">
                   {t.contactPage.form.title}
@@ -221,7 +228,7 @@ export default function ContactPage() {
                       onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                       placeholder={t.contactPage.form.placeholders.message}
                       rows={4}
-                      className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 rounded-2xl transition-all font-medium text-white resize-none"
+                      className="bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40 rounded-2xl transition-all font-medium resize-none shadow-sm"
                     />
                   </div>
 
@@ -273,7 +280,7 @@ export default function ContactPage() {
             </div>
 
             <Card className={glassCardClass}>
-              <div className="cosmic-gradient absolute inset-0 opacity-40 pointer-events-none" />
+              {glowBackdrop}
               <CardContent className="relative z-10 pt-8 space-y-6">
                 <div className="flex items-start gap-4 group">
                   <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:bg-purple-500/20 transition-colors">
