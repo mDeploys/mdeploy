@@ -379,10 +379,10 @@ export default function HomePage() {
               <Card
                 key={card.name}
                 className={`border-2 border-transparent transition-colors ${index === 0
-                    ? "hover:border-purple-500/50"
-                    : index === 1
-                      ? "hover:border-fuchsia-500/50"
-                      : "hover:border-emerald-500/50"
+                  ? "hover:border-purple-500/50"
+                  : index === 1
+                    ? "hover:border-fuchsia-500/50"
+                    : "hover:border-emerald-500/50"
                   }`}
               >
                 <CardContent className="pt-6">
@@ -423,23 +423,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section - updated with purple gradient */}
-      <section className="relative overflow-hidden py-16 lg:py-24 scroll-reveal" data-reveal>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-violet-600 to-fuchsia-600" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px]" />
+      {/* CTA Section - updated with professional gradient and badge */}
+      <section className="relative overflow-hidden py-24 lg:py-32 scroll-reveal" data-reveal>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#12062a] via-purple-900 to-fuchsia-900" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
 
         <div className="container relative mx-auto px-4 text-center lg:px-8">
-          <h2 className="mb-4 text-balance text-3xl font-bold text-white lg:text-4xl">{t.cta.title}</h2>
-          <p className="mx-auto mb-8 max-w-2xl text-pretty text-lg text-white/90">{t.cta.description}</p>
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm">
+            <Rocket className="h-4 w-4 text-purple-300" />
+            {t.cta.badge || "Ready to ship?"}
+          </div>
+          <h2 className="mb-6 text-balance text-4xl font-bold text-white lg:text-6xl tracking-tight">
+            {t.cta.title}
+          </h2>
+          <p className="mx-auto mb-10 max-w-2xl text-pretty text-lg text-purple-100/80 lg:text-xl">
+            {t.cta.description}
+          </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" className="bg-white text-purple-700 hover:bg-purple-50">
-              <Link href="/calculator">{t.cta.primaryCta}</Link>
+            <Button asChild size="lg" className="h-14 px-8 text-base bg-white text-purple-900 shadow-xl shadow-purple-900/40 hover:bg-purple-50">
+              <Link href="/calculator">
+                {t.cta.primaryCta} <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
             <Button
               asChild
               size="lg"
               variant="outline"
-              className="border-2 border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              className="h-14 px-8 text-base border-2 border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
             >
               <Link href="/contact">{t.cta.secondaryCta}</Link>
             </Button>

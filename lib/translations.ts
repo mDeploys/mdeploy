@@ -136,7 +136,8 @@ export const translations = {
       ],
     },
     cta: {
-      title: "Ready to Deploy Your Project?",
+      badge: "Scale your vision",
+      title: "Ready to Launch Your Project?",
       description: "Get started with our calculator or reach out to discuss your specific needs.",
       primaryCta: "Calculate Your Quote",
       secondaryCta: "Contact Us",
@@ -221,40 +222,57 @@ export const translations = {
     },
     contactPage: {
       title: "Get in Touch",
-      description: "Have questions? We're here to help with your deployment needs.",
+      description: "Have a specific project in mind or need expert deployment advice? Our team is ready to help you scale.",
       form: {
-        title: "Send us a message",
-        description: "Fill out the form and we'll get back to you within 24 hours",
+        title: "Send us a Message",
+        description: "Tell us about your project and we'll get back to you with a tailored solution within 24 hours.",
         labels: {
           fullName: "Full Name *",
           email: "Email *",
-          company: "Company",
-          message: "Message *",
+          company: "Company / Organization",
+          message: "Project Details *",
         },
         placeholders: {
           fullName: "John Doe",
           email: "john@example.com",
-          company: "Your Company",
-          message: "Tell us about your project...",
+          company: "Acme Corp",
+          message: "Describe your project, timeline, and technical requirements...",
         },
         submit: "Send Message",
-        submitting: "Sending...",
+        submitting: "Processing...",
       },
       toast: {
-        successTitle: "Message Sent!",
-        successDescription: "We'll get back to you as soon as possible.",
-        errorTitle: "Error",
-        errorDescription: "Failed to send message. Please try again.",
+        successTitle: "Message Received",
+        successDescription: "Thank you for reaching out. A specialist will review your request and contact you soon.",
+        errorTitle: "Submission Error",
+        errorDescription: "We couldn't process your message. Please try again or contact us via WhatsApp.",
       },
       contactDetails: {
-        email: { label: "Email", value: "info@mdeploy.dev" },
-        whatsapp: { label: "WhatsApp", cta: "Start a chat" },
-        telegram: { label: "Telegram", cta: "Message on Telegram" },
-        location: { label: "Location", value: "Saudi Arabia" },
+        email: { label: "Direct Email", value: "info@mdeploy.dev" },
+        whatsapp: { label: "WhatsApp Support", cta: "Chat with us" },
+        telegram: { label: "Telegram", cta: "Message our team" },
+        location: { label: "Headquarters", value: "Saudi Arabia" },
         hoursTitle: "Business Hours",
-        hoursWeekday: "Sunday - Thursday: 9:00 AM - 6:00 PM",
-        hoursWeekend: "Friday - Saturday: Closed",
+        hoursWeekday: "Sunday - Thursday: 9:00 AM - 6:00 PM (GMT+3)",
+        hoursWeekend: "Friday - Saturday: Support via Email",
       },
+      faq: {
+        title: "Common Questions",
+        items: [
+          {
+            question: "What information do you need for a quote?",
+            answer: "For an accurate estimate, please provide details about your tech stack (e.g., Next.js, Flutter), the number of pages/screens, and any specific third-party integrations required.",
+          },
+          {
+            question: "Do you handle zero-downtime deployments?",
+            answer: "Yes, we specialize in seamless deployments using modern CI/CD pipelines to ensure your services remain online during updates.",
+          },
+          {
+            question: "Is there ongoing maintenance available?",
+            answer: "Absolutely. We offer various support levels to monitor and manage your infrastructure long after the initial delivery.",
+          },
+        ]
+      }
     },
     footer: {
       description: "Professional deployment services for websites, web apps, mobile apps, and desktop applications.",
@@ -589,6 +607,7 @@ export const translations = {
       ],
     },
     cta: {
+      badge: "وسّع طموحك",
       title: "جاهز لإطلاق مشروعك؟",
       description: "ابدأ باستخدام الحاسبة أو تواصل معنا لمناقشة احتياجاتك.",
       primaryCta: "احسب عرض السعر",
@@ -674,40 +693,57 @@ export const translations = {
     },
     contactPage: {
       title: "تواصل معنا",
-      description: "لديك أسئلة؟ نحن هنا لمساعدتك في احتياجات النشر.",
+      description: "هل لديك مشروع معين أو تحتاج إلى استشارة خبيرة في النشر؟ فريقنا جاهز لمساعدتك في التوسع.",
       form: {
-        title: "أرسل رسالة",
-        description: "املأ النموذج وسنرد عليك خلال 24 ساعة",
+        title: "أرسل لنا رسالة",
+        description: "أخبرنا عن مشروعك وسنعاود الاتصال بك بحل مخصص خلال 24 ساعة.",
         labels: {
           fullName: "الاسم الكامل *",
           email: "البريد الإلكتروني *",
-          company: "الشركة",
-          message: "الرسالة *",
+          company: "الشركة / المنظمة",
+          message: "تفاصيل المشروع *",
         },
         placeholders: {
           fullName: "محمد أحمد",
           email: "example@email.com",
           company: "اسم الشركة",
-          message: "أخبرنا عن مشروعك...",
+          message: "صف مشروعك، الجدول الزمني، والمتطلبات التقنية...",
         },
         submit: "إرسال الرسالة",
-        submitting: "جاري الإرسال...",
+        submitting: "جاري المعالجة...",
       },
       toast: {
-        successTitle: "تم إرسال الرسالة!",
-        successDescription: "سنعود إليك في أقرب وقت ممكن.",
-        errorTitle: "خطأ",
-        errorDescription: "تعذر إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+        successTitle: "تم استلام الرسالة",
+        successDescription: "شكراً لتواصلك معنا. سيراجع أحد المتخصصين طلبك ويتصل بك قريباً.",
+        errorTitle: "خطأ في الإرسال",
+        errorDescription: "لم نتمكن من معالجة رسالتك. يرجى المحاولة مرة أخرى أو التواصل معنا عبر واتساب.",
       },
       contactDetails: {
-        email: { label: "البريد الإلكتروني", value: "info@mdeploy.dev" },
-        whatsapp: { label: "واتساب", cta: "ابدأ محادثة" },
-        telegram: { label: "تيليجرام", cta: "راسلني على تيليجرام" },
-        location: { label: "الموقع", value: "المملكة العربية السعودية" },
+        email: { label: "البريد الإلكتروني المباشر", value: "info@mdeploy.dev" },
+        whatsapp: { label: "دعم واتساب", cta: "تحدث معنا" },
+        telegram: { label: "تيليجرام", cta: "راسل فريقنا" },
+        location: { label: "المقر الرئيسي", value: "المملكة العربية السعودية" },
         hoursTitle: "ساعات العمل",
-        hoursWeekday: "الأحد - الخميس: 9:00 ص - 6:00 م",
-        hoursWeekend: "الجمعة - السبت: إجازة",
+        hoursWeekday: "الأحد - الخميس: 9:00 ص - 6:00 م (GMT+3)",
+        hoursWeekend: "الجمعة - السبت: دعم عبر البريد الإلكتروني",
       },
+      faq: {
+        title: "الأسئلة الشائعة",
+        items: [
+          {
+            question: "ما هي المعلومات التي تحتاجونها لتقديم عرض سعر؟",
+            answer: "للحصول على تقدير دقيق، يرجى تقديم تفاصيل حول التقنيات المستخدمة (مثل Next.js، Flutter)، وعدد الصفحات/الشاشات، وأي تكاملات خارجية مطلوبة.",
+          },
+          {
+            question: "هل تديرون عمليات النشر بدون توقف (Zero-downtime)؟",
+            answer: "نعم، نحن متخصصون في عمليات النشر السلسة باستخدام أنابيب CI/CD الحديثة لضمان بقاء خدماتك متصلة بالإنترنت أثناء التحديثات.",
+          },
+          {
+            question: "هل تتوفر صيانة مستمرة؟",
+            answer: "بالتأكيد. نحن نقدم مستويات دعم متنوعة لمراقبة وإدارة بنيتك التحتية بعد فترة طويلة من التسليم الأولي.",
+          },
+        ]
+      }
     },
     footer: {
       description: "خدمات نشر احترافية للمواقع وتطبيقات الويب والجوال وسطح المكتب.",

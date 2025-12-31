@@ -12,6 +12,8 @@ import { useToast } from "@/hooks/use-toast"
 import { calculatePrice, type QuoteInputs } from "@/lib/pricing"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
+import HCaptcha from "@hcaptcha/react-hcaptcha"
+import { useRef } from "react"
 
 interface QuoteFormProps {
   inputs: QuoteInputs
@@ -30,6 +32,8 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
     notes: "",
     honeypot: "", // spam protection
   })
+  const hcaptchaRef = useRef<HCaptcha>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [submissionId, setSubmissionId] = useState<string | null>(null)
   const [pendingId, setPendingId] = useState<string | null>(null)
 
@@ -56,6 +60,15 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
       return
     }
 
+    if (!captchaToken) {
+      toast({
+        title: t.quoteForm.toast.errorTitle,
+        description: "Please complete the CAPTCHA",
+        variant: "destructive",
+      })
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -66,6 +79,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           ...formData,
           ...inputs,
           reservedQuoteId: pendingId,
+          captchaToken,
         }),
       })
 
@@ -85,6 +99,8 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           notes: "",
           honeypot: "",
         })
+        setCaptchaToken(null)
+        hcaptchaRef.current?.resetCaptcha()
       } else {
         toast({
           title: t.quoteForm.toast.errorTitle,
@@ -217,6 +233,16 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
                 className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 rounded-2xl transition-all font-medium text-white resize-none"
               />
             </div>
+          </div>
+
+          <div className="flex justify-center py-2">
+            <HCaptcha
+              ref={hcaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
+              onVerify={(token) => setCaptchaToken(token)}
+              onExpire={() => setCaptchaToken(null)}
+              theme="dark"
+            />
           </div>
 
           <Button

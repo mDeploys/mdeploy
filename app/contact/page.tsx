@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -9,10 +8,12 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
-import { Mail, MapPin, Send } from "lucide-react"
-import type React from "react"
+import { Mail, MapPin, Send, MessageSquare, Clock, Phone } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import HCaptcha from "@hcaptcha/react-hcaptcha"
+import { useRef } from "react"
 
 const WhatsAppIcon = () => (
   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -31,17 +32,14 @@ export default function ContactPage() {
   const { language } = useLanguage()
   const t = translations[language]
   const [loading, setLoading] = useState(false)
+  const hcaptchaRef = useRef<HCaptcha>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+
   const inputClass =
     "bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40"
   const glowCardClass =
     "relative overflow-hidden border border-purple-200/60 bg-white/85 shadow-[0_0_40px_-30px_rgba(147,51,234,0.5)] dark:border-purple-400/30 dark:bg-gradient-to-br dark:from-purple-500/20 dark:via-[#12062a]/90 dark:to-[#090414] dark:shadow-[0_0_80px_-40px_rgba(168,85,247,0.9)]"
-  const glowBackdrop = (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-      <div className="absolute -top-20 left-6 h-40 w-40 rounded-full bg-purple-500/20 blur-3xl dark:bg-purple-400/35" />
-      <div className="absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/30" />
-      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/60 to-transparent" />
-    </div>
-  )
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -52,18 +50,22 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
-    if (formData.honeypot) {
+    if (formData.honeypot) return
+    if (!captchaToken) {
+      toast({
+        title: t.contactPage.toast.errorTitle,
+        description: "Please complete the CAPTCHA",
+        variant: "destructive",
+      })
       return
     }
-
     setLoading(true)
 
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, captchaToken }),
       })
 
       if (response.ok) {
@@ -71,13 +73,9 @@ export default function ContactPage() {
           title: t.contactPage.toast.successTitle,
           description: t.contactPage.toast.successDescription,
         })
-        setFormData({
-          fullName: "",
-          email: "",
-          company: "",
-          message: "",
-          honeypot: "",
-        })
+        setFormData({ fullName: "", email: "", company: "", message: "", honeypot: "" })
+        setCaptchaToken(null)
+        hcaptchaRef.current?.resetCaptcha()
       } else {
         const data = await response.json()
         toast({
@@ -100,58 +98,68 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-balance text-4xl font-bold lg:text-5xl">{t.contactPage.title}</h1>
-          <p className="mx-auto max-w-2xl text-pretty text-lg text-muted-foreground">{t.contactPage.description}</p>
+        {/* Header */}
+        <div className="mb-16 text-center">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
+            <MessageSquare className="h-4 w-4" />
+            {t.contact}
+          </div>
+          <h1 className="mb-6 text-balance text-4xl font-bold lg:text-6xl tracking-tight">
+            {t.contactPage.title}
+          </h1>
+          <p className="mx-auto max-w-2xl text-pretty text-lg text-muted-foreground leading-relaxed">
+            {t.contactPage.description}
+          </p>
         </div>
 
-        <div className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-3">
-          <div className="lg:col-span-2">
+        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-5">
+          {/* Main Form */}
+          <div className="lg:col-span-3">
             <Card className={glowCardClass}>
               <div aria-hidden="true" className="pointer-events-none absolute inset-0">
                 <div className="absolute -top-24 left-8 h-48 w-48 rounded-full bg-purple-500/25 blur-3xl dark:bg-purple-400/40" />
-                <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-fuchsia-500/20 blur-3xl dark:bg-fuchsia-500/30" />
                 <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/70 to-transparent" />
               </div>
-              <CardHeader className="relative">
-                <CardTitle>{t.contactPage.form.title}</CardTitle>
-                <CardDescription>{t.contactPage.form.description}</CardDescription>
+              <CardHeader className="relative pb-8">
+                <CardTitle className="text-2xl">{t.contactPage.form.title}</CardTitle>
+                <CardDescription className="text-base">{t.contactPage.form.description}</CardDescription>
               </CardHeader>
               <CardContent className="relative">
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <input
                     type="text"
                     name="honeypot"
+                    className="hidden"
                     value={formData.honeypot}
                     onChange={(e) => setFormData((prev) => ({ ...prev, honeypot: e.target.value }))}
-                    style={{ display: "none" }}
                     tabIndex={-1}
                     autoComplete="off"
                   />
 
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName">{t.contactPage.form.labels.fullName}</Label>
-                    <Input
-                      id="fullName"
-                      required
-                      value={formData.fullName}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
-                      placeholder={t.contactPage.form.placeholders.fullName}
-                      className={inputClass}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="email">{t.contactPage.form.labels.email}</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
-                      placeholder={t.contactPage.form.placeholders.email}
-                      className={inputClass}
-                    />
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">{t.contactPage.form.labels.fullName}</Label>
+                      <Input
+                        id="fullName"
+                        required
+                        value={formData.fullName}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
+                        placeholder={t.contactPage.form.placeholders.fullName}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">{t.contactPage.form.labels.email}</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        required
+                        value={formData.email}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                        placeholder={t.contactPage.form.placeholders.email}
+                        className={inputClass}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
@@ -178,77 +186,125 @@ export default function ContactPage() {
                     />
                   </div>
 
+                  <div className="flex justify-center py-2">
+                    <HCaptcha
+                      ref={hcaptchaRef}
+                      sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
+                      onVerify={(token) => setCaptchaToken(token)}
+                      onExpire={() => setCaptchaToken(null)}
+                      theme="light"
+                    />
+                  </div>
+
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-600 text-white shadow-[0_15px_30px_-18px_rgba(168,85,247,0.9)] hover:from-purple-400 hover:via-fuchsia-500 hover:to-purple-500"
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-600 text-white shadow-xl hover:shadow-purple-500/25 transition-all duration-300"
                   >
-                    {loading ? t.contactPage.form.submitting : t.contactPage.form.submit}
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 animate-spin" />
+                        {t.contactPage.form.submitting}
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Send className="h-4 w-4" />
+                        {t.contactPage.form.submit}
+                      </span>
+                    )}
                   </Button>
                 </form>
               </CardContent>
             </Card>
           </div>
 
-          <div className="space-y-6">
+          {/* Sidebar Info */}
+          <div className="lg:col-span-2 space-y-8">
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold px-1">{t.contactPage.faq.title}</h3>
+              <Accordion type="single" collapsible className="w-full">
+                {t.contactPage.faq.items.map((item, i) => (
+                  <AccordionItem key={i} value={`item-${i}`} className="border-purple-100/50 dark:border-purple-400/20">
+                    <AccordionTrigger className="text-start hover:text-purple-600 dark:hover:text-purple-400 no-underline transition-colors">
+                      {item.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground leading-relaxed">
+                      {item.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+
             <Card className={glowCardClass}>
-              {glowBackdrop}
-              <CardContent className="relative pt-6">
-                <div className="mb-4 flex items-start gap-3">
-                  <Mail className="mt-1 h-5 w-5 text-muted-foreground" />
+              <CardContent className="pt-8 space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                    <Mail className="h-5 w-5" />
+                  </div>
                   <div>
-                    <div className="font-medium">{t.contactPage.contactDetails.email.label}</div>
-                    <div className="text-sm text-muted-foreground">{t.contactPage.contactDetails.email.value}</div>
+                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.email.label}</p>
+                    <p className="text-sm text-muted-foreground">{t.contactPage.contactDetails.email.value}</p>
                   </div>
                 </div>
 
-                <div className="mb-4 flex items-start gap-3">
-                  <WhatsAppIcon />
+                <div className="flex items-start gap-4">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                    <WhatsAppIcon />
+                  </div>
                   <div>
-                    <div className="font-medium">{t.contactPage.contactDetails.whatsapp.label}</div>
+                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.whatsapp.label}</p>
                     <a
                       href="https://wa.me/message/CWPGKLHKNYODN1"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-muted-foreground hover:text-purple-500 transition-colors"
                     >
                       {t.contactPage.contactDetails.whatsapp.cta}
                     </a>
                   </div>
                 </div>
 
-                <div className="mb-4 flex items-start gap-3">
-                  <TelegramIcon />
+                <div className="flex items-start gap-4">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                    <TelegramIcon />
+                  </div>
                   <div>
-                    <div className="font-medium">{t.contactPage.contactDetails.telegram.label}</div>
+                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.telegram.label}</p>
                     <a
                       href="https://t.me/jalalnasserr"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                      className="text-sm text-muted-foreground hover:text-purple-500 transition-colors"
                     >
                       {t.contactPage.contactDetails.telegram.cta}
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <MapPin className="mt-1 h-5 w-5 text-muted-foreground" />
+                <div className="flex items-start gap-4">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                    <MapPin className="h-5 w-5" />
+                  </div>
                   <div>
-                    <div className="font-medium">{t.contactPage.contactDetails.location.label}</div>
-                    <div className="text-sm text-muted-foreground">{t.contactPage.contactDetails.location.value}</div>
+                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.location.label}</p>
+                    <p className="text-sm text-muted-foreground">{t.contactPage.contactDetails.location.value}</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
 
-            <Card className={glowCardClass}>
-              {glowBackdrop}
-              <CardContent className="relative pt-6">
-                <h3 className="mb-2 font-semibold">{t.contactPage.contactDetails.hoursTitle}</h3>
-                <div className="space-y-1 text-sm text-muted-foreground">
-                  <div>{t.contactPage.contactDetails.hoursWeekday}</div>
-                  <div>{t.contactPage.contactDetails.hoursWeekend}</div>
+                <div className="pt-6 border-t border-purple-100/50 dark:border-purple-400/20">
+                  <p className="text-sm font-bold mb-3">{t.contactPage.contactDetails.hoursTitle}</p>
+                  <div className="space-y-1 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-3 w-3" />
+                      {t.contactPage.contactDetails.hoursWeekday}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-3 w-3 opacity-0" />
+                      {t.contactPage.contactDetails.hoursWeekend}
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

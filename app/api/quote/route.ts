@@ -22,6 +22,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 })
     }
 
+    // Verify hCaptcha
+    const { captchaToken } = body
+    if (!captchaToken) {
+      return NextResponse.json({ error: "hCaptcha token is missing" }, { status: 400 })
+    }
+
+    const hcaptchaResponse = await fetch("https://hcaptcha.com/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: process.env.HCAPTCHA_SECRET_KEY || "",
+        response: captchaToken,
+      }),
+    })
+    const hcaptchaData = await hcaptchaResponse.json()
+
+    if (!hcaptchaData.success) {
+      return NextResponse.json({ error: "hCaptcha verification failed" }, { status: 400 })
+    }
+
     // Validate input
     const validatedData = quoteSubmissionSchema.parse(body)
 
