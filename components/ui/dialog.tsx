@@ -8,9 +8,9 @@ export const DialogTrigger = DialogPrimitive.Trigger
 
 export const DialogContent = ({ className, ...props }: DialogPrimitive.DialogContentProps) => (
   <DialogPrimitive.Portal>
-    <DialogPrimitive.Overlay className="fixed inset-0 bg-black/40" />
+    <DialogPrimitive.Overlay className="fixed inset-0 bg-black/40 z-50" />
     <DialogPrimitive.Content
-      className={`fixed left-1/2 top-1/2 w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-md bg-background p-6 shadow-lg ${className ?? ""}`}
+      className={`fixed left-1/2 top-1/2 w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-md bg-background p-6 shadow-lg z-50 ${className ?? ""}`}
       {...props}
     />
   </DialogPrimitive.Portal>

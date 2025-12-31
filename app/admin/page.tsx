@@ -427,7 +427,7 @@ export default function AdminPage() {
                     <DialogTitle className="flex items-center justify-between">
                       <div className="flex flex-col gap-1">
                         <span className="text-2xl font-black text-glow-purple">Quote Summary</span>
-                        <span className="text-sm font-mono text-purple-400 font-bold">{viewingQuote?.quote_id}</span>
+                        <DialogDescription className="text-sm font-mono text-purple-400 font-bold">{viewingQuote?.quote_id}</DialogDescription>
                       </div>
                       <div className="text-right">
                         <div className="text-sm font-medium text-slate-400">Received</div>
@@ -666,6 +666,7 @@ export default function AdminPage() {
                   <div className="relative z-10">
                     <div className="p-8 border-b border-white/10 bg-white/5 text-center">
                       <DialogTitle className="text-2xl font-black text-glow-purple">{editingApp ? "Edit App" : "Add New App"}</DialogTitle>
+                      <DialogDescription className="text-slate-400 font-medium mt-1">Manage app details for the gallery.</DialogDescription>
                     </div>
                     <form onSubmit={handleAppSubmit} className="p-8 space-y-5 max-h-[70vh] overflow-y-auto">
                       <div className="grid gap-2">

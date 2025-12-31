@@ -19,8 +19,8 @@ export const SelectTrigger = ({ className, ...props }: SelectPrimitive.SelectTri
 export const SelectValue = SelectPrimitive.Value
 export const SelectContent = ({ className, ...props }: SelectPrimitive.SelectContentProps) => (
   <SelectPrimitive.Portal>
-    <SelectPrimitive.Content 
-      className={`absolute z-50 min-w-[200px] rounded-md border border-primary/20 bg-background p-1 shadow-lg ${className ?? ""}`}
+    <SelectPrimitive.Content
+      className={`absolute z-[100] min-w-[200px] rounded-md border border-primary/20 bg-background p-1 shadow-lg ${className ?? ""}`}
       position="popper"
       {...props}
     >
