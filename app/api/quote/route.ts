@@ -32,7 +32,12 @@ export async function POST(request: Request) {
     let finalQuoteId = validatedData.reservedQuoteId || "QT-PENDING"
 
     try {
-      const { supabaseAdmin } = await import("@/lib/supabase")
+      const { supabase, getSupabaseAdmin } = await import("@/lib/supabase")
+
+      // Use Admin client if available, fallback to standard supabase client
+      // The admin client bypasses RLS, but standard client relies on the 'Anyone can insert' policy
+      const adminClient = getSupabaseAdmin()
+      const db = adminClient || supabase
 
       const insertData: any = {
         full_name: validatedData.fullName,
@@ -52,9 +57,9 @@ export async function POST(request: Request) {
         insertData.quote_id = validatedData.reservedQuoteId;
       }
 
-      console.log("[Quotes API] Recording quote in Supabase...", insertData.quote_id || "new")
+      console.log(`[Quotes API] Recording quote in Supabase using ${adminClient ? 'Admin' : 'Anon'} client...`, insertData.quote_id || "new")
 
-      const { data: quoteData, error: dbError } = await supabaseAdmin
+      const { data: quoteData, error: dbError } = await db
         .from("quotes")
         .insert([insertData])
         .select("quote_id")
@@ -73,8 +78,6 @@ export async function POST(request: Request) {
       }
     } catch (dbError) {
       console.error("[Quotes API] Unexpected DB error:", dbError)
-      // We proceed with the reserved ID if DB fails but it's not a policy error 
-      // Actually, if it's an unexpected error, we might want to know.
     }
 
     // Generate email HTML with the FINAL ID
