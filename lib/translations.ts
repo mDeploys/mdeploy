@@ -229,12 +229,14 @@ export const translations = {
         labels: {
           fullName: "Full Name *",
           email: "Email *",
+          phone: "Phone",
           company: "Company / Organization",
           message: "Project Details *",
         },
         placeholders: {
           fullName: "John Doe",
           email: "john@example.com",
+          phone: "+966 5x xxx xxxx",
           company: "Acme Corp",
           message: "Describe your project, timeline, and technical requirements...",
         },
@@ -700,12 +702,14 @@ export const translations = {
         labels: {
           fullName: "الاسم الكامل *",
           email: "البريد الإلكتروني *",
+          phone: "رقم الهاتف",
           company: "الشركة / المنظمة",
           message: "تفاصيل المشروع *",
         },
         placeholders: {
           fullName: "محمد أحمد",
           email: "example@email.com",
+          phone: "+966 5x xxx xxxx",
           company: "اسم الشركة",
           message: "صف مشروعك، الجدول الزمني، والمتطلبات التقنية...",
         },

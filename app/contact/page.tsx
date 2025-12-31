@@ -43,6 +43,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
+    phone: "",
     company: "",
     message: "",
     honeypot: "",
@@ -73,7 +74,7 @@ export default function ContactPage() {
           title: t.contactPage.toast.successTitle,
           description: t.contactPage.toast.successDescription,
         })
-        setFormData({ fullName: "", email: "", company: "", message: "", honeypot: "" })
+        setFormData({ fullName: "", email: "", phone: "", company: "", message: "", honeypot: "" })
         setCaptchaToken(null)
         hcaptchaRef.current?.resetCaptcha()
       } else {
@@ -162,15 +163,28 @@ export default function ContactPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="company">{t.contactPage.form.labels.company}</Label>
-                    <Input
-                      id="company"
-                      value={formData.company}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
-                      placeholder={t.contactPage.form.placeholders.company}
-                      className={inputClass}
-                    />
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">{t.contactPage.form.labels.phone}</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+                        placeholder={t.contactPage.form.placeholders.phone}
+                        className={inputClass}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="company">{t.contactPage.form.labels.company}</Label>
+                      <Input
+                        id="company"
+                        value={formData.company}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
+                        placeholder={t.contactPage.form.placeholders.company}
+                        className={inputClass}
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">

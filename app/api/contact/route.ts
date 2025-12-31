@@ -48,6 +48,7 @@ export async function POST(request: Request) {
     const emailHTML = generateContactEmailHTML({
       fullName: validatedData.fullName,
       email: validatedData.email,
+      phone: validatedData.phone,
       company: validatedData.company,
       message: validatedData.message,
     })
