@@ -155,8 +155,11 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
     return formatCurrency(amount, currency)
   }
 
-  const formatBreakdownLabel = (template: string, count: number) =>
-    template.replace("{count}", count.toString())
+  const formatLabel = (template: string, priceSAR: number) =>
+    template.replace("{price}", displayAmount(priceSAR))
+
+  const formatBreakdownLabel = (template: string, count: number, priceSAR: number) =>
+    template.replace("{count}", count.toString()).replace("{price}", displayAmount(priceSAR))
 
   const checkboxClass = "h-4 w-4 rounded border-purple-300 text-purple-600 focus:ring-purple-500 accent-purple-600"
   const checkboxContainerClass = "flex items-center space-x-3 rounded-lg border border-purple-200/60 bg-white/50 p-3 hover:bg-white/80 transition-colors dark:border-purple-400/30 dark:bg-white/5 dark:hover:bg-white/10"
@@ -185,7 +188,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
       <CardContent className="relative space-y-8">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="websitePages">{t.serviceCalculator.fields.websitePages}</Label>
+            <Label htmlFor="websitePages">{formatLabel(t.serviceCalculator.fields.websitePages, config.websitePagePrice)}</Label>
             <Input
               id="websitePages"
               type="number"
@@ -198,7 +201,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="webAppPages">{t.serviceCalculator.fields.webAppPages}</Label>
+            <Label htmlFor="webAppPages">{formatLabel(t.serviceCalculator.fields.webAppPages, config.webAppPagePrice)}</Label>
             <Input
               id="webAppPages"
               type="number"
@@ -211,7 +214,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="ecommercePages">{t.serviceCalculator.fields.ecommercePages}</Label>
+            <Label htmlFor="ecommercePages">{formatLabel(t.serviceCalculator.fields.ecommercePages, config.ecommercePagePrice)}</Label>
             <Input
               id="ecommercePages"
               type="number"
@@ -224,7 +227,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mobileScreens">{t.serviceCalculator.fields.mobileScreens}</Label>
+            <Label htmlFor="mobileScreens">{formatLabel(t.serviceCalculator.fields.mobileScreens, config.mobileScreenPrice)}</Label>
             <Input
               id="mobileScreens"
               type="number"
@@ -237,7 +240,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="desktopFunctions">{t.serviceCalculator.fields.desktopFunctions}</Label>
+            <Label htmlFor="desktopFunctions">{formatLabel(t.serviceCalculator.fields.desktopFunctions, config.desktopFunctionPrice)}</Label>
             <Input
               id="desktopFunctions"
               type="number"
@@ -251,7 +254,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="landingPages">{t.serviceCalculator.fields.landingPages}</Label>
+            <Label htmlFor="landingPages">{formatLabel(t.serviceCalculator.fields.landingPages, config.landingPagePrice)}</Label>
             <Input
               id="landingPages"
               type="number"
@@ -264,7 +267,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="wordpressTemplates">{t.serviceCalculator.fields.wordpressTemplates}</Label>
+            <Label htmlFor="wordpressTemplates">{formatLabel(t.serviceCalculator.fields.wordpressTemplates, config.wordpressTemplatePrice)}</Label>
             <Input
               id="wordpressTemplates"
               type="number"
@@ -277,7 +280,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="logoDesigns">{t.serviceCalculator.fields.logoDesigns}</Label>
+            <Label htmlFor="logoDesigns">{formatLabel(t.serviceCalculator.fields.logoDesigns, config.logoDesignPrice)}</Label>
             <Input
               id="logoDesigns"
               type="number"
@@ -290,7 +293,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="brandingDesigns">{t.serviceCalculator.fields.brandingDesigns}</Label>
+            <Label htmlFor="brandingDesigns">{formatLabel(t.serviceCalculator.fields.brandingDesigns, config.brandingDesignPrice)}</Label>
             <Input
               id="brandingDesigns"
               type="number"
@@ -315,7 +318,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 className={checkboxClass}
               />
               <Label htmlFor="backendHosting" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
-                {t.serviceCalculator.fields.backendHosting}
+                {formatLabel(t.serviceCalculator.fields.backendHosting, config.backendHostingYearly)}
               </Label>
             </div>
 
@@ -328,7 +331,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 className={checkboxClass}
               />
               <Label htmlFor="webHosting5GB" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
-                {t.serviceCalculator.fields.webHosting5GB}
+                {formatLabel(t.serviceCalculator.fields.webHosting5GB, config.webHosting5GBYearly)}
               </Label>
             </div>
 
@@ -341,7 +344,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 className={checkboxClass}
               />
               <Label htmlFor="webHosting10GB" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
-                {t.serviceCalculator.fields.webHosting10GB}
+                {formatLabel(t.serviceCalculator.fields.webHosting10GB, config.webHosting10GBYearly)}
               </Label>
             </div>
 
@@ -354,7 +357,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 className={checkboxClass}
               />
               <Label htmlFor="cloudHosting20GB" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
-                {t.serviceCalculator.fields.cloudHosting20GB}
+                {formatLabel(t.serviceCalculator.fields.cloudHosting20GB, config.cloudHosting20GBYearly)}
               </Label>
             </div>
 
@@ -367,7 +370,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 className={checkboxClass}
               />
               <Label htmlFor="paymentGateway" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
-                {t.serviceCalculator.fields.paymentGateway}
+                {formatLabel(t.serviceCalculator.fields.paymentGateway, config.paymentGatewayOneTime)}
               </Label>
             </div>
 
@@ -380,7 +383,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 className={checkboxClass}
               />
               <Label htmlFor="mailServer" className="flex-1 cursor-pointer font-normal text-slate-700 dark:text-slate-300">
-                {t.serviceCalculator.fields.mailServer}
+                {formatLabel(t.serviceCalculator.fields.mailServer, config.mailServerOneTime)}
               </Label>
             </div>
           </div>
@@ -393,7 +396,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.websitePages > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.website, inputs.websitePages)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.website, inputs.websitePages, config.websitePagePrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.websiteCost)}</span>
                 </div>
@@ -401,7 +404,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.webAppPages > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.webApp, inputs.webAppPages)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.webApp, inputs.webAppPages, config.webAppPagePrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.webAppCost)}</span>
                 </div>
@@ -409,7 +412,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.ecommercePages > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.ecommerce, inputs.ecommercePages)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.ecommerce, inputs.ecommercePages, config.ecommercePagePrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.ecommerceCost)}</span>
                 </div>
@@ -417,7 +420,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.mobileScreens > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.mobile, inputs.mobileScreens)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.mobile, inputs.mobileScreens, config.mobileScreenPrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.mobileCost)}</span>
                 </div>
@@ -425,7 +428,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.desktopFunctions > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.desktop, inputs.desktopFunctions)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.desktop, inputs.desktopFunctions, config.desktopFunctionPrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.desktopCost)}</span>
                 </div>
@@ -433,7 +436,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.landingPages > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.landing, inputs.landingPages)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.landing, inputs.landingPages, config.landingPagePrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.landingCost)}</span>
                 </div>
@@ -444,6 +447,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                     {formatBreakdownLabel(
                       t.serviceCalculator.breakdownTemplates.wordpress,
                       inputs.wordpressTemplates,
+                      config.wordpressTemplatePrice
                     )}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.wordpressCost)}</span>
@@ -452,7 +456,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.logoDesigns > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.logo, inputs.logoDesigns)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.logo, inputs.logoDesigns, config.logoDesignPrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.logoCost)}</span>
                 </div>
@@ -460,7 +464,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               {inputs.brandingDesigns > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.branding, inputs.brandingDesigns)}
+                    {formatBreakdownLabel(t.serviceCalculator.breakdownTemplates.branding, inputs.brandingDesigns, config.brandingDesignPrice)}
                   </span>
                   <span className="font-medium">{displayAmount(breakdown.brandingCost)}</span>
                 </div>
@@ -470,37 +474,37 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                 <div className="border-t border-purple-200/60 pt-2 mt-2 dark:border-purple-400/30 space-y-2">
                   {inputs.backendHosting && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.backendHosting}</span>
+                      <span className="text-muted-foreground">{formatLabel(t.serviceCalculator.breakdownTemplates.backendHosting, config.backendHostingYearly)}</span>
                       <span className="font-medium">{displayAmount(config.backendHostingYearly)}</span>
                     </div>
                   )}
                   {inputs.webHosting5GB && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.webHosting5GB}</span>
+                      <span className="text-muted-foreground">{formatLabel(t.serviceCalculator.breakdownTemplates.webHosting5GB, config.webHosting5GBYearly)}</span>
                       <span className="font-medium">{displayAmount(config.webHosting5GBYearly)}</span>
                     </div>
                   )}
                   {inputs.webHosting10GB && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.webHosting10GB}</span>
+                      <span className="text-muted-foreground">{formatLabel(t.serviceCalculator.breakdownTemplates.webHosting10GB, config.webHosting10GBYearly)}</span>
                       <span className="font-medium">{displayAmount(config.webHosting10GBYearly)}</span>
                     </div>
                   )}
                   {inputs.cloudHosting20GB && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.cloudHosting20GB}</span>
+                      <span className="text-muted-foreground">{formatLabel(t.serviceCalculator.breakdownTemplates.cloudHosting20GB, config.cloudHosting20GBYearly)}</span>
                       <span className="font-medium">{displayAmount(config.cloudHosting20GBYearly)}</span>
                     </div>
                   )}
                   {inputs.paymentGateway && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.paymentGateway}</span>
+                      <span className="text-muted-foreground">{formatLabel(t.serviceCalculator.breakdownTemplates.paymentGateway, config.paymentGatewayOneTime)}</span>
                       <span className="font-medium">{displayAmount(config.paymentGatewayOneTime)}</span>
                     </div>
                   )}
                   {inputs.mailServer && (
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">{t.serviceCalculator.breakdownTemplates.mailServer}</span>
+                      <span className="text-muted-foreground">{formatLabel(t.serviceCalculator.breakdownTemplates.mailServer, config.mailServerOneTime)}</span>
                       <span className="font-medium">{displayAmount(config.mailServerOneTime)}</span>
                     </div>
                   )}
