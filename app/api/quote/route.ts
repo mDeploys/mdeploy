@@ -63,32 +63,38 @@ export async function POST(request: Request) {
 
       // Create description summary
       console.log("[Quotes API] Attempting to record quote in Supabase...")
+
+      const insertData: any = {
+        full_name: validatedData.fullName,
+        email: validatedData.email,
+        company: validatedData.company,
+        phone: validatedData.phone,
+        notes: validatedData.notes,
+        total_price: breakdown.total,
+        details: {
+          inputs: validatedData,
+          breakdown: breakdown,
+        },
+        status: "pending",
+      }
+
+      // If the client provided a reserved ID, use it (optional, trigger will handle if null)
+      if (body.reservedQuoteId) {
+        insertData.quote_id = body.reservedQuoteId;
+      }
+
       const { data: quoteData, error: dbError } = await supabase
         .from("quotes")
-        .insert([
-          {
-            full_name: validatedData.fullName,
-            email: validatedData.email,
-            company: validatedData.company,
-            phone: validatedData.phone,
-            notes: validatedData.notes,
-            total_price: breakdown.total,
-            details: {
-              inputs: validatedData,
-              breakdown: breakdown,
-            },
-            status: "pending",
-          },
-        ])
+        .insert([insertData])
         .select("quote_id")
         .single()
 
       if (dbError) {
-        console.error("[Quotes API] Database error:", dbError)
+        console.error("[Quotes API] Database error details:", JSON.stringify(dbError, null, 2))
         return NextResponse.json({
           success: true,
           emailSent: true,
-          error: "Recorded in email, but failed to save to dashboard."
+          error: `Recorded in email, but failed to save to dashboard: ${dbError.message}`
         })
       }
 

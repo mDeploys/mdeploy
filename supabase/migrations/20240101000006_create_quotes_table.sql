@@ -58,6 +58,18 @@ $$ LANGUAGE plpgsql;
 -- Cleanup existing trigger
 DROP TRIGGER IF EXISTS set_quote_id ON public.quotes;
 
+-- Function to get the next formatted quote_id (for preview)
+CREATE OR REPLACE FUNCTION public.get_next_quote_id()
+RETURNS TEXT AS $$
+DECLARE
+    next_val INTEGER;
+BEGIN
+    -- This WILL increment the sequence
+    next_val := nextval('quotes_quote_number_seq');
+    RETURN 'QT-' || LPAD(next_val::text, 4, '0');
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
 -- Trigger to automaticly set quote_id
 CREATE TRIGGER set_quote_id
 BEFORE INSERT ON public.quotes

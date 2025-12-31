@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -31,6 +31,22 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
     honeypot: "", // spam protection
   })
   const [submissionId, setSubmissionId] = useState<string | null>(null)
+  const [pendingId, setPendingId] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchPendingId() {
+      try {
+        const response = await fetch("/api/quote/id")
+        const data = await response.json()
+        if (data.quoteId) {
+          setPendingId(data.quoteId)
+        }
+      } catch (error) {
+        console.error("Failed to fetch pending ID:", error)
+      }
+    }
+    fetchPendingId()
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,6 +65,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
         body: JSON.stringify({
           ...formData,
           ...inputs,
+          reservedQuoteId: pendingId,
         }),
       })
 
@@ -105,16 +122,14 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
             autoComplete="off"
           />
 
-          {submissionId && (
+          {(submissionId || pendingId) && (
             <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 rounded-lg p-3 mb-6 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">Quote Reference ID:</span>
-              <span className="font-mono font-bold text-purple-600 dark:text-purple-400">{submissionId}</span>
-            </div>
-          )}
-
-          {!submissionId && (
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-4 text-center">
-              Reference ID will be assigned upon submission
+              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                {submissionId ? "Confirmed Reference ID:" : "Quote Reference ID:"}
+              </span>
+              <span className="font-mono font-bold text-purple-600 dark:text-purple-400">
+                {submissionId || pendingId}
+              </span>
             </div>
           )}
 
