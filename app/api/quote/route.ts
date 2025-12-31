@@ -30,7 +30,10 @@ export async function POST(request: Request) {
 
     // Generate email HTML
     const emailHTML = generateQuoteEmailHTML(
-      validatedData, // Client info
+      {
+        ...validatedData,
+        quoteId: validatedData.reservedQuoteId,
+      }, // Client info
       validatedData, // Quote inputs
       breakdown,
     )
@@ -92,10 +95,10 @@ export async function POST(request: Request) {
       if (dbError) {
         console.error("[Quotes API] Database error details:", JSON.stringify(dbError, null, 2))
         return NextResponse.json({
-          success: true,
+          success: false,
           emailSent: true,
-          error: `Recorded in email, but failed to save to dashboard: ${dbError.message}`
-        })
+          error: `Email sent, but failed to save to dashboard: ${dbError.message}`
+        }, { status: 400 })
       }
 
       console.log("[Quotes API] Success! Created quote:", quoteData?.quote_id)

@@ -13,6 +13,7 @@ export function generateQuoteEmailHTML(
     company?: string
     phone?: string
     notes?: string
+    quoteId?: string
   },
   inputs: QuoteInputs,
   breakdown: PriceBreakdown,
@@ -30,6 +31,7 @@ export function generateQuoteEmailHTML(
     <div style="background-color:#2e1065; background-image: linear-gradient(90deg, #020617 0%, #2e1065 50%, #020617 100%); color:#ffffff; padding:26px 20px; text-align:center; border-radius:14px 14px 0 0;">
       <img src="${logoUrl}" alt="mDeploy logo" width="150" height="60" style="display:block; margin:0 auto 12px; width:150px; height:auto;" />
       <h1 style="font-size:22px; font-weight:700; margin:0;">mDeploy Quote Request</h1>
+      ${data.quoteId ? `<p style="margin:5px 0 0; opacity:0.8; font-family:monospace; font-weight:bold; font-size:14px;">Reference: ${data.quoteId}</p>` : ""}
     </div>
     <div style="padding:22px; background:#ffffff; border:1px solid #e6e1f2; border-top:0; border-radius:0 0 14px 14px;">
       <div style="margin:20px 0;">

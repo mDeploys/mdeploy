@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { supabase, type Project, type Quote, type App, type PricingItem, getSession, isSupabaseConfigured } from "@/lib/supabase"
+import { supabase, type Project, type Quote, type App, type PricingItem, type Profile, getSession, isSupabaseConfigured } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,7 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Pencil, Trash2, Plus, Loader2 } from "lucide-react"
+import { Pencil, Trash2, Plus, Loader2, ShieldCheck, ShieldAlert } from "lucide-react"
 import { LogoutButton } from "./logout-button"
 import { toast } from "sonner"
 import { useLanguage } from "@/lib/language-context"
@@ -49,6 +49,7 @@ export default function AdminPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [apps, setApps] = useState<App[]>([])
   const [pricing, setPricing] = useState<PricingItem[]>([])
+  const [profile, setProfile] = useState<Profile | null>(null)
 
   // --- UI STATES ---
   const [activeTab, setActiveTab] = useState("quotes")
@@ -88,11 +89,26 @@ export default function AdminPage() {
         setLoading(false)
         return
       }
-      const { data } = await getSession()
-      if (!data.session) {
+
+      const { data: { session } } = await getSession()
+      if (!session) {
         router.replace("/admin/login")
         return
       }
+
+      // Fetch Profile for Role Check
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single()
+
+      if (profileData) {
+        setProfile(profileData)
+      } else if (profileError) {
+        console.error("Profile fetch error:", profileError)
+      }
+
       await loadAllData()
       setLoading(false)
     }
@@ -105,7 +121,12 @@ export default function AdminPage() {
 
   // --- QUOTES ---
   async function fetchQuotes() {
-    const { data } = await supabase.from("quotes").select("*").order("created_at", { ascending: false })
+    const { data, error } = await supabase.from("quotes").select("*").order("created_at", { ascending: false })
+    if (error) {
+      console.error("Fetch quotes error:", error)
+      toast.error(`Failed to load quotes: ${error.message}`)
+      return
+    }
     if (data) setQuotes(data)
   }
 
@@ -285,7 +306,18 @@ export default function AdminPage() {
           <h1 className="text-3xl font-extrabold tracking-tight">
             {t.adminDashboard.title}
           </h1>
-          <p className="text-slate-400 mt-1">Manage your platform data and submissions</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-slate-400">Manage your platform data and submissions</p>
+            {profile && (
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${profile.role === 'admin'
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                  : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                }`}>
+                {profile.role === 'admin' ? <ShieldCheck className="h-3 w-3" /> : <ShieldAlert className="h-3 w-3" />}
+                {profile.role}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -325,9 +357,9 @@ export default function AdminPage() {
                     <TableCell className="font-semibold">${q.total_price}</TableCell>
                     <TableCell>
                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${q.status === 'pending' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
-                        q.status === 'reviewed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                          q.status === 'converted' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                            'bg-red-100 text-red-700'
+                          q.status === 'reviewed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                            q.status === 'converted' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                              'bg-red-100 text-red-700'
                         }`}>
                         {q.status}
                       </span>
@@ -462,8 +494,8 @@ export default function AdminPage() {
                     </TableCell>
                     <TableCell>
                       <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${p.status === 'in_progress' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30' :
-                        p.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30' :
-                          'bg-slate-100 text-slate-700'
+                          p.status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/30' :
+                            'bg-slate-100 text-slate-700'
                         }`}>
                         {p.status.replace('_', ' ')}
                       </span>
