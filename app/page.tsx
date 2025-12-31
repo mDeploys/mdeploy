@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ServiceCalculator } from "@/components/service-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import Image from "next/image"
+import { TechMarquee } from "@/components/tech-marquee"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
 import { useEffect } from "react"
@@ -164,6 +165,11 @@ export default function HomePage() {
               </div>
             </div>
 
+            {/* Tech Marquee Integration - Mobile */}
+            <div className="mt-12 block lg:hidden pb-12">
+              <TechMarquee />
+            </div>
+
             {/* Floating cards illustration */}
             <div className="relative hidden lg:block">
               <div className="relative h-[500px]">
@@ -223,6 +229,11 @@ export default function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Tech Marquee - Added margin-bottom to move it up away from the bottom wave */}
+        <div className="container relative mx-auto hidden lg:block mb-32 z-10">
+          <TechMarquee />
         </div>
 
         {/* Bottom wave */}
