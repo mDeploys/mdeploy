@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS public.quotes (
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Grant sequence usage to public so triggers work for all roles
+GRANT USAGE, SELECT ON SEQUENCE quotes_quote_number_seq TO public;
+
 -- Enable RLS
 ALTER TABLE public.quotes ENABLE ROW LEVEL SECURITY;
 

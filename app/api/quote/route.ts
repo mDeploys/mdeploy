@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     let finalQuoteId = validatedData.reservedQuoteId || "QT-PENDING"
 
     try {
-      const { supabase } = await import("@/lib/supabase")
+      const { supabaseAdmin } = await import("@/lib/supabase")
 
       const insertData: any = {
         full_name: validatedData.fullName,
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
 
       console.log("[Quotes API] Recording quote in Supabase...", insertData.quote_id || "new")
 
-      const { data: quoteData, error: dbError } = await supabase
+      const { data: quoteData, error: dbError } = await supabaseAdmin
         .from("quotes")
         .insert([insertData])
         .select("quote_id")

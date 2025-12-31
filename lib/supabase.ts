@@ -19,6 +19,15 @@ export function assertSupabaseConfigured() {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+// Admin client that bypasses RLS - ONLY for server-side use
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false
+  }
+})
+
 export type Quote = {
   id: string
   quote_number: number
