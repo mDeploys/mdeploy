@@ -2,22 +2,22 @@
 
 import { usePathname } from "next/navigation"
 
-export function ConditionalLayout({ 
+export function ConditionalLayout({
   children,
   header,
-  footer 
-}: { 
+  footer
+}: {
   children: React.ReactNode
   header: React.ReactNode
   footer: React.ReactNode
 }) {
   const pathname = usePathname()
-  
-  // Hide header and footer on login page
-  if (pathname === "/admin/login") {
-    return <main>{children}</main>
+
+  // Hide header and footer on all admin pages
+  if (pathname.startsWith("/admin")) {
+    return <main className="min-h-screen bg-background">{children}</main>
   }
-  
+
   return (
     <>
       {header}

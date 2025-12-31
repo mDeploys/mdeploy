@@ -279,23 +279,22 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 pt-32 pb-24 min-h-screen">
-      <div className="flex items-center justify-between mb-8">
+    <div className="space-y-8 animate-in fade-in duration-500">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-fuchsia-400">
+          <h1 className="text-3xl font-extrabold tracking-tight">
             {t.adminDashboard.title}
           </h1>
-          <p className="text-muted-foreground mt-1">Manage your platform data and submissions</p>
+          <p className="text-slate-400 mt-1">Manage your platform data and submissions</p>
         </div>
-        <LogoutButton />
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="bg-muted/50 p-1 border">
-          <TabsTrigger value="quotes">Quote Requests</TabsTrigger>
-          <TabsTrigger value="projects">Active Projects</TabsTrigger>
-          <TabsTrigger value="apps">Apps Gallery</TabsTrigger>
-          <TabsTrigger value="pricing">Pricing</TabsTrigger>
+        <TabsList className="bg-slate-900/50 p-1 border border-white/5 rounded-xl">
+          <TabsTrigger value="quotes" className="rounded-lg">Quote Requests</TabsTrigger>
+          <TabsTrigger value="projects" className="rounded-lg">Active Projects</TabsTrigger>
+          <TabsTrigger value="apps" className="rounded-lg">Apps Gallery</TabsTrigger>
+          <TabsTrigger value="pricing" className="rounded-lg">Pricing</TabsTrigger>
         </TabsList>
 
         {/* QUOTES TAB */}
