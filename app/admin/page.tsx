@@ -58,6 +58,14 @@ export default function AdminPage() {
   // Quotes Dialog (View/Edit Status)
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false)
   const [viewingQuote, setViewingQuote] = useState<Quote | null>(null)
+  const [currency, setCurrency] = useState<'SAR' | 'USD'>('SAR')
+
+  const formatPrice = (amount: number) => {
+    if (currency === 'USD') {
+      return `$${(amount * 0.27).toFixed(0)}`
+    }
+    return `${amount} SAR`
+  }
 
   // Projects Dialog
   const [projectDialogOpen, setProjectDialogOpen] = useState(false)
@@ -324,6 +332,23 @@ export default function AdminPage() {
               )}
             </div>
           </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-xl p-1 shadow-inner">
+              <button
+                onClick={() => setCurrency('SAR')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${currency === 'SAR' ? 'bg-purple-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+              >
+                SAR
+              </button>
+              <button
+                onClick={() => setCurrency('USD')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all ${currency === 'USD' ? 'bg-purple-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+              >
+                USD
+              </button>
+            </div>
+            <LogoutButton />
+          </div>
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
@@ -370,7 +395,7 @@ export default function AdminPage() {
                       </TableCell>
                       <TableCell>
                         <span className="font-bold text-emerald-400 bg-emerald-400/5 px-2 py-1 rounded border border-emerald-400/20">
-                          {q.total_price} SAR
+                          {formatPrice(q.total_price)}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -507,7 +532,7 @@ export default function AdminPage() {
                         </div>
                         <div className="text-right">
                           <p className="text-xs text-muted-foreground italic">Estimated Total</p>
-                          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">${viewingQuote.total_price}</p>
+                          <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">{formatPrice(viewingQuote.total_price)}</p>
                         </div>
                       </div>
                     </div>
@@ -560,7 +585,7 @@ export default function AdminPage() {
                           {p.status.replace('_', ' ')}
                         </Badge>
                       </TableCell>
-                      <TableCell className="font-black text-purple-400 font-mono text-lg">${p.price}</TableCell>
+                      <TableCell className="font-black text-purple-400 font-mono text-lg">{formatPrice(p.price)}</TableCell>
                       <TableCell className="text-right px-6">
                         <div className="flex justify-end gap-2">
                           <Button variant="ghost" size="icon" onClick={() => openProjectEdit(p)} className="hover:bg-purple-500/20 text-slate-400 hover:text-white transition-colors">
@@ -637,7 +662,7 @@ export default function AdminPage() {
                       </div>
                     </div>
                     <div className="grid gap-2">
-                      <Label>Project Budget (SAR)</Label>
+                      <Label>Project Budget ({currency})</Label>
                       <Input type="number" value={projectForm.price} onChange={e => setProjectForm({ ...projectForm, price: parseFloat(e.target.value) })} required />
                     </div>
                     <div className="pt-6 border-t border-white/10 flex justify-end gap-3">
@@ -747,7 +772,7 @@ export default function AdminPage() {
                         {item.label}
                       </Label>
                       <div className="flex gap-2 relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 font-black text-xs">SAR</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400 font-black text-xs">{currency}</span>
                         <Input
                           id={`price-${item.key}`}
                           type="number"

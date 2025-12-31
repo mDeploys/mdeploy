@@ -17,7 +17,7 @@ export const SelectTrigger = ({ className, ...props }: SelectPrimitive.SelectTri
   </SelectPrimitive.Trigger>
 )
 export const SelectValue = SelectPrimitive.Value
-export const SelectContent = ({ className, ...props }: SelectPrimitive.SelectContentProps) => (
+export const SelectContent = ({ className, children, ...props }: SelectPrimitive.SelectContentProps & { children?: React.ReactNode }) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       className={`absolute z-[100] min-w-[200px] rounded-md border border-primary/20 bg-background p-1 shadow-lg ${className ?? ""}`}
@@ -25,7 +25,7 @@ export const SelectContent = ({ className, ...props }: SelectPrimitive.SelectCon
       {...props}
     >
       <SelectPrimitive.ScrollUpButton className="flex cursor-pointer items-center justify-center py-1" />
-      <SelectPrimitive.Viewport className="p-1" />
+      <SelectPrimitive.Viewport className="p-1">{children}</SelectPrimitive.Viewport>
       <SelectPrimitive.ScrollDownButton className="flex cursor-pointer items-center justify-center py-1" />
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
