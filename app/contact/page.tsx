@@ -36,14 +36,15 @@ export default function ContactPage() {
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
   const inputClass =
-    "bg-white/70 border-purple-200/60 text-slate-900 placeholder:text-slate-400 focus-visible:border-purple-400 focus-visible:ring-purple-200/60 dark:bg-white/5 dark:border-purple-400/30 dark:text-slate-100 dark:placeholder:text-purple-200/60 dark:focus-visible:border-purple-300 dark:focus-visible:ring-purple-400/40"
-  const glowCardClass =
-    "relative overflow-hidden border border-purple-200/60 bg-white/85 shadow-[0_0_40px_-30px_rgba(147,51,234,0.5)] dark:border-purple-400/30 dark:bg-gradient-to-br dark:from-purple-500/20 dark:via-[#12062a]/90 dark:to-[#090414] dark:shadow-[0_0_80px_-40px_rgba(168,85,247,0.9)]"
+    "bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl transition-all font-medium text-white"
+  const glassCardClass =
+    "glass-card border-white/10 shadow-2xl relative overflow-hidden rounded-3xl animate-in fade-in duration-700"
 
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
+    country: "",
     company: "",
     message: "",
     honeypot: "",
@@ -74,7 +75,7 @@ export default function ContactPage() {
           title: t.contactPage.toast.successTitle,
           description: t.contactPage.toast.successDescription,
         })
-        setFormData({ fullName: "", email: "", phone: "", company: "", message: "", honeypot: "" })
+        setFormData({ fullName: "", email: "", phone: "", country: "", company: "", message: "", honeypot: "" })
         setCaptchaToken(null)
         hcaptchaRef.current?.resetCaptcha()
       } else {
@@ -116,16 +117,17 @@ export default function ContactPage() {
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-5">
           {/* Main Form */}
           <div className="lg:col-span-3">
-            <Card className={glowCardClass}>
-              <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-                <div className="absolute -top-24 left-8 h-48 w-48 rounded-full bg-purple-500/25 blur-3xl dark:bg-purple-400/40" />
-                <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-purple-400/70 to-transparent" />
-              </div>
-              <CardHeader className="relative pb-8">
-                <CardTitle className="text-2xl">{t.contactPage.form.title}</CardTitle>
-                <CardDescription className="text-base">{t.contactPage.form.description}</CardDescription>
+            <Card className={glassCardClass}>
+              <div className="cosmic-gradient absolute inset-0 opacity-40 pointer-events-none" />
+              <CardHeader className="relative z-10 pb-2">
+                <CardTitle className="text-3xl font-black text-white text-glow-purple tracking-tight">
+                  {t.contactPage.form.title}
+                </CardTitle>
+                <CardDescription className="text-slate-400 font-medium">
+                  {t.contactPage.form.description}
+                </CardDescription>
               </CardHeader>
-              <CardContent className="relative">
+              <CardContent className="relative z-10 pt-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <input
                     type="text"
@@ -138,8 +140,10 @@ export default function ContactPage() {
                   />
 
                   <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="fullName">{t.contactPage.form.labels.fullName}</Label>
+                    <div className="space-y-2 group">
+                      <Label htmlFor="fullName" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                        {t.contactPage.form.labels.fullName}
+                      </Label>
                       <Input
                         id="fullName"
                         required
@@ -149,8 +153,10 @@ export default function ContactPage() {
                         className={inputClass}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">{t.contactPage.form.labels.email}</Label>
+                    <div className="space-y-2 group">
+                      <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                        {t.contactPage.form.labels.email}
+                      </Label>
                       <Input
                         id="email"
                         type="email"
@@ -164,8 +170,10 @@ export default function ContactPage() {
                   </div>
 
                   <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">{t.contactPage.form.labels.phone}</Label>
+                    <div className="space-y-2 group">
+                      <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                        {t.contactPage.form.labels.phone}
+                      </Label>
                       <Input
                         id="phone"
                         type="tel"
@@ -175,58 +183,71 @@ export default function ContactPage() {
                         className={inputClass}
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="company">{t.contactPage.form.labels.company}</Label>
+                    <div className="space-y-2 group">
+                      <Label htmlFor="country" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                        {t.contactPage.form.labels.country}
+                      </Label>
                       <Input
-                        id="company"
-                        value={formData.company}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
-                        placeholder={t.contactPage.form.placeholders.company}
+                        id="country"
+                        value={formData.country}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, country: e.target.value }))}
+                        placeholder={t.contactPage.form.placeholders.country}
                         className={inputClass}
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="message">{t.contactPage.form.labels.message}</Label>
+                  <div className="space-y-2 group">
+                    <Label htmlFor="company" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                      {t.contactPage.form.labels.company}
+                    </Label>
+                    <Input
+                      id="company"
+                      value={formData.company}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
+                      placeholder={t.contactPage.form.placeholders.company}
+                      className={inputClass}
+                    />
+                  </div>
+
+                  <div className="space-y-2 group">
+                    <Label htmlFor="message" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                      {t.contactPage.form.labels.message}
+                    </Label>
                     <Textarea
                       id="message"
                       required
                       value={formData.message}
                       onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                       placeholder={t.contactPage.form.placeholders.message}
-                      rows={6}
-                      className={inputClass}
+                      rows={4}
+                      className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 rounded-2xl transition-all font-medium text-white resize-none"
                     />
                   </div>
 
                   <div className="flex justify-center py-2">
                     <HCaptcha
                       ref={hcaptchaRef}
+                      key={language}
                       sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
                       onVerify={(token) => setCaptchaToken(token)}
                       onExpire={() => setCaptchaToken(null)}
-                      theme="light"
+                      theme="dark"
+                      languageOverride={language}
                     />
                   </div>
 
                   <Button
                     type="submit"
                     disabled={loading}
-                    size="lg"
-                    className="w-full bg-gradient-to-r from-purple-500 via-fuchsia-500 to-purple-600 text-white shadow-xl hover:shadow-purple-500/25 transition-all duration-300"
+                    className="w-full h-14 bg-purple-600 hover:bg-purple-500 text-white font-black text-lg rounded-2xl lightning-shadow-hover hover:scale-[1.02] active:scale-[0.98] transition-all"
                   >
                     {loading ? (
-                      <span className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 animate-spin" />
+                      <div className="flex items-center gap-2 justify-center">
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         {t.contactPage.form.submitting}
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-2">
-                        <Send className="h-4 w-4" />
-                        {t.contactPage.form.submit}
-                      </span>
-                    )}
+                      </div>
+                    ) : t.contactPage.form.submit}
                   </Button>
                 </form>
               </CardContent>
@@ -251,71 +272,72 @@ export default function ContactPage() {
               </Accordion>
             </div>
 
-            <Card className={glowCardClass}>
-              <CardContent className="pt-8 space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+            <Card className={glassCardClass}>
+              <div className="cosmic-gradient absolute inset-0 opacity-40 pointer-events-none" />
+              <CardContent className="relative z-10 pt-8 space-y-6">
+                <div className="flex items-start gap-4 group">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:bg-purple-500/20 transition-colors">
                     <Mail className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.email.label}</p>
-                    <p className="text-sm text-muted-foreground">{t.contactPage.contactDetails.email.value}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t.contactPage.contactDetails.email.label}</p>
+                    <p className="text-slate-200 font-medium">{t.contactPage.contactDetails.email.value}</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
+                <div className="flex items-start gap-4 group">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 group-hover:bg-green-500/20 transition-colors">
                     <WhatsAppIcon />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.whatsapp.label}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t.contactPage.contactDetails.whatsapp.label}</p>
                     <a
                       href="https://wa.me/message/CWPGKLHKNYODN1"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-purple-500 transition-colors"
+                      className="text-slate-200 font-medium hover:text-purple-400 transition-colors"
                     >
                       {t.contactPage.contactDetails.whatsapp.cta}
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                <div className="flex items-start gap-4 group">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 group-hover:bg-blue-500/20 transition-colors">
                     <TelegramIcon />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.telegram.label}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t.contactPage.contactDetails.telegram.label}</p>
                     <a
                       href="https://t.me/jalalnasserr"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground hover:text-purple-500 transition-colors"
+                      className="text-slate-200 font-medium hover:text-purple-400 transition-colors"
                     >
                       {t.contactPage.contactDetails.telegram.cta}
                     </a>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+                <div className="flex items-start gap-4 group">
+                  <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 group-hover:bg-purple-500/20 transition-colors">
                     <MapPin className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">{t.contactPage.contactDetails.location.label}</p>
-                    <p className="text-sm text-muted-foreground">{t.contactPage.contactDetails.location.value}</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-slate-400">{t.contactPage.contactDetails.location.label}</p>
+                    <p className="text-slate-200 font-medium">{t.contactPage.contactDetails.location.value}</p>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-purple-100/50 dark:border-purple-400/20">
-                  <p className="text-sm font-bold mb-3">{t.contactPage.contactDetails.hoursTitle}</p>
-                  <div className="space-y-1 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-3 w-3" />
+                <div className="pt-6 border-t border-white/10">
+                  <p className="text-xs font-bold uppercase tracking-wider text-purple-400 mb-4">{t.contactPage.contactDetails.hoursTitle}</p>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-3 text-slate-300">
+                      <div className="w-1.5 h-1.5 rounded-full bg-purple-500" />
                       {t.contactPage.contactDetails.hoursWeekday}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-3 w-3 opacity-0" />
+                    <div className="flex items-center gap-3 text-slate-300">
+                      <div className="w-1.5 h-1.5 rounded-full bg-slate-600" />
                       {t.contactPage.contactDetails.hoursWeekend}
                     </div>
                   </div>

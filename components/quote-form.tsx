@@ -238,10 +238,12 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           <div className="flex justify-center py-2">
             <HCaptcha
               ref={hcaptchaRef}
+              key={language}
               sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
               onVerify={(token) => setCaptchaToken(token)}
               onExpire={() => setCaptchaToken(null)}
               theme="dark"
+              languageOverride={language}
             />
           </div>
 

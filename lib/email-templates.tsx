@@ -193,6 +193,7 @@ export function generateContactEmailHTML(data: {
   email: string
   company?: string
   phone?: string
+  country?: string
   message: string
 }): string {
   const logoUrl = "https://mdeploy.dev/logo.png"
@@ -220,6 +221,7 @@ export function generateContactEmailHTML(data: {
               <p><strong>Name:</strong> ${data.fullName}</p>
               <p><strong>Email:</strong> ${data.email}</p>
               ${data.phone ? `<p><strong>Phone:</strong> ${data.phone}</p>` : ""}
+              ${data.country ? `<p><strong>Country:</strong> ${data.country}</p>` : ""}
               ${data.company ? `<p><strong>Company:</strong> ${data.company}</p>` : ""}
               <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
                 <h2 style="font-size: 16px; margin: 0 0 10px;">Message</h2>

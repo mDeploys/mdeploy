@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       fullName: validatedData.fullName,
       email: validatedData.email,
       phone: validatedData.phone,
+      country: validatedData.country,
       company: validatedData.company,
       message: validatedData.message,
     })
