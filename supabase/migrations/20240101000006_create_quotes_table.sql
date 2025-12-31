@@ -37,7 +37,7 @@ USING (public.get_user_role(auth.uid()) = 'admin');
 CREATE POLICY "Anyone can insert quotes"
 ON public.quotes
 FOR INSERT
-TO anon
+TO public
 WITH CHECK (true);
 
 -- Function to format quote_id before insert

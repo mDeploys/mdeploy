@@ -28,44 +28,11 @@ export async function POST(request: Request) {
     // Calculate pricing
     const breakdown = calculatePrice(validatedData)
 
-    // Generate email HTML
-    const emailHTML = generateQuoteEmailHTML(
-      {
-        ...validatedData,
-        quoteId: validatedData.reservedQuoteId,
-      }, // Client info
-      validatedData, // Quote inputs
-      breakdown,
-    )
+    // --- Record in Supabase First (to get the official ID for the email) ---
+    let finalQuoteId = validatedData.reservedQuoteId || "QT-PENDING"
 
-    // Send email to business
-    await resend.emails.send({
-      from: process.env.FROM_EMAIL || "no-reply@mdeploy.dev",
-      to: process.env.BUSINESS_TO_EMAIL || "hello@mdeploy.dev",
-      subject: `New Quote Request from ${validatedData.fullName}`,
-      html: emailHTML,
-    })
-
-    // Send confirmation email to user
-    await resend.emails.send({
-      from: process.env.FROM_EMAIL || "no-reply@mdeploy.dev",
-      to: validatedData.email,
-      subject: "Your mDeploy Quote Request",
-      html: emailHTML,
-    })
-
-    // --- Record in Supabase Admin Panel ---
     try {
       const { supabase } = await import("@/lib/supabase")
-
-      // Determine dominant project type
-      let projectType: 'website' | 'web_app' | 'mobile_app' | 'desktop_app' = 'website'
-      if (validatedData.mobileScreens > 0) projectType = 'mobile_app'
-      else if (validatedData.desktopFunctions > 0) projectType = 'desktop_app'
-      else if (validatedData.webAppPages > 0 || validatedData.ecommercePages > 0) projectType = 'web_app'
-
-      // Create description summary
-      console.log("[Quotes API] Attempting to record quote in Supabase...")
 
       const insertData: any = {
         full_name: validatedData.fullName,
@@ -81,10 +48,11 @@ export async function POST(request: Request) {
         status: "pending",
       }
 
-      // If the client provided a reserved ID, use it (optional, trigger will handle if null)
-      if (body.reservedQuoteId) {
-        insertData.quote_id = body.reservedQuoteId;
+      if (validatedData.reservedQuoteId) {
+        insertData.quote_id = validatedData.reservedQuoteId;
       }
+
+      console.log("[Quotes API] Recording quote in Supabase...", insertData.quote_id || "new")
 
       const { data: quoteData, error: dbError } = await supabase
         .from("quotes")
@@ -93,23 +61,56 @@ export async function POST(request: Request) {
         .single()
 
       if (dbError) {
-        console.error("[Quotes API] Database error details:", JSON.stringify(dbError, null, 2))
+        console.error("[Quotes API] Database error:", dbError)
         return NextResponse.json({
           success: false,
-          emailSent: true,
-          error: `Email sent, but failed to save to dashboard: ${dbError.message}`
+          error: `Failed to save to dashboard: ${dbError.message}`
         }, { status: 400 })
       }
 
-      console.log("[Quotes API] Success! Created quote:", quoteData?.quote_id)
-      return NextResponse.json({
-        success: true,
-        quoteId: quoteData?.quote_id
-      })
+      if (quoteData?.quote_id) {
+        finalQuoteId = quoteData.quote_id
+      }
     } catch (dbError) {
-      console.error("[Quotes API] Unexpected error:", dbError)
-      return NextResponse.json({ success: true, emailSent: true })
+      console.error("[Quotes API] Unexpected DB error:", dbError)
+      // We proceed with the reserved ID if DB fails but it's not a policy error 
+      // Actually, if it's an unexpected error, we might want to know.
     }
+
+    // Generate email HTML with the FINAL ID
+    const emailHTML = generateQuoteEmailHTML(
+      {
+        ...validatedData,
+        quoteId: finalQuoteId,
+      },
+      validatedData,
+      breakdown,
+    )
+
+    // Send emails
+    console.log("[Quotes API] Sending emails for:", finalQuoteId)
+
+    const [bizEmail, userEmail] = await Promise.all([
+      resend.emails.send({
+        from: process.env.FROM_EMAIL || "no-reply@mdeploy.dev",
+        to: process.env.BUSINESS_TO_EMAIL || "hello@mdeploy.dev",
+        subject: `New Quote Request [${finalQuoteId}] from ${validatedData.fullName}`,
+        html: emailHTML,
+      }),
+      resend.emails.send({
+        from: process.env.FROM_EMAIL || "no-reply@mdeploy.dev",
+        to: validatedData.email,
+        subject: `Your mDeploy Quote Request - ${finalQuoteId}`,
+        html: emailHTML,
+      })
+    ])
+
+    return NextResponse.json({
+      success: true,
+      quoteId: finalQuoteId,
+      emailSent: !bizEmail.error && !userEmail.error
+    })
+
   } catch (error) {
     console.error("[v0] Quote submission error:", error)
     return NextResponse.json({ error: "Failed to process quote request" }, { status: 500 })

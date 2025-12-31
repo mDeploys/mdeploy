@@ -30,7 +30,7 @@ export const quoteSubmissionSchema = z.object({
   cloudHosting20GB: z.boolean().default(false),
   paymentGateway: z.boolean().default(false),
   mailServer: z.boolean().default(false),
-  reservedQuoteId: z.string().optional(),
+  reservedQuoteId: z.string().nullable().optional(),
 })
 
 export const contactFormSchema = z.object({
