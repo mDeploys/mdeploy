@@ -91,7 +91,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-x-hidden w-full max-w-[100vw]">
       <div className="bg-noise" />
       <section className="relative min-h-[95vh] overflow-hidden scroll-reveal is-visible" data-reveal>
         {/* Animated gradient background */}
@@ -112,39 +112,45 @@ export default function HomePage() {
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div className="text-center lg:text-start">
               {/* Badge */}
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-yellow-400" />
-                {t.hero.badge}
+              {/* Badge */}
+              <div className="mb-6 inline-flex max-w-[85vw] flex-wrap justify-center items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm font-medium text-white backdrop-blur-sm">
+                <Sparkles className="h-4 w-4 text-white shrink-0" />
+                <span className="truncate block max-w-[200px] sm:max-w-full">{t.hero.badge}</span>
               </div>
 
-              <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight text-white lg:text-6xl xl:text-7xl">
+              <h1 className="mb-6 w-full max-w-[85vw] lg:max-w-full lg:text-balance break-words text-4xl font-bold tracking-tight text-white lg:text-6xl xl:text-7xl">
                 {t.hero.title}
                 <span className="block bg-gradient-to-r from-purple-300 via-pink-300 to-fuchsia-300 bg-clip-text text-transparent">
                   {t.hero.emphasis}
                 </span>
               </h1>
 
-              <p className="mb-8 text-pretty text-lg text-purple-100/90 lg:text-xl">
+              <p className="mb-8 w-full max-w-[85vw] lg:max-w-full text-pretty break-words text-lg text-purple-100/90 lg:text-xl">
                 {t.hero.description}
               </p>
 
-              <div className="flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
+              <div className="relative z-20 flex w-full max-w-full flex-col items-center gap-4 sm:flex-row lg:justify-start px-2">
                 <Button
                   asChild
                   size="lg"
-                  className="h-14 px-8 text-base bg-white text-purple-900 shadow-xl shadow-purple-900/30 hover:bg-purple-100"
+                  className="w-full sm:w-auto !min-h-[3.5rem] !h-auto !px-3 sm:!px-8 !py-3 !text-base !whitespace-normal bg-white text-purple-900 shadow-xl shadow-purple-900/30 hover:bg-purple-100"
                 >
-                  <Link href="/calculator">
-                    {t.hero.primaryCta} <ArrowRight className="ml-2 h-5 w-5" />
+                  <Link href="/calculator" className="flex flex-wrap items-center justify-center gap-2 text-center w-full">
+                    <span className="hidden sm:inline break-words">{t.hero.primaryCta}</span>
+                    <span className="sm:hidden">Calculator</span>
+                    <ArrowRight className="h-5 w-5 shrink-0" />
                   </Link>
                 </Button>
                 <Button
                   asChild
                   variant="outline"
                   size="lg"
-                  className="h-14 px-8 text-base border-2 border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+                  className="w-full sm:w-auto !min-h-[3.5rem] !h-auto !px-3 sm:!px-8 !py-3 !text-base !whitespace-normal border-2 border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
                 >
-                  <Link href="/contact">{t.hero.secondaryCta}</Link>
+                  <Link href="/contact" className="flex flex-wrap items-center justify-center text-center w-full">
+                    <span className="hidden sm:inline break-words">{t.hero.secondaryCta}</span>
+                    <span className="sm:hidden">Contact</span>
+                  </Link>
                 </Button>
               </div>
 
@@ -166,7 +172,7 @@ export default function HomePage() {
             </div>
 
             {/* Tech Marquee Integration - Mobile */}
-            <div className="mt-12 block lg:hidden pb-12">
+            <div className="mt-12 block lg:hidden pb-12 w-full max-w-[100vw] overflow-hidden">
               <TechMarquee />
             </div>
 

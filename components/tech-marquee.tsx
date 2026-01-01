@@ -43,7 +43,7 @@ export function TechMarquee() {
         <div className="relative flex w-full flex-col items-center justify-center overflow-hidden py-10 lg:py-16">
             {/* Background blur/fade effect for smoother integration */}
             <div className="flex w-full overflow-hidden mask-image-gradient">
-                <div className="flex min-w-full shrink-0 animate-marquee items-center justify-around gap-12 lg:gap-24 py-4">
+                <div className="flex min-w-full shrink-0 animate-marquee items-center justify-around gap-8 lg:gap-24 py-4">
                     {techs.map((tech) => (
                         <div
                             key={tech.name}
@@ -68,7 +68,7 @@ export function TechMarquee() {
                         </div>
                     ))}
                 </div>
-                <div aria-hidden="true" className="flex min-w-full shrink-0 animate-marquee items-center justify-around gap-12 lg:gap-24 py-4">
+                <div aria-hidden="true" className="flex min-w-full shrink-0 animate-marquee items-center justify-around gap-8 lg:gap-24 py-4">
                     {techs.map((tech) => (
                         <div
                             key={`${tech.name}-clone`}
