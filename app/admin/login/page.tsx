@@ -1,5 +1,6 @@
 "use client"
 
+import HCaptcha from "@hcaptcha/react-hcaptcha"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -18,6 +19,7 @@ export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const { language } = useLanguage()
   const t = translations[language]
 
@@ -27,24 +29,44 @@ export default function AdminLoginPage() {
       toast.error(t.adminLogin.toast.configMissing)
       return
     }
+
+    if (!captchaToken) {
+      toast.error("Please complete the captcha verification")
+      return
+    }
+
     setLoading(true)
     try {
       const { data, error } = await signInWithEmail(email, password)
       if (error) {
-        const message = error.message.toLowerCase().includes("invalid login")
-          ? t.adminLogin.toast.invalidCredentials
-          : error.message
+        console.error("Login Error Details:", error)
+
+        // Map specific error statuses to user-friendly messages
+        let message = t.adminLogin.toast.networkError
+
+        if (error.status === 400 || error.message.toLowerCase().includes("invalid login")) {
+          // 400 Bad Request usually means Invalid Credentials in auth
+          message = t.adminLogin.toast.invalidCredentials
+        } else if (error.status === 500) {
+          // 500 Internal Server Error
+          message = "Development System Error: Please check Supabase logs and triggers."
+        } else if (error.message) {
+          // Fallback to error message from server
+          message = error.message
+        }
+
         toast.error(message)
         return
       }
+
       if (data?.session?.access_token) {
         setAdminAuthCookie(data.session.access_token)
       }
       toast.success(t.adminLogin.toast.signInSuccess)
       router.replace("/admin")
-    } catch (err) {
-      console.error("Admin login error:", err)
-      toast.error(t.adminLogin.toast.networkError)
+    } catch (err: any) {
+      console.error("Admin login unexpected error:", err)
+      toast.error("Critical Application Error: " + (err.message || "Unknown"))
     } finally {
       setLoading(false)
     }
@@ -106,6 +128,15 @@ export default function AdminLoginPage() {
                 placeholder="••••••••"
                 required
                 className="bg-white/10 border-purple-500/30 text-white placeholder:text-white/40 focus:border-purple-400 focus:ring-purple-400/20"
+              />
+            </div>
+
+            {/* hCaptcha */}
+            <div className="flex justify-center py-2">
+              <HCaptcha
+                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
+                onVerify={(token) => setCaptchaToken(token)}
+                theme="dark" // Matches the dark theme
               />
             </div>
 
