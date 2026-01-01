@@ -89,6 +89,7 @@ export default function AdminPage() {
     url: "",
     preview_url: "",
     description: "",
+    description_ar: "",
     download_url: "",
   })
 
@@ -271,6 +272,7 @@ export default function AdminPage() {
       url: "",
       preview_url: "",
       description: "",
+      description_ar: "",
       download_url: "",
     })
   }
@@ -283,6 +285,7 @@ export default function AdminPage() {
       url: app.url || "",
       preview_url: app.preview_url || "",
       description: app.description || "",
+      description_ar: app.description_ar || "",
       download_url: app.download_url || "",
     })
     setAppDialogOpen(true)
@@ -716,6 +719,32 @@ export default function AdminPage() {
                       <div className="grid gap-2">
                         <Label htmlFor="app-desc" className="text-xs font-black uppercase tracking-widest text-slate-500">{t.appsGallery.form.description}</Label>
                         <Textarea id="app-desc" value={appForm.description} onChange={e => setAppForm({ ...appForm, description: e.target.value })} className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 rounded-xl text-white font-medium min-h-[100px]" placeholder="Briefly describe what this app does..." rows={3} />
+                      </div>
+                      <div className="grid gap-2">
+                        <div className="flex justify-between items-center">
+                          <Label htmlFor="app-desc-ar" className="text-xs font-black uppercase tracking-widest text-slate-500">Arabic Description {t.appsGallery.form.descriptionAr}</Label>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={async () => {
+                              if (!appForm.description) return toast.error("Please enter English description first")
+                              toast.info("Translating...")
+                              try {
+                                const { translateText } = await import("@/app/actions/translate")
+                                const translated = await translateText(appForm.description)
+                                setAppForm(prev => ({ ...prev, description_ar: translated }))
+                                toast.success("Translated!")
+                              } catch (e) {
+                                toast.error("Translation failed")
+                              }
+                            }}
+                            className="h-6 text-[10px] bg-purple-500/10 text-purple-400 hover:text-purple-300 border border-purple-500/20"
+                          >
+                            ✨ Auto Translate
+                          </Button>
+                        </div>
+                        <Textarea dir="rtl" id="app-desc-ar" value={appForm.description_ar} onChange={e => setAppForm({ ...appForm, description_ar: e.target.value })} className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 rounded-xl text-white font-medium min-h-[100px]" placeholder="وصف التطبيق بالعربية..." rows={3} />
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="app-download" className="text-xs font-black uppercase tracking-widest text-slate-500">{t.appsGallery.form.downloadUrl}</Label>

@@ -475,6 +475,7 @@ export const translations = {
         url: "Project URL",
         previewUrl: "Preview URL",
         description: "Project Description",
+        descriptionAr: "(Arabic)",
         downloadUrl: "Download Link",
       }
     },
@@ -952,6 +953,7 @@ export const translations = {
         url: "رابط المشروع",
         previewUrl: "رابط المعاينة",
         description: "وصف المشروع",
+        descriptionAr: "(بالعربية)",
         downloadUrl: "رابط التحميل",
       }
     },

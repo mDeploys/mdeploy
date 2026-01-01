@@ -73,6 +73,7 @@ export type App = {
   url?: string
   preview_url?: string
   description?: string
+  description_ar?: string
   download_url?: string
   created_at: string
 }

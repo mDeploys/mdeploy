@@ -95,7 +95,7 @@ export default function AppsPage() {
                                         </h3>
                                         {app.description && (
                                             <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                                                {app.description}
+                                                {(language === 'ar' && app.description_ar) ? app.description_ar : app.description}
                                             </p>
                                         )}
                                         <div className="mt-auto flex flex-wrap gap-2">
