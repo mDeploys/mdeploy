@@ -61,6 +61,22 @@ export interface QuoteInputs {
   mailServer: boolean
 }
 
+export interface PriceBreakdown {
+  websiteCost: number
+  webAppCost: number
+  ecommerceCost: number
+  mobileCost: number
+  desktopCost: number
+  landingCost: number
+  wordpressCost: number
+  logoCost: number
+  brandingCost: number
+  setupFee: number
+  addonsCost: number
+  subtotal: number
+  total: number
+}
+
 export const calculatePrice = (inputs: QuoteInputs, config: PricingConfig = PRICING_SAR) => {
   const websiteCost = inputs.websitePages * config.websitePagePrice
   const webAppCost = inputs.webAppPages * config.webAppPagePrice

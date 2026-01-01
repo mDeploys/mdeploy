@@ -15,6 +15,16 @@ export default function CalculatorPage() {
     ecommercePages: 0,
     mobileScreens: 0,
     desktopFunctions: 0,
+    landingPages: 0,
+    wordpressTemplates: 0,
+    logoDesigns: 0,
+    brandingDesigns: 0,
+    backendHosting: false,
+    webHosting5GB: false,
+    webHosting10GB: false,
+    cloudHosting20GB: false,
+    paymentGateway: false,
+    mailServer: false,
   })
   const { language } = useLanguage()
   const t = translations[language]
