@@ -26,7 +26,7 @@ export function Footer() {
   const t = translations[language]
   const socialLinks = [
     { key: "twitter" as const, href: "https://x.com/jalalnasser", Icon: XIcon },
-    { key: "github" as const, href: "https://github.com/Jalal-Nasser", Icon: Github },
+    { key: "github" as const, href: "https://github.com/mDeploys", Icon: Github },
     { key: "behance" as const, href: "https://www.behance.net/jalalnasser", Icon: BehanceIcon },
     { key: "linkedin" as const, href: "https://www.linkedin.com/in/jalalnasser", Icon: Linkedin },
     { key: "blog" as const, href: "https://jalalnasser.com", Icon: Globe2 },
