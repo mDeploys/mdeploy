@@ -96,7 +96,7 @@ export function Header() {
             className="h-12 w-auto drop-shadow-[0_12px_25px_rgba(109,40,217,0.35)] transition group-hover:scale-[1.02]"
           />
           <div className="hidden leading-tight text-start md:block">
-            <span className="text-lg font-bold tracking-tight text-purple-900 dark:text-purple-100">mDeploy</span>
+            <span className="text-lg font-bold tracking-tight text-[#f959ca] drop-shadow-[0_2px_10px_rgba(249,89,202,0.6)]">mDeploy</span>
             <span className="block text-xs text-slate-500 dark:text-slate-300">{t.hero.badge}</span>
           </div>
         </Link>
