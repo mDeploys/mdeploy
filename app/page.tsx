@@ -303,34 +303,37 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Calculator Preview - updated with purple theme */}
+      {/* Why Choose Us - Features Section */}
       <section className="relative overflow-hidden border-b border-border py-16 lg:py-24 scroll-reveal" data-reveal>
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-background to-fuchsia-500/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-background to-fuchsia-500/5" />
         <div className="container relative mx-auto px-4 lg:px-8">
           <div className="mb-12 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-              <Zap className="h-4 w-4" />
-              {t.calculatorPreview.badge}
+              <Shield className="h-4 w-4" />
+              {t.features.badge}
             </div>
             <h2 className="mb-4 text-balance text-3xl font-bold lg:text-4xl">
-              {t.calculatorPreview.title}
+              {t.features.title}
             </h2>
             <p className="mx-auto max-w-2xl text-pretty text-lg text-muted-foreground">
-              {t.calculatorPreview.description}
+              {t.features.description}
             </p>
           </div>
 
-          <div className="mx-auto max-w-3xl">
-            <ServiceCalculator />
-            <div className="mt-6 text-center">
-              <Button
-                asChild
-                size="lg"
-                className="bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white hover:from-purple-700 hover:to-fuchsia-700"
-              >
-                <Link href="/calculator">{t.calculatorPreview.cta}</Link>
-              </Button>
-            </div>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {t.features.items.map((item, index) => {
+              const icons = [Zap, Shield, Rocket, Globe]
+              const Icon = icons[index]
+              return (
+                <div key={index} className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 hover:border-purple-500/50 hover:bg-white/10 transition-all duration-300">
+                  <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="mb-2 text-xl font-semibold text-white">{item.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{item.description}</p>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>

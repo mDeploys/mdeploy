@@ -56,11 +56,28 @@ export const translations = {
         },
       },
     },
-    calculatorPreview: {
-      badge: "Instant Pricing",
-      title: "Calculate Your Project Cost",
-      description: "Get instant pricing with our transparent calculator",
-      cta: "Go to Full Calculator & Submit",
+    features: {
+      badge: "Why Choose Us",
+      title: "Built for Scale & Security",
+      description: "We don't just deploy; we optimize your infrastructure for peak performance and military-grade security.",
+      items: [
+        {
+          title: "High Performance",
+          description: "Lightning-fast edge caching and optimized compute resources ensure your app loads instantly globally.",
+        },
+        {
+          title: "Enterprise Security",
+          description: "DDoS protection, WAF, and automated SSL management keep your data and users safe.",
+        },
+        {
+          title: "Zero-Downtime Updates",
+          description: "Push changes confidently. Our blue-green deployment strategy ensures your users never face downtime.",
+        },
+        {
+          title: "Global Scalability",
+          description: "Infrastructure that grows with you. From your first user to your millionth, we handle the load.",
+        },
+      ]
     },
     process: {
       badge: "Our Process",
@@ -148,9 +165,22 @@ export const translations = {
     },
     serviceCalculator: {
       title: "Service Cost Calculator",
-      description: "Calculate your project cost based on our transparent pricing",
+      description: "Calculate your cost based on our transparent pricing",
+      developmentTitle: "Development Services",
+      designTitle: "Design & Templates",
       addonsTitle: "Add-ons",
-      currencyLabel: "Currency",
+      summaryTitle: "Cost Breakdown",
+      summarySubtitle: "Estimated project cost",
+      selectServicesPrompt: "Select services to see cost breakdown",
+      setupFeeDetails: "Project Setup & Initialization",
+      setupFeeDescription: "One-time fee for repo & deployment config",
+      developmentLabel: "Development",
+      designLabel: "Design",
+      setupLabel: "Setup",
+      addonsLabel: "Addons",
+      estimatedTotal: "Estimated Total",
+      approxLabel: "approx.",
+
       fields: {
         websitePages: "Front-end Website ({price} / Page)",
         webAppPages: "Web App ({price} / Page)",
@@ -537,11 +567,28 @@ export const translations = {
         },
       },
     },
-    calculatorPreview: {
-      badge: "تسعير فوري",
-      title: "احسب تكلفة مشروعك",
-      description: "احصل على تسعير فوري عبر حاسبتنا الشفافة",
-      cta: "انتقل إلى الحاسبة الكاملة وقدّم الطلب",
+    features: {
+      badge: "لماذا تختارنا",
+      title: "مبني للتوسع والأمان",
+      description: "نحن لا نكتفي بالنشر؛ بل نقوم بتحسين بنيتك التحتية لأقصى أداء وأمان عسكري.",
+      items: [
+        {
+          title: "أداء عالي",
+          description: "تخزين مؤقت سريع وحوسبة محسّنة لضمان تحميل تطبيقك فورياً عالمياً.",
+        },
+        {
+          title: "أمان المؤسسات",
+          description: "حماية DDoS، جدار حماية (WAF)، وإدارة SSL تلقائية للحفاظ على أمان بياناتك.",
+        },
+        {
+          title: "تحديثات بدون توقف",
+          description: "انشر التغييرات بثقة. استراتيجية النشر الخاصة بنا تضمن عدم توقف الخدمة أثناء التحديث.",
+        },
+        {
+          title: "توسع عالمي",
+          description: "بنية تحتية تنمو معك. من أول مستخدم إلى المليون، نحن نتعامل مع الحمل.",
+        },
+      ]
     },
     process: {
       badge: "آلية عملنا",
@@ -627,14 +674,28 @@ export const translations = {
     serviceCalculator: {
       title: "حاسبة تكلفة الخدمات",
       description: "احسب تكلفة مشروعك بناءً على تسعيرنا الشفاف",
+      developmentTitle: "خدمات التطوير",
+      designTitle: "التصميم والقوالب",
       addonsTitle: "الإضافات",
+      summaryTitle: "تفصيل التكلفة",
+      summarySubtitle: "التكلفة التقديرية للمشروع",
+      selectServicesPrompt: "اختر الخدمات لعرض تفاصيل التكلفة",
+      setupFeeDetails: "إعداد وتهيئة المشروع",
+      setupFeeDescription: "رسوم لمرة واحدة لإعداد المستودع والنشر",
+      developmentLabel: "تطوير",
+      designLabel: "تصميم",
+      setupLabel: "إعداد",
+      addonsLabel: "إضافات",
+      estimatedTotal: "التقدير الإجمالي",
+      approxLabel: "تقريباً",
+      currencyLabel: "العملة",
       complexity: {
         label: "التعقيد",
         simple: "بسيط (x1)",
         standard: "متوسط (x1.5)",
         complex: "معقد (x2)",
       },
-      currencyLabel: "العملة",
+
       fields: {
         websitePages: "موقع واجهة أمامية ({price} / صفحة)",
         webAppPages: "تطبيق ويب ({price} / صفحة)",

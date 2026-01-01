@@ -225,7 +225,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
         <Card className="border border-purple-200/60 bg-white/80 dark:border-purple-400/20 dark:bg-[#12062a]/80 backdrop-blur-md shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-purple-600 dark:text-purple-400">
-              Development Services
+              {t.serviceCalculator.developmentTitle}
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
@@ -266,7 +266,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
         <Card className="border border-purple-200/60 bg-white/80 dark:border-purple-400/20 dark:bg-[#12062a]/80 backdrop-blur-md shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg font-semibold text-purple-600 dark:text-purple-400">
-              Design & Templates
+              {t.serviceCalculator.designTitle}
             </CardTitle>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-2">
@@ -415,27 +415,27 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           <div className="absolute top-0 right-0 p-12 bg-purple-500/20 rounded-full blur-2xl -mr-6 -mt-6"></div>
 
           <CardHeader className="pb-4 border-b border-white/10">
-            <CardTitle className="text-xl">Cost Breakdown</CardTitle>
-            <CardDescription className="text-slate-400">Estimated project cost</CardDescription>
+            <CardTitle className="text-xl">{t.serviceCalculator.summaryTitle}</CardTitle>
+            <CardDescription className="text-slate-400">{t.serviceCalculator.summarySubtitle}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
 
             {/* Quick Stats Grid */}
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-lg bg-white/5 p-3 border border-white/10">
-                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Development</div>
+                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t.serviceCalculator.developmentLabel}</div>
                 <div className="font-semibold">{displayAmount(breakdown.websiteCost + breakdown.webAppCost + breakdown.mobileCost + breakdown.desktopCost + breakdown.ecommerceCost)}</div>
               </div>
               <div className="rounded-lg bg-white/5 p-3 border border-white/10">
-                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Design</div>
+                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t.serviceCalculator.designLabel}</div>
                 <div className="font-semibold">{displayAmount(breakdown.landingCost + breakdown.wordpressCost + breakdown.logoCost + breakdown.brandingCost)}</div>
               </div>
               <div className="rounded-lg bg-white/5 p-3 border border-white/10">
-                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Addons</div>
+                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t.serviceCalculator.addonsLabel}</div>
                 <div className="font-semibold">{displayAmount(breakdown.addonsCost)}</div>
               </div>
               <div className="rounded-lg bg-white/5 p-3 border border-white/10">
-                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Setup</div>
+                <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{t.serviceCalculator.setupLabel}</div>
                 <div className="font-semibold">{displayAmount(breakdown.setupFee)}</div>
               </div>
             </div>
@@ -448,8 +448,8 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
                   {/* Setup Fee - Explicitly Listed */}
                   <div className="flex justify-between items-start pb-2 mb-2 border-b border-white/5">
                     <div className="flex flex-col">
-                      <span className="text-slate-300 text-xs">Project Setup & Initialization</span>
-                      <span className="text-[10px] text-slate-500">One-time fee for repo & deployment config</span>
+                      <span className="text-slate-300 text-xs">{t.serviceCalculator.setupFeeDetails}</span>
+                      <span className="text-[10px] text-slate-500">{t.serviceCalculator.setupFeeDescription}</span>
                     </div>
                     <span className="font-mono text-xs">{displayAmount(config.setupFee)}</span>
                   </div>
@@ -489,20 +489,20 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
               </div>
             ) : (
               <div className="text-center py-8 text-slate-500 text-sm">
-                Select services to see cost breakdown
+                {t.serviceCalculator.selectServicesPrompt}
               </div>
             )}
 
             <div className="pt-4 border-t border-white/10">
               <div className="flex justify-between items-baseline mb-1">
-                <span className="text-sm text-slate-300">Estimated Total</span>
+                <span className="text-sm text-slate-300">{t.serviceCalculator.estimatedTotal}</span>
                 <span className="text-3xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
                   {displayAmount(breakdown.total)}
                 </span>
               </div>
               {currency === "SAR" && (
                 <div className="flex justify-end text-xs text-slate-500">
-                  approx. {formatCurrency(convertToUSD(breakdown.total), "USD")}
+                  {t.serviceCalculator.approxLabel} {formatCurrency(convertToUSD(breakdown.total), "USD")}
                 </div>
               )}
             </div>
@@ -532,7 +532,7 @@ export function ServiceCalculator({ showSubmitForm = false, onSubmit }: ServiceC
           <div className="bg-black/20 p-4 border-t border-white/5 space-y-2">
             <div className="flex items-start gap-2 text-xs text-slate-400">
               <span className="w-4 h-4 mt-0.5 rounded-full border border-current flex-shrink-0 flex items-center justify-center text-[10px] opacity-70">i</span>
-              <p><strong>Setup Fee ({displayAmount(config.setupFee)})</strong> covers project initialization, repository configuration, and deployment pipeline setup.</p>
+              <p><strong>{t.serviceCalculator.setupFeeDetails} ({displayAmount(config.setupFee)})</strong> {t.serviceCalculator.setupFeeDescription}.</p>
             </div>
           </div>
 
