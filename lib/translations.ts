@@ -509,6 +509,11 @@ export const translations = {
         downloadUrl: "Download Link",
       }
     },
+    cookieBanner: {
+      message: "We use cookies to improve your experience. By continuing to visit this site you agree to our use of cookies.",
+      accept: "Accept",
+      decline: "Decline",
+    },
   },
   ar: {
     home: "الرئيسية",
@@ -1023,6 +1028,11 @@ export const translations = {
         descriptionAr: "(بالعربية)",
         downloadUrl: "رابط التحميل",
       }
+    },
+    cookieBanner: {
+      message: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك. من خلال الاستمرار في زيارة هذا الموقع، فإنك توافق على استخدامنا لملفات تعريف الارتباط.",
+      accept: "قبول",
+      decline: "رفض",
     },
   },
 }

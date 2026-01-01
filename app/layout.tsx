@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { ConditionalLayout } from "@/components/conditional-layout"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { LanguageProvider } from "@/lib/language-context"
+import { CookieBanner } from "@/components/cookie-banner"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -100,6 +101,7 @@ export default function RootLayout({
           </ConditionalLayout>
           <ScrollToTop />
           <Toaster />
+          <CookieBanner />
         </LanguageProvider>
         <Analytics />
       </body>
