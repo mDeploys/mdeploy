@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { Pencil, Trash2, Plus, Loader2, ShieldCheck, ShieldAlert, Info } from "lucide-react"
+import { Pencil, Trash2, Plus, Loader2, ShieldCheck, ShieldAlert, Info, Eye } from "lucide-react"
 import { LogoutButton } from "./logout-button"
 import { toast } from "sonner"
 import { useLanguage } from "@/lib/language-context"
@@ -733,6 +733,11 @@ export default function AdminPage() {
                     <img src={app.thumbnail_url} alt={app.name} className="object-cover w-full h-full transition duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1f] to-transparent opacity-60" />
                     <div className="absolute inset-0 bg-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                      {app.url && (
+                        <Button variant="secondary" size="sm" onClick={() => window.open(app.url, '_blank')} className="bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-400 border-emerald-500/30 backdrop-blur-md rounded-xl font-bold">
+                          <Eye className="h-4 w-4 mr-2" /> Preview
+                        </Button>
+                      )}
                       <Button variant="secondary" size="sm" onClick={() => openAppEdit(app)} className="bg-white/10 hover:bg-white/20 text-white border-white/10 backdrop-blur-md rounded-xl font-bold">
                         <Pencil className="h-4 w-4 mr-2" /> Edit
                       </Button>
