@@ -38,7 +38,7 @@ export default function CalculatorPage() {
           </p>
         </div>
 
-        <div className="mx-auto max-w-3xl space-y-8">
+        <div className="mx-auto max-w-7xl space-y-8">
           <ServiceCalculator showSubmitForm onSubmit={handleSubmit} />
 
           {showForm && (

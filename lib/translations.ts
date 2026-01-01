@@ -628,6 +628,12 @@ export const translations = {
       title: "حاسبة تكلفة الخدمات",
       description: "احسب تكلفة مشروعك بناءً على تسعيرنا الشفاف",
       addonsTitle: "الإضافات",
+      complexity: {
+        label: "التعقيد",
+        simple: "بسيط (x1)",
+        standard: "متوسط (x1.5)",
+        complex: "معقد (x2)",
+      },
       currencyLabel: "العملة",
       fields: {
         websitePages: "موقع واجهة أمامية ({price} / صفحة)",

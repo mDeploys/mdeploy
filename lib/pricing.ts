@@ -1,3 +1,5 @@
+import { Currency } from "./currency"
+
 export interface PricingConfig {
   websitePagePrice: number
   webAppPagePrice: number
@@ -16,6 +18,8 @@ export interface PricingConfig {
   cloudHosting20GBYearly: number
   paymentGatewayOneTime: number
   mailServerOneTime: number
+  // Allow for other dynamic keys
+  [key: string]: number
 }
 
 export const PRICING_SAR: PricingConfig = {
@@ -48,8 +52,7 @@ export interface QuoteInputs {
   wordpressTemplates: number
   logoDesigns: number
   brandingDesigns: number
-  // Addons - usually booleans for one-time/yearly selection, or number if quantity based.
-  // The request says "Add the following addons as an option". Assuming checkboxes (boolean).
+  // Addons
   backendHosting: boolean
   webHosting5GB: boolean
   webHosting10GB: boolean
@@ -58,41 +61,24 @@ export interface QuoteInputs {
   mailServer: boolean
 }
 
-export interface PriceBreakdown {
-  websiteCost: number
-  webAppCost: number
-  ecommerceCost: number
-  mobileCost: number
-  desktopCost: number
-  landingCost: number
-  wordpressCost: number
-  logoCost: number
-  brandingCost: number
-  setupFee: number
-  // Addons cost
-  addonsCost: number
-  subtotal: number
-  total: number
-}
-
-export function calculatePrice(inputs: Partial<QuoteInputs>): PriceBreakdown {
-  const websiteCost = (inputs.websitePages || 0) * PRICING_SAR.websitePagePrice
-  const webAppCost = (inputs.webAppPages || 0) * PRICING_SAR.webAppPagePrice
-  const ecommerceCost = (inputs.ecommercePages || 0) * PRICING_SAR.ecommercePagePrice
-  const mobileCost = (inputs.mobileScreens || 0) * PRICING_SAR.mobileScreenPrice
-  const desktopCost = (inputs.desktopFunctions || 0) * PRICING_SAR.desktopFunctionPrice
-  const landingCost = (inputs.landingPages || 0) * PRICING_SAR.landingPagePrice
-  const wordpressCost = (inputs.wordpressTemplates || 0) * PRICING_SAR.wordpressTemplatePrice
-  const logoCost = (inputs.logoDesigns || 0) * PRICING_SAR.logoDesignPrice
-  const brandingCost = (inputs.brandingDesigns || 0) * PRICING_SAR.brandingDesignPrice
+export const calculatePrice = (inputs: QuoteInputs, config: PricingConfig = PRICING_SAR) => {
+  const websiteCost = inputs.websitePages * config.websitePagePrice
+  const webAppCost = inputs.webAppPages * config.webAppPagePrice
+  const ecommerceCost = inputs.ecommercePages * config.ecommercePagePrice
+  const mobileCost = inputs.mobileScreens * config.mobileScreenPrice
+  const desktopCost = inputs.desktopFunctions * config.desktopFunctionPrice
+  const landingCost = inputs.landingPages * config.landingPagePrice
+  const wordpressCost = inputs.wordpressTemplates * config.wordpressTemplatePrice
+  const logoCost = inputs.logoDesigns * config.logoDesignPrice
+  const brandingCost = inputs.brandingDesigns * config.brandingDesignPrice
 
   let addonsCost = 0
-  if (inputs.backendHosting) addonsCost += PRICING_SAR.backendHostingYearly
-  if (inputs.webHosting5GB) addonsCost += PRICING_SAR.webHosting5GBYearly
-  if (inputs.webHosting10GB) addonsCost += PRICING_SAR.webHosting10GBYearly
-  if (inputs.cloudHosting20GB) addonsCost += PRICING_SAR.cloudHosting20GBYearly
-  if (inputs.paymentGateway) addonsCost += PRICING_SAR.paymentGatewayOneTime
-  if (inputs.mailServer) addonsCost += PRICING_SAR.mailServerOneTime
+  if (inputs.backendHosting) addonsCost += config.backendHostingYearly
+  if (inputs.webHosting5GB) addonsCost += config.webHosting5GBYearly
+  if (inputs.webHosting10GB) addonsCost += config.webHosting10GBYearly
+  if (inputs.cloudHosting20GB) addonsCost += config.cloudHosting20GBYearly
+  if (inputs.paymentGateway) addonsCost += config.paymentGatewayOneTime
+  if (inputs.mailServer) addonsCost += config.mailServerOneTime
 
   const subtotal =
     websiteCost +
@@ -105,8 +91,7 @@ export function calculatePrice(inputs: Partial<QuoteInputs>): PriceBreakdown {
     logoCost +
     brandingCost +
     addonsCost
-
-  const total = subtotal + PRICING_SAR.setupFee
+  const total = subtotal + config.setupFee
 
   return {
     websiteCost,
@@ -118,7 +103,7 @@ export function calculatePrice(inputs: Partial<QuoteInputs>): PriceBreakdown {
     wordpressCost,
     logoCost,
     brandingCost,
-    setupFee: PRICING_SAR.setupFee,
+    setupFee: config.setupFee,
     addonsCost,
     subtotal,
     total,
