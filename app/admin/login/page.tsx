@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
 
     setLoading(true)
     try {
-      const { data, error } = await signInWithEmail(email, password)
+      const { data, error } = await signInWithEmail(email, password, captchaToken)
       if (error) {
         console.error("Login Error Details:", error)
 

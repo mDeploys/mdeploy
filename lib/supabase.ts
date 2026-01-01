@@ -102,8 +102,12 @@ export async function signUpWithEmail(email: string, password: string, fullName:
   })
 }
 
-export async function signInWithEmail(email: string, password: string) {
-  return await supabase.auth.signInWithPassword({ email, password })
+export async function signInWithEmail(email: string, password: string, captchaToken?: string) {
+  return await supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: { captchaToken }
+  })
 }
 
 export async function signOut() {
