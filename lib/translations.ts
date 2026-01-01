@@ -466,12 +466,14 @@ export const translations = {
       description: "Explore our collection of deployed applications.",
       empty: "No apps found.",
       error: "Failed to load apps.",
-      viewProject: "Preview",
+      viewProject: "View Project",
+      preview: "Preview",
       download: "Download",
       form: {
         title: "Product Title",
         thumbnail: "Product Logo (Thumbnail URL)",
-        url: "Preview URL",
+        url: "Project URL",
+        previewUrl: "Preview URL",
         description: "Project Description",
         downloadUrl: "Download Link",
       }
@@ -941,12 +943,14 @@ export const translations = {
       description: "تصفح مجموعتنا من التطبيقات المنشورة.",
       empty: "لا توجد تطبيقات.",
       error: "فشل تحميل التطبيقات.",
-      viewProject: "معاينة",
+      viewProject: "عرض المشروع",
+      preview: "معاينة",
       download: "تحميل",
       form: {
         title: "عنوان المنتج",
         thumbnail: "شعار المنتج (رابط الصورة)",
-        url: "رابط المعاينة",
+        url: "رابط المشروع",
+        previewUrl: "رابط المعاينة",
         description: "وصف المشروع",
         downloadUrl: "رابط التحميل",
       }

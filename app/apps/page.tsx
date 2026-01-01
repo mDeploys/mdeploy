@@ -98,7 +98,17 @@ export default function AppsPage() {
                                                 {app.description}
                                             </p>
                                         )}
-                                        <div className="mt-auto flex gap-3">
+                                        <div className="mt-auto flex flex-wrap gap-2">
+                                            {app.preview_url && (
+                                                <a
+                                                    href={app.preview_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-1 inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 transition-colors"
+                                                >
+                                                    {t.appsGallery.preview}
+                                                </a>
+                                            )}
                                             {app.url && (
                                                 <a
                                                     href={app.url}

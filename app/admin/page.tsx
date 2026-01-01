@@ -87,6 +87,7 @@ export default function AdminPage() {
     name: "",
     thumbnail_url: "",
     url: "",
+    preview_url: "",
     description: "",
     download_url: "",
   })
@@ -268,6 +269,7 @@ export default function AdminPage() {
       name: "",
       thumbnail_url: "",
       url: "",
+      preview_url: "",
       description: "",
       download_url: "",
     })
@@ -279,6 +281,7 @@ export default function AdminPage() {
       name: app.name,
       thumbnail_url: app.thumbnail_url,
       url: app.url || "",
+      preview_url: app.preview_url || "",
       description: app.description || "",
       download_url: app.download_url || "",
     })
@@ -704,7 +707,11 @@ export default function AdminPage() {
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="app-url" className="text-xs font-black uppercase tracking-widest text-slate-500">{t.appsGallery.form.url}</Label>
-                        <Input id="app-url" value={appForm.url} onChange={e => setAppForm({ ...appForm, url: e.target.value })} className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl text-white font-medium" placeholder="https://demo-app.com" />
+                        <Input id="app-url" value={appForm.url} onChange={e => setAppForm({ ...appForm, url: e.target.value })} className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl text-white font-medium" placeholder="https://github.com/user/project" />
+                      </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="app-preview" className="text-xs font-black uppercase tracking-widest text-slate-500">{t.appsGallery.form.previewUrl}</Label>
+                        <Input id="app-preview" value={appForm.preview_url} onChange={e => setAppForm({ ...appForm, preview_url: e.target.value })} className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl text-white font-medium" placeholder="https://behance.net/gallery/..." />
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="app-desc" className="text-xs font-black uppercase tracking-widest text-slate-500">{t.appsGallery.form.description}</Label>
@@ -732,12 +739,19 @@ export default function AdminPage() {
                   <div className="aspect-video relative overflow-hidden bg-[#0a0a1f]">
                     <img src={app.thumbnail_url} alt={app.name} className="object-cover w-full h-full transition duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a1f] to-transparent opacity-60" />
-                    <div className="absolute inset-0 bg-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                      {app.url && (
-                        <Button variant="secondary" size="sm" onClick={() => window.open(app.url, '_blank')} className="bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-400 border-emerald-500/30 backdrop-blur-md rounded-xl font-bold">
-                          <Eye className="h-4 w-4 mr-2" /> Preview
+                    <div className="absolute inset-0 bg-purple-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 flex-wrap p-4">
+                      {app.preview_url && (
+                        <Button variant="secondary" size="sm" onClick={() => window.open(app.preview_url, '_blank')} className="bg-emerald-500/20 hover:bg-emerald-500/40 text-emerald-400 border-emerald-500/30 backdrop-blur-md rounded-xl font-bold">
+                          <Eye className="h-4 w-4 mr-2" /> {t.appsGallery.preview}
                         </Button>
                       )}
+
+                      {app.url && (
+                        <Button variant="secondary" size="sm" onClick={() => window.open(app.url, '_blank')} className="bg-blue-500/20 hover:bg-blue-500/40 text-blue-400 border-blue-500/30 backdrop-blur-md rounded-xl font-bold">
+                          <Eye className="h-4 w-4 mr-2" /> {t.appsGallery.viewProject}
+                        </Button>
+                      )}
+
                       <Button variant="secondary" size="sm" onClick={() => openAppEdit(app)} className="bg-white/10 hover:bg-white/20 text-white border-white/10 backdrop-blur-md rounded-xl font-bold">
                         <Pencil className="h-4 w-4 mr-2" /> Edit
                       </Button>

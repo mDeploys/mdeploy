@@ -71,6 +71,7 @@ export type App = {
   name: string
   thumbnail_url: string
   url?: string
+  preview_url?: string
   description?: string
   download_url?: string
   created_at: string
