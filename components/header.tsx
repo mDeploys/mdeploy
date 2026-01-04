@@ -58,6 +58,8 @@ export function Header() {
     { href: "/#services", label: t.services, active: isServices },
     { href: "/calculator", label: t.calculator, active: isCalculator },
     { href: "/apps", label: t.appsGallery.title, active: isApps },
+    { href: "https://github.mdeploy.dev", label: t.zoneCode, active: false, external: true },
+    { href: "https://jalalnasser.com", label: t.blog, active: false, external: true },
     { href: "/contact", label: t.contact, active: isContact },
   ]
 
@@ -103,18 +105,22 @@ export function Header() {
 
         <div className="hidden items-center justify-center gap-4 rounded-full border border-purple-100/60 bg-white/80 dark:border-purple-800/60 dark:bg-[#160733]/85 px-4 py-2 shadow-[0_10px_35px_-25px_rgba(79,70,229,0.9)] backdrop-blur-md md:flex">
           {navLinks.map((link) => (
-            <Link key={link.label} href={link.href} className={navLinkClass(link.active)}>
-              {link.label}
-            </Link>
+            link.external ? (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={navLinkClass(link.active)}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link key={link.label} href={link.href} className={navLinkClass(link.active)}>
+                {link.label}
+              </Link>
+            )
           ))}
-          <a
-            href="https://jalalnasser.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={navLinkClass(false)}
-          >
-            {t.blog}
-          </a>
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -162,24 +168,28 @@ export function Header() {
             </div>
             <div className="flex flex-col gap-4 p-4">
               {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className={mobileLinkClass(link.active)}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
+                link.external ? (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={mobileLinkClass(link.active)}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className={mobileLinkClass(link.active)}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                )
               ))}
-              <a
-                href="https://jalalnasser.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={mobileLinkClass(false)}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t.blog}
-              </a>
               <Button asChild className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white">
                 <Link href="/calculator" onClick={() => setMobileMenuOpen(false)}>
                   {t.getQuote}
