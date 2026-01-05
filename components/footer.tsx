@@ -21,6 +21,14 @@ function XIcon(props: React.SVGProps<SVGSVGElement>) {
   )
 }
 
+function ProductHuntIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M24 12a12 12 0 1 0-12 12 12.013 12.013 0 0 0 12-12Zm-4.444 0c0 2.455-1.99 4.444-4.444 4.444H10.667v-8.889h4.444c2.455 0 4.445 1.99 4.445 4.445Zm-4.445-1.778h-2.133v3.556h2.133a1.778 1.778 0 1 0 0-3.556Z" />
+    </svg>
+  )
+}
+
 export function Footer() {
   const { language } = useLanguage()
   const t = translations[language]
@@ -29,6 +37,7 @@ export function Footer() {
     { key: "github" as const, href: "https://github.com/mDeploys", Icon: Github },
     { key: "behance" as const, href: "https://www.behance.net/jalalnasser", Icon: BehanceIcon },
     { key: "linkedin" as const, href: "https://www.linkedin.com/in/jalalnasser", Icon: Linkedin },
+    { key: "producthunt" as const, href: "https://www.producthunt.com/@jalalnasser", Icon: ProductHuntIcon },
     { key: "blog" as const, href: "https://jalalnasser.com", Icon: Globe2 },
   ]
 

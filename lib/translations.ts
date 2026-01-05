@@ -333,6 +333,7 @@ export const translations = {
         behance: "Behance",
         linkedin: "LinkedIn",
         blog: "Blog",
+        producthunt: "Product Hunt",
       },
     },
     terms: {
@@ -854,6 +855,7 @@ export const translations = {
         behance: "بيهانس",
         linkedin: "لينكدإن",
         blog: "المدونة",
+        producthunt: "Product Hunt",
       },
     },
     terms: {
