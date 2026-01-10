@@ -58,7 +58,7 @@ export function Header() {
     { href: "/#services", label: t.services, active: isServices },
     { href: "/calculator", label: t.calculator, active: isCalculator },
     { href: "/apps", label: t.appsGallery.title, active: isApps },
-    { href: "https://github.mdeploy.dev", label: t.zoneCode, active: false, external: true },
+    { href: "https://git.mdeploy.dev", label: t.zoneCode, active: false, external: true },
     { href: "https://jalalnasser.com", label: t.blog, active: false, external: true },
     { href: "/contact", label: t.contact, active: isContact },
   ]
