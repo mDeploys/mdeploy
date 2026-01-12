@@ -33,7 +33,7 @@ export function Header() {
   const isServices = isHome && currentHash === "#services"
   const isHomeLink = isHome && currentHash !== "#services"
   const isCalculator = pathname === "/calculator"
-  const isApps = pathname === "/apps"
+  // const isApps = pathname === "/apps"
   const isContact = pathname === "/contact"
 
   const navLinkClass = (active: boolean) =>
@@ -57,7 +57,7 @@ export function Header() {
     { href: "/", label: t.home, active: isHomeLink },
     { href: "/#services", label: t.services, active: isServices },
     { href: "/calculator", label: t.calculator, active: isCalculator },
-    { href: "/apps", label: t.appsGallery.title, active: isApps },
+    // { href: "/apps", label: t.appsGallery.title, active: isApps },
     { href: "https://git.mdeploy.dev", label: t.zoneCode, active: false, external: true },
     { href: "https://jalalnasser.com", label: t.blog, active: false, external: true },
     { href: "/contact", label: t.contact, active: isContact },
