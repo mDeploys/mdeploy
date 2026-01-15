@@ -12,8 +12,9 @@ import { Mail, MapPin, Send, MessageSquare, Clock, Phone } from "lucide-react"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import HCaptcha from "@hcaptcha/react-hcaptcha"
+import { Turnstile } from "@marsidev/react-turnstile"
 import { useRef } from "react"
+import type { TurnstileInstance } from "@marsidev/react-turnstile"
 
 const WhatsAppIcon = () => (
   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +33,7 @@ export default function ContactPage() {
   const { language } = useLanguage()
   const t = translations[language]
   const [loading, setLoading] = useState(false)
-  const hcaptchaRef = useRef<HCaptcha>(null)
+  const turnstileRef = useRef<TurnstileInstance>(null)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
   const inputClass =
@@ -84,7 +85,7 @@ export default function ContactPage() {
         })
         setFormData({ fullName: "", email: "", phone: "", country: "", company: "", message: "", honeypot: "" })
         setCaptchaToken(null)
-        hcaptchaRef.current?.resetCaptcha()
+        turnstileRef.current?.reset()
       } else {
         const data = await response.json()
         toast({
@@ -233,14 +234,14 @@ export default function ContactPage() {
                   </div>
 
                   <div className="flex justify-center py-2">
-                    <HCaptcha
-                      ref={hcaptchaRef}
-                      key={language}
-                      sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
-                      onVerify={(token) => setCaptchaToken(token)}
-                      onExpire={() => setCaptchaToken(null)}
-                      theme="dark"
-                      languageOverride={language}
+                    <Turnstile
+                      ref={turnstileRef}
+                      siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+                      onSuccess={(token) => setCaptchaToken(token)}
+                      options={{
+                        theme: "dark",
+                        language: language,
+                      }}
                     />
                   </div>
 

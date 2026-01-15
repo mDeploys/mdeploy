@@ -1,6 +1,7 @@
 "use client"
 
-import HCaptcha from "@hcaptcha/react-hcaptcha"
+import { Turnstile } from "@marsidev/react-turnstile"
+import type { TurnstileInstance } from "@marsidev/react-turnstile"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
@@ -133,10 +134,12 @@ export default function AdminLoginPage() {
 
             {/* hCaptcha */}
             <div className="flex justify-center py-2">
-              <HCaptcha
-                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
-                onVerify={(token) => setCaptchaToken(token)}
-                theme="dark" // Matches the dark theme
+              <Turnstile
+                siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+                onSuccess={(token) => setCaptchaToken(token)}
+                options={{
+                  theme: "dark",
+                }}
               />
             </div>
 

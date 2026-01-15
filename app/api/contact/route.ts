@@ -21,24 +21,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 })
     }
 
-    // Verify hCaptcha
+    // Verify Turnstile
     const { captchaToken } = body
     if (!captchaToken) {
-      return NextResponse.json({ error: "hCaptcha token is missing" }, { status: 400 })
+      return NextResponse.json({ error: "Captcha token is missing" }, { status: 400 })
     }
 
-    const hcaptchaResponse = await fetch("https://hcaptcha.com/siteverify", {
+    const turnstileResponse = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
-        secret: process.env.HCAPTCHA_SECRET_KEY || "",
+        secret: process.env.TURNSTILE_SECRET_KEY || "",
         response: captchaToken,
       }),
     })
-    const hcaptchaData = await hcaptchaResponse.json()
+    const turnstileData = await turnstileResponse.json()
 
-    if (!hcaptchaData.success) {
-      return NextResponse.json({ error: "hCaptcha verification failed" }, { status: 400 })
+    if (!turnstileData.success) {
+      return NextResponse.json({ error: "Captcha verification failed" }, { status: 400 })
     }
 
     // Validate input
