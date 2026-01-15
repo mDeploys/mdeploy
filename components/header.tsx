@@ -58,7 +58,8 @@ export function Header() {
     { href: "/#services", label: t.services, active: isServices },
     { href: "/calculator", label: t.calculator, active: isCalculator },
     // { href: "/apps", label: t.appsGallery.title, active: isApps },
-    { href: "https://git.mdeploy.dev", label: t.zoneCode, active: false, external: true },
+    { href: "https://git.mdeploy.dev/passgen", label: t.passGen, active: false, external: true, sameWindow: true },
+    { href: "https://git.mdeploy.dev", label: t.zoneCode, active: false, external: true, sameWindow: true },
     { href: "https://jalalnasser.com", label: t.blog, active: false, external: true },
     { href: "/contact", label: t.contact, active: isContact },
   ]
@@ -109,8 +110,8 @@ export function Header() {
               <a
                 key={link.label}
                 href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={link.sameWindow ? "_self" : "_blank"}
+                rel={link.sameWindow ? undefined : "noopener noreferrer"}
                 className={navLinkClass(link.active)}
               >
                 {link.label}
@@ -172,8 +173,8 @@ export function Header() {
                   <a
                     key={link.label}
                     href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={link.sameWindow ? "_self" : "_blank"}
+                    rel={link.sameWindow ? undefined : "noopener noreferrer"}
                     className={mobileLinkClass(link.active)}
                     onClick={() => setMobileMenuOpen(false)}
                   >
