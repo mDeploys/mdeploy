@@ -52,7 +52,7 @@ export default function CalculatorPage() {
           <ServiceCalculator showSubmitForm onSubmit={handleSubmit} />
 
           {showForm && (
-            <div id="quote-form">
+            <div id="quote-form" className="mx-auto max-w-2xl">
               <QuoteForm inputs={quoteInputs} />
             </div>
           )}

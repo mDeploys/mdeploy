@@ -121,7 +121,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
   }
 
   return (
-    <Card className="glass-card border-white/10 shadow-2xl relative overflow-hidden rounded-3xl animate-in fade-in duration-700">
+    <Card className="glass-card border-white/20 shadow-2xl relative overflow-hidden rounded-3xl animate-in fade-in duration-700 backdrop-blur-3xl bg-white/5">
       <div className="cosmic-gradient absolute inset-0 opacity-40 pointer-events-none" />
 
       <CardHeader className="relative z-10 pb-2">
@@ -164,7 +164,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
 
           <div className="space-y-4">
             <div className="space-y-2 group">
-              <Label htmlFor="fullName" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+              <Label htmlFor="fullName" className="text-xs font-bold uppercase tracking-wider text-slate-300 group-focus-within:text-purple-300 transition-colors ml-1">
                 {t.quoteForm.labels.fullName}
               </Label>
               <Input
@@ -173,12 +173,12 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
                 value={formData.fullName}
                 onChange={(e) => setFormData((prev) => ({ ...prev, fullName: e.target.value }))}
                 placeholder={t.quoteForm.placeholders.fullName}
-                className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl transition-all font-medium text-white"
+                className="bg-white/10 border-white/20 focus:border-purple-400/50 focus:ring-purple-400/20 h-14 rounded-2xl transition-all font-medium text-white placeholder:text-slate-400/70"
               />
             </div>
 
             <div className="space-y-2 group">
-              <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+              <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-300 group-focus-within:text-purple-300 transition-colors ml-1">
                 {t.quoteForm.labels.email}
               </Label>
               <Input
@@ -188,13 +188,13 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
                 value={formData.email}
                 onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                 placeholder={t.quoteForm.placeholders.email}
-                className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl transition-all font-medium text-white"
+                className="bg-white/10 border-white/20 focus:border-purple-400/50 focus:ring-purple-400/20 h-14 rounded-2xl transition-all font-medium text-white placeholder:text-slate-400/70"
               />
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-2 group">
-                <Label htmlFor="company" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                <Label htmlFor="company" className="text-xs font-bold uppercase tracking-wider text-slate-300 group-focus-within:text-purple-300 transition-colors ml-1">
                   {t.quoteForm.labels.company}
                 </Label>
                 <Input
@@ -202,12 +202,12 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
                   value={formData.company}
                   onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
                   placeholder={t.quoteForm.placeholders.company}
-                  className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl transition-all font-medium text-white"
+                  className="bg-white/10 border-white/20 focus:border-purple-400/50 focus:ring-purple-400/20 h-14 rounded-2xl transition-all font-medium text-white placeholder:text-slate-400/70"
                 />
               </div>
 
               <div className="space-y-2 group">
-                <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+                <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-wider text-slate-300 group-focus-within:text-purple-300 transition-colors ml-1">
                   {t.quoteForm.labels.phone}
                 </Label>
                 <Input
@@ -216,13 +216,13 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
                   value={formData.phone}
                   onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
                   placeholder={t.quoteForm.placeholders.phone}
-                  className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 h-12 rounded-xl transition-all font-medium text-white"
+                  className="bg-white/10 border-white/20 focus:border-purple-400/50 focus:ring-purple-400/20 h-14 rounded-2xl transition-all font-medium text-white placeholder:text-slate-400/70"
                 />
               </div>
             </div>
 
             <div className="space-y-2 group">
-              <Label htmlFor="notes" className="text-xs font-bold uppercase tracking-wider text-slate-400 group-focus-within:text-purple-400 transition-colors">
+              <Label htmlFor="notes" className="text-xs font-bold uppercase tracking-wider text-slate-300 group-focus-within:text-purple-300 transition-colors ml-1">
                 {t.quoteForm.labels.notes}
               </Label>
               <Textarea
@@ -231,7 +231,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
                 onChange={(e) => setFormData((prev) => ({ ...prev, notes: e.target.value }))}
                 placeholder={t.quoteForm.placeholders.notes}
                 rows={4}
-                className="bg-white/5 border-white/10 focus:border-purple-500/50 focus:ring-purple-500/20 rounded-2xl transition-all font-medium text-white resize-none"
+                className="bg-white/10 border-white/20 focus:border-purple-400/50 focus:ring-purple-400/20 rounded-2xl transition-all font-medium text-white placeholder:text-slate-400/70 resize-none p-4"
               />
             </div>
           </div>
@@ -251,7 +251,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full h-14 bg-purple-600 hover:bg-purple-500 text-white font-black text-lg rounded-2xl lightning-shadow-hover hover:scale-[1.02] active:scale-[0.98] transition-all"
+            className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-lg rounded-2xl lightning-shadow-hover hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-purple-900/20 border border-white/10"
           >
             {loading ? (
               <div className="flex items-center gap-2">
