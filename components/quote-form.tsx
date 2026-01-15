@@ -12,8 +12,9 @@ import { useToast } from "@/hooks/use-toast"
 import { calculatePrice, type QuoteInputs } from "@/lib/pricing"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
-import HCaptcha from "@hcaptcha/react-hcaptcha"
+import { Turnstile } from "@marsidev/react-turnstile"
 import { useRef } from "react"
+import type { TurnstileInstance } from "@marsidev/react-turnstile"
 
 interface QuoteFormProps {
   inputs: QuoteInputs
@@ -32,7 +33,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
     notes: "",
     honeypot: "", // spam protection
   })
-  const hcaptchaRef = useRef<HCaptcha>(null)
+  const turnstileRef = useRef<TurnstileInstance>(null)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
   const [submissionId, setSubmissionId] = useState<string | null>(null)
   const [pendingId, setPendingId] = useState<string | null>(null)
@@ -100,7 +101,7 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           honeypot: "",
         })
         setCaptchaToken(null)
-        hcaptchaRef.current?.resetCaptcha()
+        turnstileRef.current?.reset()
       } else {
         toast({
           title: t.quoteForm.toast.errorTitle,
@@ -236,14 +237,14 @@ export function QuoteForm({ inputs }: QuoteFormProps) {
           </div>
 
           <div className="flex justify-center py-2">
-            <HCaptcha
-              ref={hcaptchaRef}
-              key={language}
-              sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY || ""}
-              onVerify={(token) => setCaptchaToken(token)}
-              onExpire={() => setCaptchaToken(null)}
-              theme="dark"
-              languageOverride={language}
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+              onSuccess={(token) => setCaptchaToken(token)}
+              options={{
+                theme: "dark",
+                language: language,
+              }}
             />
           </div>
 
