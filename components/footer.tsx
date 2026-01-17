@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
-import { Github, Globe2, Linkedin } from "lucide-react"
+import { Facebook, Github, Globe2, Linkedin } from "lucide-react"
 
 function BehanceIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -34,6 +34,7 @@ export function Footer() {
   const t = translations[language]
   const socialLinks = [
     { key: "twitter" as const, href: "https://x.com/jalalnasser", Icon: XIcon },
+    { key: "facebook" as const, href: "https://www.facebook.com/mDeploy/", Icon: Facebook },
     { key: "github" as const, href: "https://github.com/mDeploys", Icon: Github },
     { key: "behance" as const, href: "https://www.behance.net/jalalnasser", Icon: BehanceIcon },
     { key: "linkedin" as const, href: "https://www.linkedin.com/in/jalalnasser", Icon: Linkedin },

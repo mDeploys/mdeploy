@@ -335,6 +335,7 @@ export const translations = {
         linkedin: "LinkedIn",
         blog: "Blog",
         producthunt: "Product Hunt",
+        facebook: "Facebook",
       },
     },
     terms: {
@@ -858,6 +859,7 @@ export const translations = {
         linkedin: "لينكدإن",
         blog: "المدونة",
         producthunt: "Product Hunt",
+        facebook: "فيسبوك",
       },
     },
     terms: {
