@@ -9,6 +9,7 @@ import { ConditionalLayout } from "@/components/conditional-layout"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { LanguageProvider } from "@/lib/language-context"
 import { CookieBanner } from "@/components/cookie-banner"
+import { GoogleAnalytics } from "@/components/google-analytics"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -104,6 +105,7 @@ export default function RootLayout({
           <CookieBanner />
         </LanguageProvider>
         <Analytics />
+        <GoogleAnalytics />
       </body>
     </html>
   )
