@@ -37,7 +37,7 @@ export function Footer() {
     { key: "facebook" as const, href: "https://www.facebook.com/mDeploy/", Icon: Facebook },
     { key: "github" as const, href: "https://github.com/mDeploys", Icon: Github },
     { key: "behance" as const, href: "https://www.behance.net/jalalnasser", Icon: BehanceIcon },
-    { key: "linkedin" as const, href: "https://www.linkedin.com/in/jalalnasser", Icon: Linkedin },
+    { key: "linkedin" as const, href: "https://www.linkedin.com/company/mdeploy/", Icon: Linkedin },
     { key: "producthunt" as const, href: "https://www.producthunt.com/@jalalnasser", Icon: ProductHuntIcon },
     { key: "blog" as const, href: "https://jalalnasser.com", Icon: Globe2 },
   ]
