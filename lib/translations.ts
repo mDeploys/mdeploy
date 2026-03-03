@@ -12,6 +12,38 @@ export const translations = {
     english: "English",
     arabic: "العربية",
     toggleLanguage: "Toggle language",
+    letsPray: "Let's Pray",
+    letsPrayPage: {
+      title: "Let's Pray حي على الصلاة",
+      subtitle: "Desktop App",
+      description: "Prayer times and precise Azan notifications right on your desktop. Stay on time with your daily worship seamlessly.",
+      downloadWindows: "Download for Windows",
+      featuresTitle: "Premium Features",
+      featuresSubtitle: "Everything you need to maintain your prayers",
+      features: [
+        {
+          title: "Prayer Times",
+          desc: "Accurate daily prayer times based on your current location and selected calculation method.",
+        },
+        {
+          title: "Azan Notifications",
+          desc: "Beautiful full-screen or subtle desktop alerts when it is time to pray.",
+        },
+        {
+          title: "Multiple Muezzins",
+          desc: "Choose from a variety of beautiful voices including Al-Afasy, Al-Hussary, and more.",
+        },
+        {
+          title: "Next Prayer Countdown",
+          desc: "A constant widget showing exactly how much time is left until the next prayer.",
+        }
+      ],
+      uiTitle: "User Interface",
+      uiSubtitle: "Clean, elegant, and distraction-free design",
+      ctaTitle: "Download now and stay on time with your prayers.",
+      ctaDesc: "Join thousands of users who trust Let's Pray for their daily worship schedule.",
+      ctaButton: "Get Let's Pray Free",
+    },
     hero: {
       badge: "Professional Deployment Services",
       title: "Deploy with",
@@ -532,6 +564,38 @@ export const translations = {
     english: "English",
     arabic: "العربية",
     toggleLanguage: "تبديل اللغة",
+    letsPray: "حي على الصلاة",
+    letsPrayPage: {
+      title: "Let's Pray حي على الصلاة",
+      subtitle: "تطبيق سطح المكتب",
+      description: "أوقات الصلاة وتنبيهات الأذان الدقيقة مباشرة على سطح المكتب. حافظ على صلواتك في وقتها بكل سهولة.",
+      downloadWindows: "تحميل لنظام ويندوز",
+      featuresTitle: "ميزات حصرية",
+      featuresSubtitle: "كل ما تحتاجه للحفاظ على صلواتك",
+      features: [
+        {
+          title: "أوقات الصلاة",
+          desc: "أوقات صلاة يومية دقيقة بناءً على موقعك الحالي وطريقة الحساب المحددة.",
+        },
+        {
+          title: "تنبيهات الأذان",
+          desc: "تنبيهات جميلة بملء الشاشة أو إشعارات هادئة على سطح المكتب عند حلول وقت الصلاة.",
+        },
+        {
+          title: "مؤذنون متعددون",
+          desc: "اختر من بين مجموعة متنوعة من الأصوات الجميلة بما في ذلك العفاسي والحصري وغيرهم.",
+        },
+        {
+          title: "العد التنازلي للصلاة القادمة",
+          desc: "أداة دائمة توضح بالضبط الوقت المتبقي حتى الصلاة القادمة.",
+        }
+      ],
+      uiTitle: "واجهة المستخدم",
+      uiSubtitle: "تصميم نظيف، أنيق، وخالٍ من المشتتات",
+      ctaTitle: "قم بالتحميل الآن وحافظ على صلواتك في وقتها.",
+      ctaDesc: "انضم إلى آلاف المستخدمين الذين يثقون في Let's Pray لجدول عباداتهم اليومية.",
+      ctaButton: "احصل على Let's Pray مجاناً",
+    },
     hero: {
       badge: "خدمات نشر احترافية",
       title: "أطلق مشاريعك",

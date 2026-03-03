@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist, Geist_Mono, Amiri } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -14,6 +14,7 @@ import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
+export const amiri = Amiri({ subsets: ["arabic"], weight: ["400", "700"], variable: "--font-amiri" })
 
 export const metadata: Metadata = {
   title: "mDeploy - Professional Deployment Services",
@@ -102,7 +103,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" dir="ltr" className="bg-background dark" suppressHydrationWarning>
+    <html lang="en" dir="ltr" className={`bg-background dark ${amiri.variable}`} suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
         <LanguageProvider>
           <ConditionalLayout header={<Header />} footer={<Footer />}>
