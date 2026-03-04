@@ -42,8 +42,10 @@ export default function LetsPrayPage() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                        <Button size="lg" className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border-0 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] h-14 px-8 text-lg rounded-full">
-                            <Download className="mr-2 h-5 w-5" /> {t.downloadWindows}
+                        <Button asChild size="lg" className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border-0 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] h-14 px-8 text-lg rounded-full">
+                            <a href="https://apps.microsoft.com/detail/9P0D5302L719?hl=en-us&gl=SA&ocid=pdpshare" target="_blank" rel="noopener noreferrer">
+                                <Download className="mr-2 h-5 w-5" /> {t.downloadWindows}
+                            </a>
                         </Button>
                     </div>
 
