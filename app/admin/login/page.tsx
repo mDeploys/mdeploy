@@ -1,15 +1,14 @@
 "use client"
 
 import { Turnstile } from "@marsidev/react-turnstile"
-import type { TurnstileInstance } from "@marsidev/react-turnstile"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import { signInWithEmail, signUpWithEmail, isSupabaseConfigured } from "@/lib/supabase"
+import { signInWithEmail, isSupabaseConfigured } from "@/lib/supabase"
 import Link from "next/link"
 import { useLanguage } from "@/lib/language-context"
 import { translations } from "@/lib/translations"
@@ -21,13 +20,50 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [supabaseHealthError, setSupabaseHealthError] = useState<string | null>(null)
   const { language } = useLanguage()
   const t = translations[language]
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function checkSupabaseHealth() {
+      if (!isSupabaseConfigured) {
+        if (!cancelled) {
+          setSupabaseHealthError(t.adminLogin.toast.configMissing)
+        }
+        return
+      }
+
+      try {
+        const response = await fetch("/api/health/supabase", { cache: "no-store" })
+
+        if (!cancelled) {
+          setSupabaseHealthError(response.ok ? null : t.adminLogin.toast.hostUnreachable)
+        }
+      } catch {
+        if (!cancelled) {
+          setSupabaseHealthError(t.adminLogin.toast.hostUnreachable)
+        }
+      }
+    }
+
+    void checkSupabaseHealth()
+
+    return () => {
+      cancelled = true
+    }
+  }, [t.adminLogin.toast.configMissing, t.adminLogin.toast.hostUnreachable])
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!isSupabaseConfigured) {
       toast.error(t.adminLogin.toast.configMissing)
+      return
+    }
+
+    if (supabaseHealthError) {
+      toast.error(supabaseHealthError)
       return
     }
 
@@ -45,9 +81,11 @@ export default function AdminLoginPage() {
         // Map specific error statuses to user-friendly messages
         let message = t.adminLogin.toast.networkError
 
-        if (error.status === 400 || error.message.toLowerCase().includes("invalid login")) {
+        if (error.status === 400 || error.message?.toLowerCase().includes("invalid login")) {
           // 400 Bad Request usually means Invalid Credentials in auth
           message = t.adminLogin.toast.invalidCredentials
+        } else if (error.message?.toLowerCase().includes("failed to fetch")) {
+          message = t.adminLogin.toast.hostUnreachable
         } else if (error.status === 500) {
           // 500 Internal Server Error
           message = "Development System Error: Please check Supabase logs and triggers."
@@ -67,7 +105,12 @@ export default function AdminLoginPage() {
       router.replace("/admin")
     } catch (err: any) {
       console.error("Admin login unexpected error:", err)
-      toast.error("Critical Application Error: " + (err.message || "Unknown"))
+      const message =
+        err?.message?.toLowerCase().includes("failed to fetch")
+          ? t.adminLogin.toast.hostUnreachable
+          : "Critical Application Error: " + (err.message || "Unknown")
+
+      toast.error(message)
     } finally {
       setLoading(false)
     }
@@ -100,6 +143,11 @@ export default function AdminLoginPage() {
 
           {/* Form */}
           <form onSubmit={onSubmit} className="space-y-5">
+            {supabaseHealthError ? (
+              <div className="rounded-lg border border-amber-400/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+                {supabaseHealthError}
+              </div>
+            ) : null}
 
 
             <div className="space-y-2">
@@ -145,7 +193,7 @@ export default function AdminLoginPage() {
 
             <Button
               type="submit"
-              disabled={loading}
+              disabled={loading || !!supabaseHealthError}
               className="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-700 hover:to-fuchsia-700 text-white font-semibold py-2 rounded-lg transition-all duration-200 transform hover:scale-105 active:scale-95"
             >
               {loading ? (
