@@ -58,7 +58,7 @@ export function Header() {
     { href: "/", label: t.home, active: isHomeLink },
     { href: "/#services", label: t.services, active: isServices },
     { href: "/calculator", label: t.calculator, active: isCalculator },
-    { href: "/apps", label: t.appsGallery.title, active: isApps },
+    // { href: "/apps", label: t.appsGallery.title, active: isApps },
     // { href: "/lets-pray", label: t.letsPray, active: isLetsPray },
     // { href: "https://git.mdeploy.dev/passgen", label: t.passGen, active: false, external: true, sameWindow: true },
     { href: "https://git.mdeploy.dev", label: t.zoneCode, active: false, external: true, sameWindow: true },
