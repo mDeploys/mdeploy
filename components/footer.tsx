@@ -119,6 +119,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/passgen-ios-privacy" className="text-muted-foreground hover:text-foreground">
+                   PassGen IOS Privacy
+                </Link>
+              </li>
+              <li>
                 <Link href="/terms" className="text-muted-foreground hover:text-foreground">
                   {t.footer.terms}
                 </Link>
